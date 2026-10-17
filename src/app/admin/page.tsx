@@ -39,79 +39,18 @@ interface DashboardStats {
   recentBookings: any[];
 }
 
-// Fallback data for smooth presentation before database population
-const fallbackStats: DashboardStats = {
-  totalCustomers: 1248,
-  totalWorkers: 382,
-  activeJobs: 47,
-  completedJobs: 4920,
-  todayBookings: 34,
-  todayRevenue: 28600,
-  pendingPaymentVerifications: 8,
-  pendingCommissionPayments: 5,
-  pendingBonuses: 3,
-  recentBookings: [
-    {
-      id: "b1",
-      booking_number: "KZ-94812",
-      customer: { full_name: "Muhammad Usman", phone: "0300-1234567" },
-      worker: { full_name: "Tariq Mahmood", phone: "0321-7654321" },
-      service: { name: "AC General Repair & Gas Refill", category: "Appliance" },
-      address: "DHA Phase 5, Lahore",
-      visit_fee: 200,
-      final_amount: 3500,
-      status: "in_progress",
-      created_at: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-    },
-    {
-      id: "b2",
-      booking_number: "KZ-94811",
-      customer: { full_name: "Ayesha Malik", phone: "0333-8889990" },
-      worker: { full_name: "Kamran Ali", phone: "0345-1112223" },
-      service: { name: "Emergency Electrician & Wiring", category: "Electrical" },
-      address: "Gulshan-e-Iqbal Block 13, Karachi",
-      visit_fee: 200,
-      final_amount: 1800,
-      status: "completed",
-      created_at: new Date(Date.now() - 1000 * 60 * 95).toISOString(),
-    },
-    {
-      id: "b3",
-      booking_number: "KZ-94810",
-      customer: { full_name: "Bilal Farooq", phone: "0312-5554443" },
-      worker: { full_name: "Zafar Iqbal", phone: "0304-9998877" },
-      service: { name: "Plumbing Pipe Leakage Fix", category: "Plumbing" },
-      address: "F-10/2, Islamabad",
-      visit_fee: 200,
-      final_amount: 2200,
-      status: "accepted",
-      created_at: new Date(Date.now() - 1000 * 60 * 140).toISOString(),
-    },
-    {
-      id: "b4",
-      booking_number: "KZ-94809",
-      customer: { full_name: "Fatima Noor", phone: "0322-4433221" },
-      worker: { full_name: "Sajid Rasheed", phone: "0301-6677889" },
-      service: { name: "Deep Home Cleaning (3 BHK)", category: "Cleaning" },
-      address: "Bahria Town Sector C, Lahore",
-      visit_fee: 200,
-      final_amount: 6500,
-      status: "completed",
-      created_at: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
-    },
-    {
-      id: "b5",
-      booking_number: "KZ-94808",
-      customer: { full_name: "Hamza Shafiq", phone: "0300-8877665" },
-      worker: { full_name: "Rashid Minhas", phone: "0342-3344556" },
-      service: { name: "Carpentry & Door Lock Repair", category: "Carpentry" },
-      address: "Saddar Town, Rawalpindi",
-      visit_fee: 200,
-      final_amount: 1500,
-      status: "pending",
-      created_at: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
-    },
-  ],
+// Clean zero-initialized real-time dashboard data (no mock/fake data)
+const initialLiveStats: DashboardStats = {
+  totalCustomers: 0,
+  totalWorkers: 0,
+  activeJobs: 0,
+  completedJobs: 0,
+  todayBookings: 0,
+  todayRevenue: 0,
+  pendingPaymentVerifications: 0,
+  pendingCommissionPayments: 0,
+  pendingBonuses: 0,
+  recentBookings: [],
 };
 
 async function getDashboardData(): Promise<DashboardStats> {
@@ -198,29 +137,27 @@ async function getDashboardData(): Promise<DashboardStats> {
         .order("created_at", { ascending: false })
         .limit(6);
 
-      // If query worked and returned records, use it; otherwise fallback
-      if (customersCount !== null || workersCount !== null) {
-        return {
-          totalCustomers: customersCount ?? fallbackStats.totalCustomers,
-          totalWorkers: workersCount ?? fallbackStats.totalWorkers,
-          activeJobs: activeJobsCount ?? fallbackStats.activeJobs,
-          completedJobs: completedJobsCount ?? fallbackStats.completedJobs,
-          todayBookings: todayBookingsCount ?? fallbackStats.todayBookings,
-          todayRevenue: revenueSum || fallbackStats.todayRevenue,
-          pendingPaymentVerifications: pendingPaymentsCount ?? fallbackStats.pendingPaymentVerifications,
-          pendingCommissionPayments: pendingCommissionsCount ?? fallbackStats.pendingCommissionPayments,
-          pendingBonuses: pendingBonusesCount ?? fallbackStats.pendingBonuses,
-          recentBookings: (bookings && bookings.length > 0) ? bookings : fallbackStats.recentBookings,
-        };
-      }
+      // Return real-time database counts
+      return {
+        totalCustomers: customersCount ?? 0,
+        totalWorkers: workersCount ?? 0,
+        activeJobs: activeJobsCount ?? 0,
+        completedJobs: completedJobsCount ?? 0,
+        todayBookings: todayBookingsCount ?? 0,
+        todayRevenue: revenueSum || 0,
+        pendingPaymentVerifications: pendingPaymentsCount ?? 0,
+        pendingCommissionPayments: pendingCommissionsCount ?? 0,
+        pendingBonuses: pendingBonusesCount ?? 0,
+        recentBookings: bookings && bookings.length > 0 ? bookings : [],
+      };
     } catch {
-      // Fallback cleanly on network disconnect or timeout
+      // Clean zero state on network disconnect or before database population
     }
-    return fallbackStats;
+    return initialLiveStats;
   };
 
   const timeoutTask = new Promise<DashboardStats>((resolve) =>
-    setTimeout(() => resolve(fallbackStats), 800)
+    setTimeout(() => resolve(initialLiveStats), 1000)
   );
 
   return await Promise.race([fetchTask(), timeoutTask]);
@@ -404,69 +341,81 @@ export default async function DashboardPage() {
               </Link>
             }
           >
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50/75 text-gray-500 text-xs font-semibold uppercase border-b border-gray-100">
-                  <tr>
-                    <th className="py-3 px-5">Booking #</th>
-                    <th className="py-3 px-4">Customer</th>
-                    <th className="py-3 px-4">Service</th>
-                    <th className="py-3 px-4">Worker</th>
-                    <th className="py-3 px-4">Amount</th>
-                    <th className="py-3 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 text-gray-700">
-                  {stats.recentBookings.map((b) => (
-                    <tr key={b.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="py-3.5 px-5 font-mono text-xs font-medium text-gray-900">
-                        {b.booking_number}
-                        <div className="text-[10px] text-gray-400 font-sans">
-                          {formatDateTime(b.created_at)}
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-medium text-gray-900 text-xs sm:text-sm">
-                          {b.customer?.full_name || "Guest Customer"}
-                        </div>
-                        <div className="text-[11px] text-gray-400">
-                          {b.customer?.phone || "N/A"}
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-medium text-xs text-gray-800 line-clamp-1">
-                          {b.service?.name || "General Service"}
-                        </div>
-                        <div className="flex items-center gap-1 text-[11px] text-gray-400">
-                          <MapPin className="w-3 h-3 text-gray-400 shrink-0" />
-                          <span className="truncate max-w-[140px]">{b.address}</span>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {b.worker ? (
-                          <div>
-                            <div className="font-medium text-xs text-gray-900">
-                              {b.worker.full_name}
-                            </div>
-                            <div className="text-[11px] text-gray-400">
-                              {b.worker.phone || "Assigned"}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-amber-600 italic">Dispatched...</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 font-semibold text-gray-900 text-xs sm:text-sm">
-                        {formatPKR(b.final_amount || b.visit_fee)}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {getStatusBadge(b.status)}
-                      </td>
+            {stats.recentBookings.length === 0 ? (
+              <div className="py-12 px-4 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0062FF] flex items-center justify-center mx-auto">
+                  <Clock className="w-6 h-6 text-[#0062FF]" />
+                </div>
+                <p className="font-bold text-gray-900 text-sm">No Live Bookings Yet (کوئی بکنگ نہیں)</p>
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  Real customer orders and payment proofs submitted from the website will appear here in real-time.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-50/75 text-gray-500 text-xs font-semibold uppercase border-b border-gray-100">
+                    <tr>
+                      <th className="py-3 px-5">Booking #</th>
+                      <th className="py-3 px-4">Customer</th>
+                      <th className="py-3 px-4">Service</th>
+                      <th className="py-3 px-4">Worker</th>
+                      <th className="py-3 px-4">Amount</th>
+                      <th className="py-3 px-4">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-gray-700">
+                    {stats.recentBookings.map((b) => (
+                      <tr key={b.id} className="hover:bg-gray-50/50 transition-colors">
+                        <td className="py-3.5 px-5 font-mono text-xs font-medium text-gray-900">
+                          {b.booking_number}
+                          <div className="text-[10px] text-gray-400 font-sans">
+                            {formatDateTime(b.created_at)}
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="font-medium text-gray-900 text-xs sm:text-sm">
+                            {b.customer?.full_name || "Guest Customer"}
+                          </div>
+                          <div className="text-[11px] text-gray-400">
+                            {b.customer?.phone || "N/A"}
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="font-medium text-xs text-gray-800 line-clamp-1">
+                            {b.service?.name || "General Service"}
+                          </div>
+                          <div className="flex items-center gap-1 text-[11px] text-gray-400">
+                            <MapPin className="w-3 h-3 text-gray-400 shrink-0" />
+                            <span className="truncate max-w-[140px]">{b.address}</span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4">
+                          {b.worker ? (
+                            <div>
+                              <div className="font-medium text-xs text-gray-900">
+                                {b.worker.full_name}
+                              </div>
+                              <div className="text-[11px] text-gray-400">
+                                {b.worker.phone || "Assigned"}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-amber-600 italic">Dispatched...</span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 font-semibold text-gray-900 text-xs sm:text-sm">
+                          {formatPKR(b.final_amount || b.visit_fee)}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          {getStatusBadge(b.status)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </Card>
         </div>
 

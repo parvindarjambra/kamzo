@@ -31,6 +31,10 @@ import {
   Home,
   Layers,
   Download,
+  Upload,
+  FileText,
+  Briefcase,
+  CreditCard,
 } from "lucide-react";
 
 interface ServiceData {
@@ -140,7 +144,7 @@ const SHOW_BROWSER_APP_INSTALL = true;
 export default function STCStyleMarketplacePage() {
   const [selectedService, setSelectedService] = useState<ServiceData>(services[0]);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [bookingStep, setBookingStep] = useState<"form" | "confirmed">("form");
+  const [bookingStep, setBookingStep] = useState<"details" | "payment" | "confirmed">("details");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -151,6 +155,23 @@ export default function STCStyleMarketplacePage() {
   const [customCityName, setCustomCityName] = useState("");
   const [problemDetail, setProblemDetail] = useState("");
   const [confirmedBookingId, setConfirmedBookingId] = useState("");
+
+  // Payment Proof State (Customer Rs. 200 visit fee transfer)
+  const [paymentMethod, setPaymentMethod] = useState<"jazzcash" | "easypaisa" | "bank_transfer">("jazzcash");
+  const [transactionRef, setTransactionRef] = useState("");
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+  const [receiptFileName, setReceiptFileName] = useState("");
+
+  // Worker Join Onboarding State
+  const [isWorkerModalOpen, setIsWorkerModalOpen] = useState(false);
+  const [workerStep, setWorkerStep] = useState<"form" | "confirmed">("form");
+  const [workerName, setWorkerName] = useState("");
+  const [workerPhone, setWorkerPhone] = useState("");
+  const [workerSkill, setWorkerSkill] = useState("Auto Mechanic (آٹو مکینک)");
+  const [workerCity, setWorkerCity] = useState(pakistaniCities[0]);
+  const [workerExperience, setWorkerExperience] = useState("3");
+  const [workerCnic, setWorkerCnic] = useState("");
+  const [workerCnicFileName, setWorkerCnicFileName] = useState("");
 
   // Secret Admin Access via 5 Rapid Logo Taps (For Mobile App & PWA where URL bar is hidden)
   const [logoTaps, setLogoTaps] = useState(0);
@@ -234,15 +255,44 @@ export default function STCStyleMarketplacePage() {
 
   const handleOpenBooking = (service?: ServiceData) => {
     if (service) setSelectedService(service);
-    setBookingStep("form");
+    setBookingStep("details");
     setIsBookingModalOpen(true);
   };
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const handleDetailsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setBookingStep("payment");
+  };
+
+  const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
     setConfirmedBookingId(randomId);
     setBookingStep("confirmed");
+  };
+
+  const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setReceiptFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReceiptPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleWorkerSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setWorkerStep("confirmed");
+  };
+
+  const handleWorkerCnicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setWorkerCnicFileName(file.name);
+    }
   };
 
   const effectiveCity = selectedCity.startsWith("Other") ? (customCityName || "Custom Location") : selectedCity;
@@ -427,22 +477,50 @@ export default function STCStyleMarketplacePage() {
                   })}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                  <div className={`w-full sm:flex-1 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"} border rounded-xl px-3.5 py-2.5 flex items-center gap-2 text-xs text-slate-700`}>
+                {/* Dual Role Call-to-Actions: Customer Booking vs Worker Join */}
+                <div className="space-y-2.5 pt-1">
+                  <div className={`w-full ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"} border rounded-xl px-3.5 py-2.5 flex items-center gap-2 text-xs text-slate-700`}>
                     <MapPin className="w-4 h-4 text-[#0062FF] shrink-0" />
                     <span className={`font-semibold ${isDarkMode ? "text-white" : "text-slate-900"} truncate`}>
-                      {effectiveCity}
+                      Selected Area: {effectiveCity}
                     </span>
-                    <span className="text-[10px] text-slate-400 ml-auto">Pakistan</span>
+                    <span className="text-[10px] text-slate-400 ml-auto font-medium">Flat Rs. 200 Visit Fee</span>
                   </div>
 
-                  <button
-                    onClick={() => handleOpenBooking(selectedService)}
-                    className="w-full sm:w-auto px-6 py-3 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
-                  >
-                    <span>Book {selectedService.name}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {/* Button 1: Customer Booking */}
+                    <button
+                      onClick={() => handleOpenBooking(selectedService)}
+                      className="w-full py-3.5 px-4 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2.5 cursor-pointer text-left"
+                    >
+                      <CheckCircle2 className="w-5 h-5 shrink-0 text-white" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-extrabold truncate">1. Book as Customer (گاہک بکنگ)</div>
+                        <div className="text-[10px] text-blue-100 truncate font-normal">Order {selectedService.name.split(" ")[0]} • Pay Visit Fee</div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 shrink-0 text-white" />
+                    </button>
+
+                    {/* Button 2: Worker Join / Registration */}
+                    <button
+                      onClick={() => {
+                        setWorkerStep("form");
+                        setIsWorkerModalOpen(true);
+                      }}
+                      className={`w-full py-3.5 px-4 font-bold text-xs sm:text-sm rounded-xl border transition-all flex items-center justify-center gap-2.5 cursor-pointer text-left ${
+                        isDarkMode
+                          ? "bg-emerald-950/70 text-emerald-300 border-emerald-600/70 hover:bg-emerald-900/60"
+                          : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 shadow-sm"
+                      }`}
+                    >
+                      <Briefcase className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-extrabold truncate">2. Join as Worker (کاریگر بنیں)</div>
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-300 truncate font-normal">Register Skill • Earn & Get Daily Jobs</div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -951,12 +1029,12 @@ export default function STCStyleMarketplacePage() {
               <X className="w-5 h-5" />
             </button>
 
-            {bookingStep === "form" ? (
-              <form onSubmit={handleBookingSubmit} className="space-y-4 text-left">
+            {bookingStep === "details" && (
+              <form onSubmit={handleDetailsSubmit} className="space-y-4 text-left">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0062FF]">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Instant Service Request (فوری بکنگ)</span>
+                    <span>Step 1 of 2: Service & Location Details (مرحلہ 1: بکنگ معلومات)</span>
                   </div>
                   <h3 className="text-xl font-black">
                     Book {selectedService.name}
@@ -1005,7 +1083,7 @@ export default function STCStyleMarketplacePage() {
                     ))}
                   </select>
 
-                  {/* If user selected "Other / Type Your City" or wants to specify area */}
+                  {/* If user selected "Other / Type Your City" */}
                   {selectedCity.startsWith("Other") && (
                     <div className="pt-1 animate-in fade-in">
                       <input
@@ -1022,7 +1100,7 @@ export default function STCStyleMarketplacePage() {
 
                 {/* Customer Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600">Your Full Name (آپ کا نام):</label>
+                  <label className="text-xs font-bold text-slate-600">Your Full Name (گاہک کا نام):</label>
                   <input
                     type="text"
                     required
@@ -1045,7 +1123,7 @@ export default function STCStyleMarketplacePage() {
                       required
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="300 1234567"
+                      placeholder="319 7318425"
                       className={`w-full px-3.5 py-2.5 rounded-r-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs focus:outline-none focus:border-[#0062FF]`}
                     />
                   </div>
@@ -1071,7 +1149,7 @@ export default function STCStyleMarketplacePage() {
                     <span className="text-[#0062FF]">Rs. 200</span>
                   </div>
                   <p className="text-[11px] text-blue-700">
-                    Actual repair/labor charges will be estimated on-site and paid directly to the worker in cash upon completion.
+                    Next step: Transfer Rs. 200 visit fee via JazzCash/Easypaisa to confirm technician dispatch.
                   </p>
                 </div>
 
@@ -1079,21 +1157,236 @@ export default function STCStyleMarketplacePage() {
                   type="submit"
                   className="w-full py-3 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Submit Booking Request (درخواست بھیجیں)</span>
+                  <span>Next: Proceed to Visit Fee Payment (فیس ادائیگی)</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
-            ) : (
-              /* Confirmation Screen */
-              <div className="text-center space-y-4 py-4">
+            )}
+
+            {/* STEP 2: PAYMENT & RECEIPT PROOF ATTACHMENT */}
+            {bookingStep === "payment" && (
+              <form onSubmit={handlePaymentSubmit} className="space-y-4 text-left">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0062FF]">
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>Step 2 of 2: Transfer Rs. 200 Visit Fee (وزٹ فیس ادائیگی)</span>
+                  </div>
+                  <h3 className="text-xl font-black">
+                    Attach Payment Proof (رسید ثبوت)
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Send Rs. 200 advance inspection fee to any account below and upload the screenshot.
+                  </p>
+                </div>
+
+                {/* Payment Method Tabs */}
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("jazzcash")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                      paymentMethod === "jazzcash"
+                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        : isDarkMode
+                        ? "bg-slate-800 text-slate-300 border-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200"
+                    }`}
+                  >
+                    JazzCash
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("easypaisa")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                      paymentMethod === "easypaisa"
+                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        : isDarkMode
+                        ? "bg-slate-800 text-slate-300 border-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200"
+                    }`}
+                  >
+                    Easypaisa
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("bank_transfer")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                      paymentMethod === "bank_transfer"
+                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        : isDarkMode
+                        ? "bg-slate-800 text-slate-300 border-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200"
+                    }`}
+                  >
+                    Bank
+                  </button>
+                </div>
+
+                {/* Official Account Box */}
+                <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-blue-900 font-bold">
+                    <span>Deposit Account Details:</span>
+                    <span className="text-xs bg-[#0062FF] text-white px-2 py-0.5 rounded-full font-mono">
+                      Rs. 200
+                    </span>
+                  </div>
+
+                  {paymentMethod === "jazzcash" && (
+                    <div className="space-y-1 text-slate-800">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">JazzCash Mobile:</span>
+                        <span className="font-mono font-black text-sm text-[#0062FF]">0319 7318425</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Account Title:</span>
+                        <span className="font-bold">KAMZO Services / Parvindar</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethod === "easypaisa" && (
+                    <div className="space-y-1 text-slate-800">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Easypaisa Mobile:</span>
+                        <span className="font-mono font-black text-sm text-[#0062FF]">0319 7318425</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Account Title:</span>
+                        <span className="font-bold">KAMZO Services / Parvindar</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethod === "bank_transfer" && (
+                    <div className="space-y-1 text-slate-800">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Bank Name:</span>
+                        <span className="font-bold">Allied Bank / Meezan Bank</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Account / IBAN:</span>
+                        <span className="font-mono font-bold text-xs">03197318425 / PK36MEZN</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Account Title:</span>
+                        <span className="font-bold">KAMZO Marketplace</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <p className="text-[11px] text-blue-700 pt-1 border-t border-blue-200/60">
+                    Open your {paymentMethod === "jazzcash" ? "JazzCash" : paymentMethod === "easypaisa" ? "Easypaisa" : "Bank"} App, send Rs. 200, then paste the TID below.
+                  </p>
+                </div>
+
+                {/* Transaction Reference / TID */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 flex items-center justify-between">
+                    <span>Transaction ID / TID (ٹرانزیکشن ریفرنس):</span>
+                    <span className="text-[10px] text-slate-400">Required</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={transactionRef}
+                    onChange={(e) => setTransactionRef(e.target.value)}
+                    placeholder="e.g. TID 04982189421 / SMS Ref"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs font-mono focus:outline-none focus:border-[#0062FF]`}
+                  />
+                </div>
+
+                {/* Screenshot Upload with Preview */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 flex items-center justify-between">
+                    <span>Attach Payment Screenshot / Proof (رسید کی تصویر):</span>
+                    <span className="text-[10px] text-emerald-600 font-bold">Fast Approval</span>
+                  </label>
+
+                  <div className={`border-2 border-dashed rounded-2xl p-3 text-center transition-colors ${
+                    receiptPreview
+                      ? "border-emerald-400 bg-emerald-50/50"
+                      : isDarkMode
+                      ? "border-slate-700 bg-slate-800/50 hover:border-blue-500"
+                      : "border-slate-200 bg-slate-50/70 hover:border-blue-400"
+                  }`}>
+                    <input
+                      type="file"
+                      id="receipt-file-input"
+                      accept="image/*"
+                      onChange={handleReceiptChange}
+                      className="hidden"
+                    />
+                    <label htmlFor="receipt-file-input" className="cursor-pointer block">
+                      {receiptPreview ? (
+                        <div className="flex items-center gap-3 text-left">
+                          <img
+                            src={receiptPreview}
+                            alt="Receipt Preview"
+                            className="w-14 h-14 object-cover rounded-xl border border-emerald-300 shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-bold text-emerald-700 flex items-center gap-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                              <span>Receipt Proof Attached</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 truncate">{receiptFileName || "screenshot.png"}</p>
+                            <span className="text-[10px] text-[#0062FF] underline font-semibold">Change Screenshot</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="py-2.5 space-y-1">
+                          <Upload className="w-6 h-6 text-[#0062FF] mx-auto" />
+                          <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            Tap to Upload Screenshot / Receipt
+                          </div>
+                          <p className="text-[10px] text-slate-400">
+                            JPEG, PNG or Camera photo from your phone
+                          </p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
+
+                {/* Modal Navigation Buttons */}
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setBookingStep("details")}
+                    className={`py-3 px-4 rounded-xl border text-xs font-bold transition-all ${
+                      isDarkMode
+                        ? "bg-slate-800 text-slate-300 border-slate-700"
+                        : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                    }`}
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Submit Payment Proof & Confirm (رسید جمع کروائیں)</span>
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* STEP 3: BOOKING CONFIRMED */}
+            {bookingStep === "confirmed" && (
+              <div className="text-center space-y-4 py-2">
                 <div className="w-16 h-16 rounded-full bg-blue-100 text-[#0062FF] flex items-center justify-center mx-auto border-2 border-blue-200">
                   <FileCheck className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black">Booking Confirmed!</h3>
+                  <h3 className="text-2xl font-black">Booking Registered!</h3>
                   <p className="text-xs text-[#0062FF] font-bold mt-1">
-                    درخواست کامیابی کے ساتھ رجسٹر ہو گئی ہے۔
+                    درخواست اور رسید کامیابی کے ساتھ موصول ہو گئی ہے۔
                   </p>
+                  <div className="inline-block mt-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold">
+                    ⏳ Payment Status: Under Admin Verification (تصدیق زیر التواء)
+                  </div>
                 </div>
 
                 <div className={`${isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-800"} rounded-2xl p-4 text-xs space-y-2 border text-left`}>
@@ -1110,26 +1403,251 @@ export default function STCStyleMarketplacePage() {
                     <span className="font-bold">{effectiveCity}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Customer Name:</span>
-                    <span className="font-bold">{customerName}</span>
+                    <span className="text-slate-400">Customer:</span>
+                    <span className="font-bold">{customerName} (+92 {customerPhone})</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Mobile:</span>
-                    <span className="font-bold">+92 {customerPhone}</span>
+                    <span className="text-slate-400">Method & TID:</span>
+                    <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
+                      {paymentMethod.toUpperCase()} • {transactionRef || "Proof Attached"}
+                    </span>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-slate-200 text-[#0062FF] font-bold">
-                    <span>Initial Inspection Fee:</span>
+                    <span>Initial Visit Fee Transferred:</span>
                     <span>Rs. 200</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Our nearest certified <strong>{selectedService.name}</strong> will contact you via WhatsApp (+92 319 7318425) / Call within <strong>10 minutes</strong>.
-                </p>
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-[11px] text-blue-900 leading-relaxed text-left">
+                  <p className="font-semibold pb-1">اگلا مرحلہ (Next Steps):</p>
+                  <p>1. ایڈمن 5 سے 10 منٹ میں آپ کی ٹرانزیکشن رسید کی تصدیق کرے گا۔</p>
+                  <p>2. تصدیق ہوتے ہی نزدیکی سرٹیفائیڈ کاریگر کو آپ کے پتے پر روانہ کیا جائے گا۔</p>
+                  <p>3. کام مکمل ہونے پر فائنل ریپیرنگ لیبر چارجز کاریگر کو موقع پر کیش میں ادا کیے جائیں گے۔</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://wa.me/923197318425"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>WhatsApp (+92 319 7318425)</span>
+                  </a>
+                  <button
+                    onClick={() => setIsBookingModalOpen(false)}
+                    className="py-2.5 px-5 bg-[#0062FF] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+                  >
+                    Done (مکمل)
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── WORKER JOIN / ONBOARDING REGISTRATION MODAL ─── */}
+      {isWorkerModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className={`${isDarkMode ? "bg-slate-900 text-white border-slate-800" : "bg-white text-slate-900 border-slate-100"} rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border relative space-y-5 max-h-[90vh] overflow-y-auto`}>
+            {/* Close Button */}
+            <button
+              onClick={() => setIsWorkerModalOpen(false)}
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {workerStep === "form" ? (
+              <form onSubmit={handleWorkerSubmit} className="space-y-4 text-left">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>Worker Registration (کاریگر رجسٹریشن فارم)</span>
+                  </div>
+                  <h3 className="text-xl font-black">
+                    Join KAMZO as Service Professional
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Register your trade, earn daily income with verified client bookings in your city.
+                  </p>
+                </div>
+
+                {/* Worker Full Name */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">Full Name (کاریگر کا پورا نام):</label>
+                  <input
+                    type="text"
+                    required
+                    value={workerName}
+                    onChange={(e) => setWorkerName(e.target.value)}
+                    placeholder="e.g. Ramesh Kumar / Muhammad Usman"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs focus:outline-none focus:border-emerald-600`}
+                  />
+                </div>
+
+                {/* Worker Mobile */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">Pakistani Mobile / WhatsApp (موبائل نمبر):</label>
+                  <div className="flex">
+                    <span className={`inline-flex items-center px-3 rounded-l-xl border border-r-0 ${isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-100 border-slate-200 text-slate-600"} text-xs font-bold`}>
+                      +92
+                    </span>
+                    <input
+                      type="tel"
+                      required
+                      value={workerPhone}
+                      onChange={(e) => setWorkerPhone(e.target.value)}
+                      placeholder="300 1234567"
+                      className={`w-full px-3.5 py-2.5 rounded-r-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs focus:outline-none focus:border-emerald-600`}
+                    />
+                  </div>
+                </div>
+
+                {/* Skill / Trade Selection */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">Primary Skill / Trade (مہارت کا انتخاب):</label>
+                  <select
+                    value={workerSkill}
+                    onChange={(e) => setWorkerSkill(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-800"} text-xs font-semibold focus:outline-none focus:border-emerald-600`}
+                  >
+                    <option value="Auto Mechanic (آٹو مکینک)">Auto Mechanic (آٹو مکینک)</option>
+                    <option value="AC & Refrigeration (اے سی ٹیکنیشن)">AC & Refrigeration (اے سی ٹیکنیشن)</option>
+                    <option value="Plumber & Sanitary (پلمبر)">Plumber & Sanitary (پلمبر)</option>
+                    <option value="Electrician & Wiring (الیکٹریشن)">Electrician & Wiring (الیکٹریشن)</option>
+                    <option value="Carpenter & Woodwork (بڑھئی)">Carpenter & Woodwork (بڑھئی)</option>
+                    <option value="Home Appliances Repair (گھریلو سامان مرمت)">Home Appliances Repair (گھریلو سامان مرمت)</option>
+                  </select>
+                </div>
+
+                {/* City Selection */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">Your Base City (شہر / علاقہ):</label>
+                  <select
+                    value={workerCity}
+                    onChange={(e) => setWorkerCity(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-800"} text-xs font-semibold focus:outline-none focus:border-emerald-600`}
+                  >
+                    {pakistaniCities.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Experience in Years */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">Experience (تجربہ - سال):</label>
+                  <select
+                    value={workerExperience}
+                    onChange={(e) => setWorkerExperience(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-800"} text-xs font-semibold focus:outline-none focus:border-emerald-600`}
+                  >
+                    <option value="1">1 Year Experience</option>
+                    <option value="2">2 Years Experience</option>
+                    <option value="3">3 - 5 Years Experience</option>
+                    <option value="5">5 - 10 Years (Senior Master)</option>
+                    <option value="10">10+ Years (Ustadh / Expert)</option>
+                  </select>
+                </div>
+
+                {/* CNIC Number */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 flex items-center justify-between">
+                    <span>CNIC Number (قومی شناختی کارڈ نمبر):</span>
+                    <span className="text-[10px] text-slate-400">13 Digits</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={workerCnic}
+                    onChange={(e) => setWorkerCnic(e.target.value)}
+                    placeholder="44102-1234567-1"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs font-mono focus:outline-none focus:border-emerald-600`}
+                  />
+                </div>
+
+                {/* CNIC Photo Upload */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600">CNIC Card Photo / Document:</label>
+                  <div className="border-2 border-dashed border-emerald-200 bg-emerald-50/40 rounded-xl p-3 text-center">
+                    <input
+                      type="file"
+                      id="cnic-file-input"
+                      accept="image/*,.pdf"
+                      onChange={handleWorkerCnicChange}
+                      className="hidden"
+                    />
+                    <label htmlFor="cnic-file-input" className="cursor-pointer block text-xs">
+                      {workerCnicFileName ? (
+                        <div className="text-emerald-700 font-bold flex items-center justify-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{workerCnicFileName} Attached</span>
+                        </div>
+                      ) : (
+                        <div className="text-slate-600">
+                          <Upload className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
+                          <span className="font-semibold text-emerald-700">Upload CNIC Front & Back Photo</span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
 
                 <button
-                  onClick={() => setIsBookingModalOpen(false)}
-                  className="w-full py-2.5 bg-[#0062FF] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+                  type="submit"
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span>Submit Worker Application (درخواست جمع کروائیں)</span>
+                </button>
+              </form>
+            ) : (
+              <div className="text-center space-y-4 py-2">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black">Application Received!</h3>
+                  <p className="text-xs text-emerald-600 font-bold mt-1">
+                    کاریگر رجسٹریشن درخواست موصول ہو گئی ہے۔
+                  </p>
+                </div>
+
+                <div className={`${isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-800"} rounded-2xl p-4 text-xs space-y-2 border text-left`}>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Worker Name:</span>
+                    <span className="font-bold">{workerName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Trade / Skill:</span>
+                    <span className="font-bold">{workerSkill}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">City / Location:</span>
+                    <span className="font-bold">{workerCity}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Mobile / WhatsApp:</span>
+                    <span className="font-bold">+92 {workerPhone}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">CNIC Verification:</span>
+                    <span className="font-bold text-amber-600">Pending Review by Admin</span>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-[11px] text-emerald-900 leading-relaxed text-left">
+                  <p className="font-semibold pb-1">تصدیقی عمل (Verification Process):</p>
+                  <p>1. ایڈمن ٹیم 24 گھنٹوں کے اندر آپ کے شناختی کارڈ اور تجربے کی تصدیق کرے گی۔</p>
+                  <p>2. تصدیق کے بعد آپ کا اکاؤنٹ فعال ہو جائے گا اور آپ کو آپ کے شہر کے کسٹمر آرڈرز براہ راست WhatsApp پر ملنا شروع ہو جائیں گے۔</p>
+                </div>
+
+                <button
+                  onClick={() => setIsWorkerModalOpen(false)}
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
                 >
                   Done (مکمل)
                 </button>
