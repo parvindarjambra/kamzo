@@ -114,108 +114,115 @@ const fallbackStats: DashboardStats = {
 };
 
 async function getDashboardData(): Promise<DashboardStats> {
-  try {
-    const supabase = createAdminServerClient();
+  const fetchTask = async (): Promise<DashboardStats> => {
+    try {
+      const supabase = createAdminServerClient();
 
-    // 1. Total Customers
-    const { count: customersCount } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("role", "customer");
+      // 1. Total Customers
+      const { count: customersCount } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "customer");
 
-    // 2. Total Workers
-    const { count: workersCount } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("role", "worker");
+      // 2. Total Workers
+      const { count: workersCount } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "worker");
 
-    // 3. Active Jobs (accepted or in_progress)
-    const { count: activeJobsCount } = await supabase
-      .from("bookings")
-      .select("*", { count: "exact", head: true })
-      .in("status", ["accepted", "in_progress"]);
+      // 3. Active Jobs (accepted or in_progress)
+      const { count: activeJobsCount } = await supabase
+        .from("bookings")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["accepted", "in_progress"]);
 
-    // 4. Completed Jobs
-    const { count: completedJobsCount } = await supabase
-      .from("bookings")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "completed");
+      // 4. Completed Jobs
+      const { count: completedJobsCount } = await supabase
+        .from("bookings")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "completed");
 
-    // 5. Today's Bookings
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
-    const { count: todayBookingsCount } = await supabase
-      .from("bookings")
-      .select("*", { count: "exact", head: true })
-      .gte("created_at", startOfToday.toISOString());
+      // 5. Today's Bookings
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const { count: todayBookingsCount } = await supabase
+        .from("bookings")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", startOfToday.toISOString());
 
-    // 6. Today's Platform Revenue (from verified visit fees + commissions)
-    const { data: todayPayments } = await supabase
-      .from("payments")
-      .select("amount")
-      .eq("status", "verified")
-      .gte("created_at", startOfToday.toISOString());
+      // 6. Today's Platform Revenue (from verified visit fees + commissions)
+      const { data: todayPayments } = await supabase
+        .from("payments")
+        .select("amount")
+        .eq("status", "verified")
+        .gte("created_at", startOfToday.toISOString());
 
-    const revenueSum = todayPayments
-      ? todayPayments.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
-      : fallbackStats.todayRevenue;
+      const revenueSum = todayPayments
+        ? todayPayments.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
+        : fallbackStats.todayRevenue;
 
-    // 7. Pending Payment Verifications
-    const { count: pendingPaymentsCount } = await supabase
-      .from("payments")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "submitted");
+      // 7. Pending Payment Verifications
+      const { count: pendingPaymentsCount } = await supabase
+        .from("payments")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "submitted");
 
-    // 8. Pending Commission Payments
-    const { count: pendingCommissionsCount } = await supabase
-      .from("commission_payments")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "submitted");
+      // 8. Pending Commission Payments
+      const { count: pendingCommissionsCount } = await supabase
+        .from("commission_payments")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "submitted");
 
-    // 9. Pending Bonuses
-    const { count: pendingBonusesCount } = await supabase
-      .from("worker_bonuses")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "eligible");
+      // 9. Pending Bonuses
+      const { count: pendingBonusesCount } = await supabase
+        .from("worker_bonuses")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "eligible");
 
-    // 10. Recent Bookings with customer, worker, and service joins
-    const { data: bookings } = await supabase
-      .from("bookings")
-      .select(`
-        id,
-        booking_number,
-        address,
-        visit_fee,
-        final_amount,
-        status,
-        created_at,
-        customer:customer_id(full_name, phone),
-        worker:worker_id(full_name, phone),
-        service:service_id(name, category)
-      `)
-      .order("created_at", { ascending: false })
-      .limit(6);
+      // 10. Recent Bookings with customer, worker, and service joins
+      const { data: bookings } = await supabase
+        .from("bookings")
+        .select(`
+          id,
+          booking_number,
+          address,
+          visit_fee,
+          final_amount,
+          status,
+          created_at,
+          customer:customer_id(full_name, phone),
+          worker:worker_id(full_name, phone),
+          service:service_id(name, category)
+        `)
+        .order("created_at", { ascending: false })
+        .limit(6);
 
-    // If query worked and returned records, use it; otherwise fallback
-    if (customersCount !== null || workersCount !== null) {
-      return {
-        totalCustomers: customersCount ?? fallbackStats.totalCustomers,
-        totalWorkers: workersCount ?? fallbackStats.totalWorkers,
-        activeJobs: activeJobsCount ?? fallbackStats.activeJobs,
-        completedJobs: completedJobsCount ?? fallbackStats.completedJobs,
-        todayBookings: todayBookingsCount ?? fallbackStats.todayBookings,
-        todayRevenue: revenueSum || fallbackStats.todayRevenue,
-        pendingPaymentVerifications: pendingPaymentsCount ?? fallbackStats.pendingPaymentVerifications,
-        pendingCommissionPayments: pendingCommissionsCount ?? fallbackStats.pendingCommissionPayments,
-        pendingBonuses: pendingBonusesCount ?? fallbackStats.pendingBonuses,
-        recentBookings: (bookings && bookings.length > 0) ? bookings : fallbackStats.recentBookings,
-      };
+      // If query worked and returned records, use it; otherwise fallback
+      if (customersCount !== null || workersCount !== null) {
+        return {
+          totalCustomers: customersCount ?? fallbackStats.totalCustomers,
+          totalWorkers: workersCount ?? fallbackStats.totalWorkers,
+          activeJobs: activeJobsCount ?? fallbackStats.activeJobs,
+          completedJobs: completedJobsCount ?? fallbackStats.completedJobs,
+          todayBookings: todayBookingsCount ?? fallbackStats.todayBookings,
+          todayRevenue: revenueSum || fallbackStats.todayRevenue,
+          pendingPaymentVerifications: pendingPaymentsCount ?? fallbackStats.pendingPaymentVerifications,
+          pendingCommissionPayments: pendingCommissionsCount ?? fallbackStats.pendingCommissionPayments,
+          pendingBonuses: pendingBonusesCount ?? fallbackStats.pendingBonuses,
+          recentBookings: (bookings && bookings.length > 0) ? bookings : fallbackStats.recentBookings,
+        };
+      }
+    } catch {
+      // Fallback cleanly on network disconnect or timeout
     }
-  } catch (error) {
-    console.warn("Supabase not fully connected or tables not created yet, rendering sample dashboard metrics.");
-  }
+    return fallbackStats;
+  };
 
-  return fallbackStats;
+  const timeoutTask = new Promise<DashboardStats>((resolve) =>
+    setTimeout(() => resolve(fallbackStats), 800)
+  );
+
+  return await Promise.race([fetchTask(), timeoutTask]);
 }
 
 function getStatusBadge(status: BookingStatus | string) {
