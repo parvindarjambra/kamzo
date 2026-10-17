@@ -20,7 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createAdminServerClient } from "@/lib/supabase/server";
-import { formatPKR, formatDate, formatDateTime } from "@/lib/utils";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { Booking, BookingStatus } from "@/types/database.types";
 
 export const revalidate = 0; // Fresh live data on each dashboard load
@@ -244,6 +245,12 @@ function getStatusBadge(status: BookingStatus | string) {
 }
 
 export default async function DashboardPage() {
+  const cookieStore = cookies();
+  const authCookie = cookieStore.get("kamzo_admin_auth")?.value;
+  if (authCookie !== "true") {
+    redirect("/login?from=/admin");
+  }
+
   const stats = await getDashboardData();
 
   return (
