@@ -301,6 +301,7 @@ const siteContent = {
     whatsappTooltip: "WhatsApp Support: +92 319 7318425",
     scrollTopTooltip: "Scroll to Top",
     installAppBtn: "Install App",
+    bottomNavBook: "Book",
   },
   ur: {
     selectLanguage: "زبان:",
@@ -356,6 +357,7 @@ const siteContent = {
     whatsappTooltip: "واٹس ایپ رابطہ: +92 319 7318425",
     scrollTopTooltip: "اوپر جائیں",
     installAppBtn: "ایپ انسٹال کریں",
+    bottomNavBook: "بک کریں",
   },
   sd: {
     selectLanguage: "ٻولي:",
@@ -411,6 +413,7 @@ const siteContent = {
     whatsappTooltip: "واٽس ايپ رابطو: +92 319 7318425",
     scrollTopTooltip: "مٿي وڃو",
     installAppBtn: "ايپ انسٽال ڪريو",
+    bottomNavBook: "بڪ ڪريو",
   },
 };
 
@@ -1494,7 +1497,7 @@ export default function STCStyleMarketplacePage() {
           <div className="w-12 h-12 rounded-full bg-[#0062FF] text-white flex items-center justify-center shadow-lg shadow-blue-600/40 group-active:scale-95 transition-transform border-3 border-white dark:border-[#0B132B]">
             <Wrench className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-bold text-[#0062FF] mt-0.5 whitespace-nowrap">Rs. 200 Book</span>
+          <span className="text-[10px] font-bold text-[#0062FF] mt-0.5 whitespace-nowrap">{t.bottomNavBook}</span>
         </button>
 
         <a
