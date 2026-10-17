@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { AdBanner } from "@/components/ads/ad-banner";
 import {
   Wrench,
   Snowflake,
@@ -173,7 +174,29 @@ export default function STCStyleMarketplacePage() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"} font-sans transition-colors duration-200 selection:bg-[#0062FF] selection:text-white relative`}>
-      {/* ─── STC DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
+      {/* Subtle MedicoEngineer Background Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
+
+      {/* ─── MEDICOENGINEER STYLE TOP ANNOUNCEMENT TICKER ─── */}
+      <div className="bg-[#0A1128] text-white text-[11px] sm:text-xs py-2 px-4 border-b border-slate-800 relative z-50">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 overflow-hidden truncate">
+            <span className="px-2 py-0.5 rounded-full bg-[#0062FF] text-[9px] font-black uppercase tracking-wider text-white shrink-0">
+              ANNOUNCEMENT
+            </span>
+            <span className="text-slate-300 truncate">
+              Unified KAMZO Network Live in <strong className="text-white">Umerkot, Karachi, Lahore & Nationwide</strong>
+            </span>
+          </div>
+          <div className="hidden sm:flex items-center gap-4 text-slate-400 font-medium shrink-0">
+            <span>⭐ 100% CNIC Verified Technicians</span>
+            <span>•</span>
+            <span className="text-[#0062FF] font-bold">Flat Rs. 200 Initial Inspection Fee</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── STC / MEDICOENGINEER DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           {/* Logo Brand: Larger 3D Emblem without circular crop */}
@@ -246,8 +269,11 @@ export default function STCStyleMarketplacePage() {
         </div>
       </header>
 
+      {/* ─── MEDICOENGINEER STYLE AD SLOT (Header Top Leaderboard) ─── */}
+      <AdBanner slot="header_top" />
+
       {/* ─── HERO SECTION ─── */}
-      <section className="relative pt-8 pb-16 lg:pt-14 lg:pb-20 overflow-hidden">
+      <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-20 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 blur-3xl pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -530,6 +556,9 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
+      {/* ─── MEDICOENGINEER STYLE IN-FEED NATIVE SPONSOR AD SLOT ─── */}
+      <AdBanner slot="in_feed" />
+
       {/* ─── STC STYLE: "BENEFITS" SECTION ─── */}
       <section className={`py-20 border-t ${isDarkMode ? "bg-slate-900/50 border-slate-800" : "bg-slate-50/60 border-slate-100"}`} id="benefits">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -639,6 +668,9 @@ export default function STCStyleMarketplacePage() {
           </div>
         </div>
       </section>
+
+      {/* ─── MEDICOENGINEER STYLE FOOTER SPONSOR BANNER ─── */}
+      <AdBanner slot="footer_banner" />
 
       {/* ─── FOOTER (Clean Customer Footer - No Admin Link) ─── */}
       <footer className={`${isDarkMode ? "bg-[#070D1E] border-slate-800" : "bg-[#0A1128] border-slate-900"} text-slate-400 py-12 border-t`}>
