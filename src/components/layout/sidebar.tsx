@@ -74,6 +74,10 @@ export function Sidebar() {
 
   const handleLogout = () => {
     if (confirm("Are you sure you want to log out of the KAMZO Admin Panel?")) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("kamzo_admin_authenticated");
+        document.cookie = "kamzo_admin_auth=; path=/; max-age=0";
+      }
       window.location.href = "/login";
     }
   };

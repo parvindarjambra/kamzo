@@ -34,10 +34,11 @@ export default function SecureAdminLoginPage() {
       const validEmail = email.trim().toLowerCase();
       if (
         (validEmail === "admin@kamzo.pk" || validEmail === "kamzo.admin@gmail.com") &&
-        (password === "kamzoAdmin2026!" || password === "kamzo@2026")
+        (password === "KamzoAdmin@2026!" || password === "kamzoAdmin2026!" || password === "kamzo@2026")
       ) {
         if (typeof window !== "undefined") {
           localStorage.setItem("kamzo_admin_authenticated", "true");
+          document.cookie = "kamzo_admin_auth=true; path=/; max-age=604800; SameSite=Lax";
         }
         router.push("/admin");
       } else {
