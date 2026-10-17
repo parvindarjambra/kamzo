@@ -1,0 +1,28 @@
+{
+  "apps": [
+    {
+      "name": "kamzo-admin",
+      "script": "server.js",
+      "cwd": "/var/www/kamzo-admin",
+      "instances": 1,
+      "autorestart": true,
+      "watch": false,
+      "max_memory_restart": "512M",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "PORT": 3000,
+        "NEXT_PUBLIC_SUPABASE_URL": "https://YOUR_PROJECT.supabase.co",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY": "YOUR_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY": "YOUR_SERVICE_ROLE_KEY"
+      },
+      "error_file": "/var/log/kamzo-admin/error.log",
+      "out_file": "/var/log/kamzo-admin/out.log",
+      "log_file": "/var/log/kamzo-admin/combined.log",
+      "time": true
+    }
+  ]
+}
