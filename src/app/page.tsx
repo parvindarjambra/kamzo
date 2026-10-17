@@ -176,22 +176,27 @@ export default function STCStyleMarketplacePage() {
       {/* ─── STC DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo Brand matching STC Developer style */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden shadow-md shadow-blue-500/10 border-2 border-[#0062FF]/20 p-0.5 bg-black transition-transform group-hover:scale-105 shrink-0">
+          {/* Logo Brand: Larger 3D Emblem without circular crop */}
+          <Link href="/" className="flex items-center gap-3.5 group shrink-0">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shadow-lg shadow-blue-500/10 border border-slate-200/80 dark:border-slate-700/80 transition-all group-hover:scale-105 shrink-0 bg-slate-900">
               <img
                 src="/logo.jpg"
                 alt="KAMZO Logo"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex items-baseline gap-1.5 shrink-0">
-              <span className={`text-xl sm:text-2xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                KAMZO
-              </span>
-              <span className="text-xl sm:text-2xl font-black text-[#0062FF]">
-                Marketplace
-              </span>
+            <div className="flex flex-col shrink-0">
+              <div className="flex items-baseline gap-1.5">
+                <span className={`text-2xl sm:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
+                  KAMZO
+                </span>
+                <span className="text-2xl sm:text-3xl font-black text-[#0062FF]">
+                  Marketplace
+                </span>
+              </div>
+              <p className="text-[10px] sm:text-[11px] text-[#0062FF] font-bold tracking-tight -mt-0.5">
+                آپ کی ضرورت، ہمارے ماہر
+              </p>
             </div>
           </Link>
 
@@ -639,12 +644,15 @@ export default function STCStyleMarketplacePage() {
       <footer className={`${isDarkMode ? "bg-[#070D1E] border-slate-800" : "bg-[#0A1128] border-slate-900"} text-slate-400 py-12 border-t`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-black p-0.5 border border-slate-700">
-                <img src="/logo.jpg" alt="KAMZO Logo" className="w-full h-full object-cover rounded-full" />
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-md shrink-0">
+                <img src="/logo.jpg" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
-              <div>
-                <span className="text-xl font-black text-white tracking-wider">KAMZO <span className="text-[#0062FF]">Marketplace</span></span>
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-black text-white tracking-wider">KAMZO</span>
+                  <span className="text-xl font-black text-[#0062FF]">Marketplace</span>
+                </div>
                 <p className="text-[11px] text-[#0062FF] font-bold">آپ کی ضرورت، ہمارے ماہر</p>
               </div>
             </div>

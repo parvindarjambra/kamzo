@@ -81,8 +81,8 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-[#141414] text-gray-300 flex flex-col h-screen fixed left-0 top-0 z-30 border-r border-[#262626] select-none shadow-2xl">
       {/* Brand Header */}
-      <div className="h-18 px-5 py-4 flex items-center border-b border-[#262626] gap-3">
-        <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#0062FF]/50 shadow-md shadow-[#0062FF]/30 shrink-0 bg-black flex items-center justify-center">
+      <div className="h-20 px-5 py-4 flex items-center border-b border-[#262626] gap-3.5">
+        <div className="w-12 h-12 rounded-2xl overflow-hidden border border-[#0062FF]/50 shadow-md shadow-[#0062FF]/30 shrink-0 bg-slate-900 flex items-center justify-center">
           <img
             src="/logo.jpg"
             alt="KAMZO Logo"
