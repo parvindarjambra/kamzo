@@ -11,6 +11,7 @@ import {
   HelpCircle,
   ExternalLink,
   Menu,
+  LogOut,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -102,6 +103,24 @@ export function Header({ onOpenSidebar }: HeaderProps) {
             <p className="text-gray-500 text-[11px]">Karachi, Pakistan</p>
           </div>
         </div>
+
+        {/* Header Sign Out Button */}
+        <button
+          onClick={() => {
+            if (confirm("Are you sure you want to log out of the KAMZO Admin Panel?")) {
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("kamzo_admin_authenticated");
+                document.cookie = "kamzo_admin_auth=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+              }
+              window.location.href = "/login";
+            }
+          }}
+          className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition-colors cursor-pointer flex items-center gap-1.5"
+          title="Sign Out of Admin"
+        >
+          <LogOut className="w-3.5 h-3.5 text-rose-500" />
+          <span className="hidden sm:inline">Sign Out</span>
+        </button>
       </div>
     </header>
   );

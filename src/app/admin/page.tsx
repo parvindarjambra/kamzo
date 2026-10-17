@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createAdminServerClient } from "@/lib/supabase/server";
+import { formatPKR, formatDate } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Booking, BookingStatus } from "@/types/database.types";
@@ -99,7 +100,7 @@ async function getDashboardData(): Promise<DashboardStats> {
 
       const revenueSum = todayPayments
         ? todayPayments.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
-        : fallbackStats.todayRevenue;
+        : 0;
 
       // 7. Pending Payment Verifications
       const { count: pendingPaymentsCount } = await supabase
@@ -188,7 +189,12 @@ export default async function DashboardPage() {
     redirect("/login?from=/admin");
   }
 
-  const stats = await getDashboardData();
+  let stats: DashboardStats = initialLiveStats;
+  try {
+    stats = await getDashboardData();
+  } catch (err) {
+    console.warn("Failed to load dashboard live stats:", err);
+  }
 
   return (
     <div className="space-y-8">

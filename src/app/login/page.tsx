@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -21,8 +21,32 @@ export default function SecureAdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Auto-redirect if already logged in, or pre-fill saved credentials
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isAuth = localStorage.getItem("kamzo_admin_authenticated") === "true";
+      const hasCookie = document.cookie.includes("kamzo_admin_auth=true");
+      
+      // If already logged in, redirect directly to /admin
+      if (isAuth && hasCookie) {
+        router.push("/admin");
+        return;
+      }
+
+      // Pre-fill saved credentials if remembered
+      const savedEmail = localStorage.getItem("kamzo_admin_saved_email");
+      const savedPass = localStorage.getItem("kamzo_admin_saved_password");
+      const savedRemember = localStorage.getItem("kamzo_admin_remember");
+
+      if (savedEmail) setEmail(savedEmail);
+      if (savedPass) setPassword(savedPass);
+      if (savedRemember !== null) setRememberMe(savedRemember === "true");
+    }
+  }, [router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,14 +62,25 @@ export default function SecureAdminLoginPage() {
       ) {
         if (typeof window !== "undefined") {
           localStorage.setItem("kamzo_admin_authenticated", "true");
-          document.cookie = "kamzo_admin_auth=true; path=/; max-age=604800; SameSite=Lax";
+          // 1-Year Persistent Cookie (31,536,000 seconds = 365 days)
+          document.cookie = "kamzo_admin_auth=true; path=/; max-age=31536000; SameSite=Lax";
+
+          if (rememberMe) {
+            localStorage.setItem("kamzo_admin_saved_email", validEmail);
+            localStorage.setItem("kamzo_admin_saved_password", password);
+            localStorage.setItem("kamzo_admin_remember", "true");
+          } else {
+            localStorage.removeItem("kamzo_admin_saved_email");
+            localStorage.removeItem("kamzo_admin_saved_password");
+            localStorage.removeItem("kamzo_admin_remember");
+          }
         }
         router.push("/admin");
       } else {
         setError("Invalid admin email or password. Access denied.");
         setIsLoading(false);
       }
-    }, 600);
+    }, 500);
   };
 
   return (
@@ -141,6 +176,21 @@ export default function SecureAdminLoginPage() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+            </div>
+
+            {/* Remember Me / Save Credentials */}
+            <div className="flex items-center justify-between py-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded text-[#0062FF] focus:ring-0 bg-black/40 border-slate-700 cursor-pointer accent-[#0062FF]"
+                />
+                <span className="text-xs text-slate-300 font-medium">
+                  Save Password & Keep Signed In (پاسورڈ محفوظ رکھیں)
+                </span>
+              </label>
             </div>
 
             <button

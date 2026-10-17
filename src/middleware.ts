@@ -3,6 +3,12 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const adminAuthCookie = request.cookies.get("kamzo_admin_auth")?.value;
+
+  // If already authenticated and visiting /login, redirect straight to /admin
+  if (pathname === "/login" && adminAuthCookie === "true") {
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
 
   // Protected Admin Routes
   const protectedRoutes = [
@@ -21,8 +27,6 @@ export function middleware(request: NextRequest) {
   );
 
   if (isProtected) {
-    const adminAuthCookie = request.cookies.get("kamzo_admin_auth")?.value;
-
     // If not authenticated, redirect directly to /login
     if (adminAuthCookie !== "true") {
       const loginUrl = new URL("/login", request.url);
@@ -36,6 +40,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/login",
     "/admin",
     "/admin/:path*",
     "/payments",
