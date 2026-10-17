@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AdBanner } from "@/components/ads/ad-banner";
 import {
   Wrench,
   Snowflake,
@@ -101,18 +100,6 @@ const services: ServiceData[] = [
   },
 ];
 
-// STC Style Circular Badges
-const circularBadges = [
-  { label: "Mechanic", urdu: "مکینک", icon: Wrench, color: "text-rose-500", bg: "bg-rose-50" },
-  { label: "AC Repair", urdu: "اے سی", icon: Snowflake, color: "text-sky-500", bg: "bg-sky-50" },
-  { label: "Plumber", urdu: "پلمبر", icon: Droplets, color: "text-[#0062FF]", bg: "bg-blue-50" },
-  { label: "Electrician", urdu: "الیکٹریشن", icon: Zap, color: "text-amber-500", bg: "bg-amber-50" },
-  { label: "CNIC Verified", urdu: "تصدیق شدہ", icon: ShieldCheck, color: "text-emerald-500", bg: "bg-emerald-50" },
-  { label: "Flat Rs. 200", urdu: "فیس", icon: Wallet, color: "text-indigo-500", bg: "bg-indigo-50" },
-  { label: "JazzCash", urdu: "جاز کیش", icon: CheckCircle2, color: "text-red-500", bg: "bg-red-50" },
-  { label: "Easypaisa", urdu: "ایزی پیسہ", icon: Award, color: "text-green-500", bg: "bg-green-50" },
-];
-
 // Comprehensive Pakistani Cities List including Umerkot, Sindh, Punjab, KPK, Balochistan
 const pakistaniCities = [
   "Umerkot (عمرکوٹ)",
@@ -142,6 +129,7 @@ const pakistaniCities = [
 const SHOW_BROWSER_APP_INSTALL = true;
 
 export default function STCStyleMarketplacePage() {
+  const [lang, setLang] = useState<"en" | "ur">("en");
   const [selectedService, setSelectedService] = useState<ServiceData>(services[0]);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingStep, setBookingStep] = useState<"details" | "payment" | "confirmed">("details");
@@ -302,26 +290,7 @@ export default function STCStyleMarketplacePage() {
       {/* Subtle MedicoEngineer Background Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
 
-      {/* ─── MEDICOENGINEER STYLE TOP ANNOUNCEMENT TICKER ─── */}
-      <div className="bg-[#0A1128] text-white text-[11px] sm:text-xs py-2 px-3 sm:px-4 border-b border-slate-800 relative z-50 overflow-hidden w-full">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-hidden truncate">
-            <span className="px-2 py-0.5 rounded-full bg-[#0062FF] text-[9px] font-black uppercase tracking-wider text-white shrink-0">
-              ANNOUNCEMENT
-            </span>
-            <span className="text-slate-300 truncate">
-              Unified KAMZO Network Live in <strong className="text-white">Umerkot, Karachi, Lahore & Nationwide</strong>
-            </span>
-          </div>
-          <div className="hidden sm:flex items-center gap-4 text-slate-400 font-medium shrink-0">
-            <span>⭐ 100% CNIC Verified Technicians</span>
-            <span>•</span>
-            <span className="text-[#0062FF] font-bold">Flat Rs. 200 Initial Inspection Fee</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── STC / MEDICOENGINEER DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Mobile Spacing) ─── */}
+      {/* ─── OFFICIAL CLEAN NAVBAR (No Admin Link, Perfect Mobile Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors w-full overflow-hidden`}>
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
           {/* Logo Brand: Official KAMZO App Icon & Typography (Secret 5-Tap Gateway for Admin) */}
@@ -348,22 +317,16 @@ export default function STCStyleMarketplacePage() {
             </div>
           </Link>
 
-          {/* Centered Navigation Links (Clean Customer Nav with Generous Spacing) */}
+          {/* Centered Navigation Links (Only Essential Links) */}
           <nav className="hidden xl:flex items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <a href="#services" className="hover:text-[#0062FF] transition-colors py-1">
-              Services
-            </a>
-            <a href="#specialise" className="hover:text-[#0062FF] transition-colors py-1">
-              Specialisations
-            </a>
-            <a href="#benefits" className="hover:text-[#0062FF] transition-colors py-1">
-              Benefits
+              {lang === "ur" ? "خدمات" : "Services"}
             </a>
             <a href="#how-it-works" className="hover:text-[#0062FF] transition-colors py-1">
-              How It Works
+              {lang === "ur" ? "طریقہ کار" : "How It Works"}
             </a>
-            <a href="#pricing" className="hover:text-[#0062FF] transition-colors py-1">
-              Visit Fee (Rs. 200)
+            <a href="#benefits" className="hover:text-[#0062FF] transition-colors py-1">
+              {lang === "ur" ? "فوائد" : "Why KAMZO"}
             </a>
           </nav>
 
@@ -377,7 +340,7 @@ export default function STCStyleMarketplacePage() {
                 title="Install KAMZO Application on your Phone or Laptop"
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span>Install App</span>
+                <span>{lang === "ur" ? "ایپ انسٹال" : "Install App"}</span>
               </button>
             )}
 
@@ -394,21 +357,34 @@ export default function STCStyleMarketplacePage() {
               {isDarkMode ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </button>
 
-            {/* Primary Action Button in STC Electric Blue */}
-            <button
-              onClick={() => handleOpenBooking()}
-              className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold bg-[#0062FF] hover:bg-[#0052D9] text-white rounded-xl shadow-md sm:shadow-lg shadow-blue-500/25 transition-all flex items-center gap-1 sm:gap-2 group cursor-pointer shrink-0"
-            >
-              <span className="hidden sm:inline">Book a Worker</span>
-              <span className="sm:hidden font-bold">Book</span>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            {/* Language Selector: English & Urdu */}
+            <div className="flex items-center rounded-xl p-0.5 border bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-xs font-bold shrink-0 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  lang === "en"
+                    ? "bg-[#0062FF] text-white shadow-sm font-black"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang("ur")}
+                className={`px-2.5 py-1.5 rounded-lg transition-all cursor-pointer font-bold ${
+                  lang === "ur"
+                    ? "bg-[#0062FF] text-white shadow-sm font-black"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                اردو
+              </button>
+            </div>
           </div>
         </div>
       </header>
-
-      {/* ─── MEDICOENGINEER STYLE AD SLOT (Header Top Leaderboard) ─── */}
-      <AdBanner slot="header_top" />
 
       {/* ─── HERO SECTION ─── */}
       <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-20 overflow-hidden">
@@ -417,37 +393,43 @@ export default function STCStyleMarketplacePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Content Column */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              {/* STC Style Tiny Uppercase Badge */}
+            <div className={`lg:col-span-7 space-y-6 ${lang === "ur" ? "text-center lg:text-right" : "text-center lg:text-left"}`}>
+              {/* Top Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/60 text-[#0062FF] text-xs font-extrabold tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-[#0062FF]" />
-                <span>PAKISTAN&apos;S #1 ON-DEMAND SERVICE MARKETPLACE</span>
+                <span>
+                  {lang === "ur"
+                    ? "پاکستان کا نمبر 1 لوکل سروس مارکیٹ پلیس"
+                    : "PAKISTAN'S #1 ON-DEMAND SERVICE MARKETPLACE"}
+                </span>
               </div>
 
-              {/* Main Headline & Urdu Subtitle (Properly Separated) */}
+              {/* Main Headline */}
               <div className="space-y-3">
                 <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.18] ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                  Certified Local Service Experts Near You.
+                  {lang === "ur" ? "آپ کے قریبی تصدیق شدہ ماہر کاریگر" : "Certified Local Service Experts Near You."}
                 </h1>
-                <p className="text-2xl sm:text-3xl font-black text-[#0062FF] leading-snug" dir="rtl">
-                  آپ کی ضرورت، ہمارے ماہر کاریگر۔
+                <p className="text-2xl sm:text-3xl font-black text-[#0062FF] leading-snug">
+                  {lang === "ur" ? "آپ کی ضرورت، ہمارے ماہر کاریگر۔" : "Your Need, Our Verified Experts."}
                 </p>
               </div>
 
               {/* Subtitle */}
               <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
-                Connect with verified local mechanics, AC technicians, plumbers, and electricians anywhere in Pakistan.
-                Transparent flat <strong className={`${isDarkMode ? "text-white" : "text-slate-900"} font-bold`}>Rs. 200 inspection fee</strong> and pay cash directly after satisfactory completion.
+                {lang === "ur"
+                  ? "پاکستان بھر میں تصدیق شدہ مکینک، اے سی ٹیکنیشن، پلمبر اور الیکٹریشن سے رابطہ کریں۔ وزٹ فیس صرف 200 روپے، اور کام تسلی بخش مکمل ہونے پر کیش ادا کریں۔"
+                  : "Connect with verified local mechanics, AC technicians, plumbers, and electricians anywhere in Pakistan. Transparent flat Rs. 200 inspection fee and pay cash directly after satisfactory completion."}
               </p>
 
               {/* Quick Interactive Booking Card */}
               <div className={`${isDarkMode ? "bg-slate-900/90 border-slate-800" : "bg-white border-slate-200/80"} rounded-2xl p-4 sm:p-5 shadow-xl shadow-blue-900/5 border max-w-xl mx-auto lg:mx-0 text-left space-y-4`}>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#0062FF]">
-                    Select Service (سروس منتخب کریں):
+                    {lang === "ur" ? "سروس منتخب کریں:" : "Select Service:"}
                   </span>
                   <span className="text-[11px] font-semibold text-slate-400">
-                    Visit Fee: <strong className="text-[#0062FF]">Rs. 200</strong>
+                    {lang === "ur" ? "وزٹ فیس: " : "Visit Fee: "}
+                    <strong className="text-[#0062FF]">{lang === "ur" ? "200 روپے" : "Rs. 200"}</strong>
                   </span>
                 </div>
 
@@ -468,9 +450,11 @@ export default function STCStyleMarketplacePage() {
                         }`}
                       >
                         <Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-[#0062FF]"}`} />
-                        <span className="text-xs font-bold leading-tight">{srv.name.split(" ")[0]}</span>
+                        <span className="text-xs font-bold leading-tight">
+                          {lang === "ur" ? srv.urduName : srv.name.split(" ")[0]}
+                        </span>
                         <span className={`text-[10px] ${isSelected ? "text-blue-100" : "text-slate-400"}`}>
-                          {srv.urduName}
+                          {lang === "ur" ? srv.category : srv.urduName}
                         </span>
                       </button>
                     );
@@ -482,9 +466,11 @@ export default function STCStyleMarketplacePage() {
                   <div className={`w-full ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"} border rounded-xl px-3.5 py-2.5 flex items-center gap-2 text-xs text-slate-700`}>
                     <MapPin className="w-4 h-4 text-[#0062FF] shrink-0" />
                     <span className={`font-semibold ${isDarkMode ? "text-white" : "text-slate-900"} truncate`}>
-                      Selected Area: {effectiveCity}
+                      {lang === "ur" ? `منتخب علاقہ: ${effectiveCity}` : `Selected Area: ${effectiveCity}`}
                     </span>
-                    <span className="text-[10px] text-slate-400 ml-auto font-medium">Flat Rs. 200 Visit Fee</span>
+                    <span className="text-[10px] text-slate-400 ml-auto font-medium">
+                      {lang === "ur" ? "فلیٹ وزٹ فیس 200 روپے" : "Flat Rs. 200 Visit Fee"}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -495,8 +481,12 @@ export default function STCStyleMarketplacePage() {
                     >
                       <CheckCircle2 className="w-5 h-5 shrink-0 text-white" />
                       <div className="flex-1 min-w-0">
-                        <div className="font-extrabold truncate">1. Book as Customer (گاہک بکنگ)</div>
-                        <div className="text-[10px] text-blue-100 truncate font-normal">Order {selectedService.name.split(" ")[0]} • Pay Visit Fee</div>
+                        <div className="font-extrabold truncate">
+                          {lang === "ur" ? "1. گاہک بکنگ (سروس آرڈر کریں)" : "1. Book as Customer"}
+                        </div>
+                        <div className="text-[10px] text-blue-100 truncate font-normal">
+                          {lang === "ur" ? "کاریگر بلوائیں • 200 وزٹ فیس ادا کریں" : `Order ${selectedService.name.split(" ")[0]} • Pay Visit Fee`}
+                        </div>
                       </div>
                       <ArrowRight className="w-4 h-4 shrink-0 text-white" />
                     </button>
@@ -515,8 +505,12 @@ export default function STCStyleMarketplacePage() {
                     >
                       <Briefcase className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                       <div className="flex-1 min-w-0">
-                        <div className="font-extrabold truncate">2. Join as Worker (کاریگر بنیں)</div>
-                        <div className="text-[10px] text-emerald-600 dark:text-emerald-300 truncate font-normal">Register Skill • Earn & Get Daily Jobs</div>
+                        <div className="font-extrabold truncate">
+                          {lang === "ur" ? "2. کاریگر رجسٹریشن (ہنر رجسٹر کریں)" : "2. Join as Worker"}
+                        </div>
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-300 truncate font-normal">
+                          {lang === "ur" ? "نیٹ ورک میں شامل ہوں • روزانہ کام حاصل کریں" : "Register Skill • Earn & Get Daily Jobs"}
+                        </div>
                       </div>
                       <ArrowRight className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                     </button>
@@ -533,12 +527,16 @@ export default function STCStyleMarketplacePage() {
                     ))}
                   </div>
                   <span className={`text-xs font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>4.9/5.0</span>
-                  <span className="text-xs text-slate-400">(2,100+ Reviews)</span>
+                  <span className="text-xs text-slate-400">
+                    {lang === "ur" ? "(2,100+ جائزے)" : "(2,100+ Reviews)"}
+                  </span>
                 </div>
                 <div className="h-4 w-px bg-slate-300" />
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
                   <Users className="w-4 h-4 text-[#0062FF]" />
-                  <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>320+ Active Technicians</span>
+                  <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                    {lang === "ur" ? "320+ تصدیق شدہ کاریگر" : "320+ Active Technicians"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -556,8 +554,12 @@ export default function STCStyleMarketplacePage() {
                       <ShieldCheck className="w-5 h-5 text-[#0062FF]" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">Security Check</p>
-                      <p className="text-xs font-black text-slate-900 dark:text-white leading-tight truncate">100% CNIC Verified</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">
+                        {lang === "ur" ? "سیکیورٹی چیک" : "Security Check"}
+                      </p>
+                      <p className="text-xs font-black text-slate-900 dark:text-white leading-tight truncate">
+                        {lang === "ur" ? "100% شناختی کارڈ تصدیق" : "100% CNIC Verified"}
+                      </p>
                     </div>
                   </div>
 
@@ -569,8 +571,12 @@ export default function STCStyleMarketplacePage() {
                       <Wallet className="w-4 h-4 text-[#0062FF]" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">Visit Fee</p>
-                      <p className="text-xs font-black text-[#0062FF] leading-tight truncate">Flat Rs. 200</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">
+                        {lang === "ur" ? "وزٹ فیس" : "Visit Fee"}
+                      </p>
+                      <p className="text-xs font-black text-[#0062FF] leading-tight truncate">
+                        {lang === "ur" ? "فلیٹ 200 روپے" : "Flat Rs. 200"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -598,16 +604,16 @@ export default function STCStyleMarketplacePage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs sm:text-sm font-black truncate">
-                          Certified Pakistani Technicians
+                          {lang === "ur" ? "سرٹیفائیڈ پاکستانی ماہر کاریگر" : "Certified Pakistani Technicians"}
                         </p>
                         <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                          Mechanic • AC Repair • Plumber • Electrician
+                          {lang === "ur" ? "مکینک • اے سی سروس • پلمبر • الیکٹریشن" : "Mechanic • AC Repair • Plumber • Electrician"}
                         </p>
                       </div>
                     </div>
                     <span className="text-[10px] sm:text-xs font-extrabold bg-[#0062FF] text-white px-3 py-1.5 rounded-xl shadow-md shadow-blue-500/25 shrink-0 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Verified</span>
+                      <span>{lang === "ur" ? "تصدیق شدہ" : "Verified"}</span>
                     </span>
                   </div>
                 </div>
@@ -617,58 +623,20 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── STC DEVELOPER STYLE: CIRCULAR ICONS SECTION ─── */}
-      <section className={`py-14 border-t border-b ${isDarkMode ? "bg-slate-900/60 border-slate-800" : "bg-slate-50/70 border-slate-100"}`} id="specialise">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <div className="space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
-              TRADES & TECHNOLOGY
-            </span>
-            <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-              Services We Specialise In
-            </h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto font-normal">
-              Our certified technicians deliver high-performance solutions across Umerkot, Karachi, Lahore, and all cities.
-            </p>
-          </div>
-
-          {/* STC Floating Circular Tech Pills (Responsive 4-col on mobile, flex on desktop) */}
-          <div className="grid grid-cols-4 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-6 pt-4 max-w-full">
-            {circularBadges.map((badge, idx) => {
-              const Icon = badge.icon;
-              return (
-                <div
-                  key={idx}
-                  className="flex flex-col items-center gap-1.5 sm:gap-2 group cursor-pointer transition-transform hover:-translate-y-1"
-                >
-                  <div className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full ${isDarkMode ? "bg-slate-800 border-slate-700 shadow-slate-950/40" : "bg-white border-slate-100 shadow-slate-200/60"} border shadow-md sm:shadow-lg flex items-center justify-center transition-all group-hover:border-[#0062FF]/40 group-hover:shadow-xl`}>
-                    <Icon className={`w-6 h-6 sm:w-8 sm:h-8 ${badge.color} transition-transform group-hover:scale-110`} />
-                  </div>
-                  <span className={`text-[10px] sm:text-xs font-bold text-center leading-tight ${isDarkMode ? "text-slate-200" : "text-slate-800"}`}>
-                    {badge.label}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] text-slate-400 font-medium -mt-0.5 sm:-mt-1 text-center">
-                    {badge.urdu}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ─── DETAILED 4 SERVICES CARDS ─── */}
       <section className="py-20" id="services">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
-              CORE SERVICES
+              {lang === "ur" ? "بنیادی خدمات" : "CORE SERVICES"}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-              Comprehensive On-Demand Solutions
+              {lang === "ur" ? "گھر اور دکان کی فوری و تسلی بخش مرمت" : "Comprehensive On-Demand Solutions"}
             </h2>
             <p className="text-sm text-slate-500">
-              Select your required category and get an immediate verified expert at your location.
+              {lang === "ur"
+                ? "اپنی مطلوبہ سروس منتخب کریں اور فوری طور پر تصدیق شدہ ماہر کاریگر بلوائیں۔"
+                : "Select your required category and get an immediate verified expert at your location."}
             </p>
           </div>
 
@@ -686,15 +654,15 @@ export default function STCStyleMarketplacePage() {
                         <Icon className="w-6 h-6 text-[#0062FF]" />
                       </div>
                       <span className="text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-slate-700">
-                        Fee: {srv.inspectionFee}
+                        {lang === "ur" ? "فیس: 200 روپے" : `Fee: ${srv.inspectionFee}`}
                       </span>
                     </div>
 
                     <div>
                       <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"} group-hover:text-[#0062FF] transition-colors`}>
-                        {srv.name}
+                        {lang === "ur" ? srv.urduName : srv.name}
                       </h3>
-                      <p className="text-xs font-bold text-[#0062FF]">{srv.urduName}</p>
+                      <p className="text-xs font-bold text-[#0062FF]">{lang === "ur" ? srv.name : srv.urduName}</p>
                       <p className="text-[11px] font-semibold text-slate-400 mt-0.5">{srv.category}</p>
                     </div>
 
@@ -704,7 +672,7 @@ export default function STCStyleMarketplacePage() {
 
                     <div className="space-y-1.5 pt-2 border-t border-slate-100">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Common Issues:
+                        {lang === "ur" ? "عام مسائل:" : "Common Issues:"}
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {srv.popularItems.map((issue, idx) => (
@@ -724,7 +692,9 @@ export default function STCStyleMarketplacePage() {
                       onClick={() => handleOpenBooking(srv)}
                       className="w-full py-2.5 px-4 bg-blue-50 group-hover:bg-[#0062FF] text-[#0062FF] group-hover:text-white font-bold text-xs rounded-xl border border-blue-200 group-hover:border-[#0062FF] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
-                      <span>Book {srv.name.split(" ")[0]} Now</span>
+                      <span>
+                        {lang === "ur" ? `ابھی ${srv.urduName} بک کریں` : `Book ${srv.name.split(" ")[0]} Now`}
+                      </span>
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -735,21 +705,20 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── MEDICOENGINEER STYLE IN-FEED NATIVE SPONSOR AD SLOT ─── */}
-      <AdBanner slot="in_feed" />
-
       {/* ─── STC STYLE: "BENEFITS" SECTION ─── */}
       <section className={`py-20 border-t ${isDarkMode ? "bg-slate-900/50 border-slate-800" : "bg-slate-50/60 border-slate-100"}`} id="benefits">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
-              BENEFITS
+              {lang === "ur" ? "فوائد" : "BENEFITS"}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-              Why Customers Choose KAMZO
+              {lang === "ur" ? "صارفین کامزو کا انتخاب کیوں کرتے ہیں؟" : "Why Customers Choose KAMZO"}
             </h2>
             <p className="text-sm text-slate-500">
-              The safest and most reliable way to hire skilled trade workers in Pakistan.
+              {lang === "ur"
+                ? "پاکستان میں ہنر مند کاریگر ہائر کرنے کا سب سے محفوظ اور شفاف پلیٹ فارم۔"
+                : "The safest and most reliable way to hire skilled trade workers in Pakistan."}
             </p>
           </div>
 
@@ -759,10 +728,12 @@ export default function STCStyleMarketplacePage() {
                 <ShieldCheck className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                100% CNIC Background Verified
+                {lang === "ur" ? "100% نادرا شناختی کارڈ تصدیق شدہ" : "100% CNIC Background Verified"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Every service professional is thoroughly screened and identity-verified with Pakistani NADRA CNIC registration.
+                {lang === "ur"
+                  ? "ہر سروس پروفیشنل کی مکمل جانچ پڑتال نادرا قومی شناختی کارڈ کے ساتھ کی جاتی ہے۔"
+                  : "Every service professional is thoroughly screened and identity-verified with Pakistani NADRA CNIC registration."}
               </p>
             </div>
 
@@ -771,10 +742,12 @@ export default function STCStyleMarketplacePage() {
                 <Wallet className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                Fixed Rs. 200 Initial Visit Fee
+                {lang === "ur" ? "فلیٹ 200 روپے وزٹ فیس" : "Fixed Rs. 200 Initial Visit Fee"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Zero surprise charges. Pay a flat Rs. 200 inspection fee, and pay the repair amount in cash only when you approve the work.
+                {lang === "ur"
+                  ? "کوئی چھپے ہوئے چارجز نہیں۔ صرف 200 روپے فیس، اور کام کے پیسے تسلی بخش مکمل ہونے کے بعد کیش میں ادا کریں۔"
+                  : "Zero surprise charges. Pay a flat Rs. 200 inspection fee, and pay the repair amount in cash only when you approve the work."}
               </p>
             </div>
 
@@ -783,10 +756,12 @@ export default function STCStyleMarketplacePage() {
                 <Clock className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                Rapid 30-Minute Doorstep Arrival
+                {lang === "ur" ? "30 منٹ کے اندر دہلیز پر آمد" : "Rapid 30-Minute Doorstep Arrival"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Our automated algorithm connects you with the nearest active partner in your locality for prompt response.
+                {lang === "ur"
+                  ? "ہمارا سسٹم آپ کے قریبی ایکٹو پارٹنر کو فوری الرٹ بھیجتا ہے تا کہ وہ جلد از جلد آپ تک پہنچ سکے۔"
+                  : "Our automated algorithm connects you with the nearest active partner in your locality for prompt response."}
               </p>
             </div>
           </div>
@@ -798,13 +773,15 @@ export default function STCStyleMarketplacePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
-              HOW IT WORKS
+              {lang === "ur" ? "طریقہ کار" : "HOW IT WORKS"}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-              Three Simple Steps (تین آسان مراحل)
+              {lang === "ur" ? "تین آسان مراحل" : "Three Simple Steps"}
             </h2>
             <p className="text-sm text-slate-500">
-              No complicated calls or bargaining. Experience smooth, transparent service delivery.
+              {lang === "ur"
+                ? "کوئی لمبی کالز یا بحث نہیں۔ آسان اور شفاف طریقے سے کام کروائیں۔"
+                : "No complicated calls or bargaining. Experience smooth, transparent service delivery."}
             </p>
           </div>
 
@@ -814,10 +791,12 @@ export default function STCStyleMarketplacePage() {
                 01
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                Request Service & Pay Visit Fee
+                {lang === "ur" ? "سروس منتخب کریں اور 200 فیس دیں" : "Request Service & Pay Visit Fee"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Select your service (Mechanic, AC, Plumber, Electrician), select your city, and pay flat Rs. 200 fee via JazzCash, Easypaisa, or 1Link.
+                {lang === "ur"
+                  ? "اپنی مطلوبہ سروس اور شہر منتخب کریں اور جاز کیش، ایزی پیسہ یا بینک سے 200 روپے وزٹ فیس منتقل کریں۔"
+                  : "Select your service (Mechanic, AC, Plumber, Electrician), select your city, and pay flat Rs. 200 fee via JazzCash, Easypaisa, or 1Link."}
               </p>
             </div>
 
@@ -826,10 +805,12 @@ export default function STCStyleMarketplacePage() {
                 02
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                Certified Expert Arrives
+                {lang === "ur" ? "تصدیق شدہ کاریگر کی آمد" : "Certified Expert Arrives"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                The nearby verified technician navigates to your doorstep, performs on-site diagnostics, and gives a clear price quotation.
+                {lang === "ur"
+                  ? "نزدیکی تصدیق شدہ کاریگر آپ کے پتے پر پہنچ کر معائنہ کرے گا اور مناسب خرچ بتائے گا۔"
+                  : "The nearby verified technician navigates to your doorstep, performs on-site diagnostics, and gives a clear price quotation."}
               </p>
             </div>
 
@@ -838,18 +819,17 @@ export default function STCStyleMarketplacePage() {
                 03
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                Confirm Bill & Pay Cash
+                {lang === "ur" ? "کام کی تسلی اور کیش ادائیگی" : "Confirm Bill & Pay Cash"}
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Once the job is completed, confirm the worker&apos;s final bill and pay cash directly. Rate the worker to keep standards high!
+                {lang === "ur"
+                  ? "کام مکمل ہونے پر فائنل بل کاریگر کو موقع پر کیش ادا کریں۔ اور کاریگر کو سٹار ریٹنگ دیں۔"
+                  : "Once the job is completed, confirm the worker's final bill and pay cash directly. Rate the worker to keep standards high!"}
               </p>
             </div>
           </div>
         </div>
       </section>
-
-      {/* ─── MEDICOENGINEER STYLE FOOTER SPONSOR BANNER ─── */}
-      <AdBanner slot="footer_banner" />
 
       {/* ─── FOOTER (Clean Customer Footer - No Admin Link) ─── */}
       <footer className={`${isDarkMode ? "bg-[#070D1E] border-slate-800" : "bg-[#0A1128] border-slate-900"} text-slate-400 py-12 border-t`}>
@@ -870,10 +850,9 @@ export default function STCStyleMarketplacePage() {
             </div>
 
             <div className="flex items-center gap-6 text-xs font-semibold">
-              <a href="#services" className="hover:text-white transition-colors">Services</a>
-              <a href="#benefits" className="hover:text-white transition-colors">Benefits</a>
-              <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
-              <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+              <a href="#services" className="hover:text-white transition-colors">Services (خدمات)</a>
+              <a href="#how-it-works" className="hover:text-white transition-colors">How It Works (طریقہ کار)</a>
+              <a href="#benefits" className="hover:text-white transition-colors">Why KAMZO (فوائد)</a>
             </div>
           </div>
 
