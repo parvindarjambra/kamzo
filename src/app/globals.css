@@ -33,3 +33,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #9CA3AF;
 }
+
+/* Mobile PWA & Notch Safe Area */
+@supports (padding: max(0px)) {
+  .safe-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+}
+

@@ -37,6 +37,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, isPublicRoute, router]);
 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [pathname]);
+
   if (isPublicRoute) {
     return <div className="min-h-screen bg-white">{children}</div>;
   }
@@ -56,16 +63,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Admin Dashboard routes with sidebar and top header
+  // Admin Dashboard routes with responsive sidebar and top header
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-gray-900 antialiased flex">
-      {/* Fixed Left Sidebar */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#F9FAFB] text-gray-900 antialiased flex flex-col lg:flex-row">
+      {/* Responsive Left Sidebar */}
+      <Sidebar
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
 
       {/* Main Content Area */}
-      <div className="flex-1 ml-64 flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen min-w-0 w-full">
+        <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
+        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
       </div>

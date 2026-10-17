@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   ChevronRight,
   ExternalLink,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +70,12 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   const handleLogout = () => {
@@ -83,30 +89,56 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#141414] text-gray-300 flex flex-col h-screen fixed left-0 top-0 z-30 border-r border-[#262626] select-none shadow-2xl">
-      {/* Brand Header */}
-      <div className="h-20 px-5 py-4 flex items-center border-b border-[#262626] gap-3.5">
-        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-[#0062FF]/25 shrink-0 flex items-center justify-center">
-          <img
-            src="/logo.png"
-            alt="KAMZO Logo"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-1.5">
-            <span className="font-black text-white text-lg tracking-tight">
-              KAM<span className="text-[#0062FF]">ZO</span>
-            </span>
-            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
-              Admin
-            </span>
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+          onClick={onClose}
+        />
+      )}
+
+      <aside
+        className={cn(
+          "w-64 bg-[#141414] text-gray-300 flex flex-col h-screen fixed left-0 top-0 z-50 border-r border-[#262626] select-none shadow-2xl transition-transform duration-300 ease-in-out lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {/* Brand Header */}
+        <div className="h-20 px-5 py-4 flex items-center justify-between border-b border-[#262626]">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-[#0062FF]/25 shrink-0 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="KAMZO Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="font-black text-white text-lg tracking-tight">
+                  KAM<span className="text-[#0062FF]">ZO</span>
+                </span>
+                <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
+                  Admin
+                </span>
+              </div>
+              <span className="text-[9px] text-gray-400 font-extrabold uppercase tracking-widest">
+                SERVICES HUB
+              </span>
+            </div>
           </div>
-          <span className="text-[9px] text-gray-400 font-extrabold uppercase tracking-widest">
-            SERVICES HUB
-          </span>
+          {/* Mobile Close Button */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-[#202020]"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
-      </div>
 
       {/* Navigation Links */}
       <div className="flex-1 py-5 px-3 space-y-1.5 overflow-y-auto">
@@ -198,5 +230,6 @@ export function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }

@@ -27,6 +27,10 @@ import {
   MessageCircle,
   Award,
   Search,
+  Smartphone,
+  Home,
+  Layers,
+  Download,
 } from "lucide-react";
 
 interface ServiceData {
@@ -147,6 +151,60 @@ export default function STCStyleMarketplacePage() {
 
   // Secret Admin Access via 5 Rapid Logo Taps (For Mobile App & PWA where URL bar is hidden)
   const [logoTaps, setLogoTaps] = useState(0);
+
+  // PWA Install State for Phone & Laptop Application Mode
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSInstallGuide, setShowIOSInstallGuide] = useState(false);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isStandalone =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone === true;
+      if (isStandalone) {
+        setIsAppInstalled(true);
+      }
+
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      setIsIOS(/iphone|ipad|ipod/.test(userAgent));
+
+      const handleBeforeInstall = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setIsInstallable(true);
+      };
+
+      window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+      window.addEventListener("appinstalled", () => {
+        setIsAppInstalled(true);
+        setIsInstallable(false);
+        setDeferredPrompt(null);
+      });
+
+      return () => {
+        window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      };
+    }
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult?.outcome === "accepted") {
+        setIsInstallable(false);
+        setDeferredPrompt(null);
+      }
+    } else if (isIOS) {
+      setShowIOSInstallGuide(true);
+    } else {
+      alert("KAMZO App install karne ke liye browser menu (3 dots ⋮) par tap karein aur 'Install app' ya 'Add to Home screen' select karein!");
+    }
+  };
+
   const handleLogoSecretTap = (e: React.MouseEvent) => {
     e.preventDefault();
     const nextCount = logoTaps + 1;
@@ -187,7 +245,7 @@ export default function STCStyleMarketplacePage() {
   const effectiveCity = selectedCity.startsWith("Other") ? (customCityName || "Custom Location") : selectedCity;
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"} font-sans transition-colors duration-200 selection:bg-[#0062FF] selection:text-white relative`}>
+    <div className={`min-h-screen ${isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"} font-sans transition-colors duration-200 selection:bg-[#0062FF] selection:text-white relative pb-20 md:pb-0`}>
       {/* Subtle MedicoEngineer Background Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
 
@@ -257,12 +315,25 @@ export default function STCStyleMarketplacePage() {
           </nav>
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-3.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
+            {/* PWA Install Button (For Mobile & Desktop / Laptop) */}
+            {!isAppInstalled && (
+              <button
+                onClick={handleInstallApp}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-blue-500/30 bg-blue-50/70 hover:bg-blue-100 text-[#0062FF] dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700/50 transition-all cursor-pointer shrink-0 shadow-xs"
+                title="Install KAMZO Application on your Phone or Laptop"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Install App</span>
+                <span className="sm:hidden">App</span>
+              </button>
+            )}
+
             {/* Dark Mode Moon/Sun Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               aria-label="Toggle Dark Mode"
-              className={`p-2.5 rounded-full border transition-colors cursor-pointer shrink-0 ${
+              className={`p-2 sm:p-2.5 rounded-full border transition-colors cursor-pointer shrink-0 ${
                 isDarkMode
                   ? "bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -274,7 +345,7 @@ export default function STCStyleMarketplacePage() {
             {/* Primary Action Button in STC Electric Blue */}
             <button
               onClick={() => handleOpenBooking()}
-              className="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold bg-[#0062FF] hover:bg-[#0052D9] text-white rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 group cursor-pointer shrink-0"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold bg-[#0062FF] hover:bg-[#0052D9] text-white rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center gap-1.5 sm:gap-2 group cursor-pointer shrink-0"
             >
               <span>Book a Worker</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -720,12 +791,13 @@ export default function STCStyleMarketplacePage() {
       </footer>
 
       {/* ─── FLOATING ACTION WIDGETS (Proper Grounded Positioning) ─── */}
+      {/* Desktop/Tablet Floating WhatsApp Button */}
       <a
         href="https://wa.me/923197318425?text=Assalam-o-Alaikum%20KAMZO%20Support,%20I%20need%20assistance%20with%20service%20booking"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Support"
-        className="fixed bottom-6 right-6 z-40 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
+        className="hidden md:flex fixed bottom-6 right-6 z-40 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
       >
         <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-[#25D366]" />
         <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 flex items-center gap-1.5">
@@ -738,13 +810,105 @@ export default function STCStyleMarketplacePage() {
         <button
           onClick={scrollToTop}
           aria-label="Back to Top"
-          className="fixed bottom-24 right-6 z-40 w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-[#0062FF] hover:bg-[#0052D9] text-white flex items-center justify-center shadow-xl shadow-blue-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
+          className="fixed bottom-20 md:bottom-24 right-4 sm:right-6 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#0062FF] hover:bg-[#0052D9] text-white flex items-center justify-center shadow-xl shadow-blue-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
         >
           <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:-translate-y-0.5 transition-transform" />
-          <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700">
+          <span className="absolute right-14 sm:right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 hidden sm:inline-block">
             Scroll to Top (اوپر جائیں)
           </span>
         </button>
+      )}
+
+      {/* ─── APP-LIKE MOBILE BOTTOM NAVIGATION BAR (Phones Only) ─── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-2xl px-3 py-1.5 flex items-center justify-between safe-bottom">
+        {/* Home */}
+        <button
+          onClick={scrollToTop}
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+        >
+          <Home className="w-5 h-5" />
+          <span className="text-[10px] font-semibold mt-0.5">Home</span>
+        </button>
+
+        {/* Services */}
+        <a
+          href="#services"
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+        >
+          <Layers className="w-5 h-5" />
+          <span className="text-[10px] font-semibold mt-0.5">Services</span>
+        </a>
+
+        {/* Center Booking Action (Prominent App FAB) */}
+        <button
+          onClick={() => handleOpenBooking()}
+          className="flex flex-col items-center justify-center -mt-5 py-0.5 px-2 flex-1 group"
+        >
+          <div className="w-12 h-12 rounded-full bg-[#0062FF] text-white flex items-center justify-center shadow-lg shadow-blue-600/40 group-active:scale-95 transition-transform border-3 border-white dark:border-[#0B132B]">
+            <Wrench className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] font-bold text-[#0062FF] mt-0.5 whitespace-nowrap">Rs. 200 Book</span>
+        </button>
+
+        {/* WhatsApp Support */}
+        <a
+          href="https://wa.me/923197318425?text=Assalam-o-Alaikum%20KAMZO%20Support"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-emerald-500 flex-1 transition-colors"
+        >
+          <MessageCircle className="w-5 h-5 text-emerald-500" />
+          <span className="text-[10px] font-semibold mt-0.5">WhatsApp</span>
+        </a>
+
+        {/* Install App */}
+        <button
+          onClick={handleInstallApp}
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+        >
+          <Smartphone className="w-5 h-5 text-[#0062FF]" />
+          <span className="text-[10px] font-bold text-[#0062FF] mt-0.5">App</span>
+        </button>
+      </nav>
+
+      {/* ─── IOS PWA INSTALL GUIDE MODAL ─── */}
+      {showIOSInstallGuide && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className={`${isDarkMode ? "bg-slate-900 text-white border-slate-800" : "bg-white text-slate-900 border-slate-200"} rounded-3xl max-w-sm w-full p-6 shadow-2xl border space-y-4`}>
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-5 h-5 text-[#0062FF]" />
+                <h4 className="font-bold text-sm">Install KAMZO on iPhone / iPad</h4>
+              </div>
+              <button
+                onClick={() => setShowIOSInstallGuide(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+              <p className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">1</span>
+                <span>Safari browser me neeche <strong>Share button</strong> (چوکور باکس تیر والا) par tap karein.</span>
+              </p>
+              <p className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">2</span>
+                <span>Menu ko scroll karein aur <strong>Add to Home Screen (ہوم اسکرین میں شامل کریں)</strong> select karein.</span>
+              </p>
+              <p className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">3</span>
+                <span>Top right par <strong>Add</strong> par click karein. KAMZO aapke phone par app ki tarah save ho jayegi!</span>
+              </p>
+            </div>
+            <button
+              onClick={() => setShowIOSInstallGuide(false)}
+              className="w-full py-2.5 bg-[#0062FF] text-white text-xs font-bold rounded-xl shadow-md"
+            >
+              Samajh Gaya (Done)
+            </button>
+          </div>
+        </div>
       )}
 
       {/* ─── INTERACTIVE ONLINE BOOKING MODAL WITH ANY CITY SUPPORT ─── */}
