@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Pakistan Green - KAMZO Brand Color -->
+    <color name="kamzo_green">#1B5E20</color>
+    <!-- Notification background -->
+    <color name="ic_bg">#FFFFFF</color>
+</resources>

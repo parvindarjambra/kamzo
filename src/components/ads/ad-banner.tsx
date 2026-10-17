@@ -70,7 +70,7 @@ export function AdBanner({
           </div>
 
           <a
-            href={sponsor?.linkUrl || "https://wa.me/923001234567?text=Hi%20KAMZO,%20I%20want%20to%20advertise%20on%20your%20marketplace"}
+            href={sponsor?.linkUrl || "https://wa.me/923197318425?text=Hi%20KAMZO,%20I%20want%20to%20advertise%20on%20your%20marketplace"}
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 px-3.5 py-1.5 rounded-xl bg-[#0062FF] hover:bg-[#0052D9] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
@@ -107,7 +107,7 @@ export function AdBanner({
 
             <div className="flex flex-col sm:flex-row gap-3 shrink-0">
               <a
-                href={sponsor?.linkUrl || "https://wa.me/923001234567?text=Inquiry%20from%20KAMZO%20Sponsored%20Ad"}
+                href={sponsor?.linkUrl || "https://wa.me/923197318425?text=Inquiry%20from%20KAMZO%20Sponsored%20Ad"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3.5 rounded-xl bg-[#0062FF] hover:bg-[#0052D9] text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2"
@@ -135,7 +135,7 @@ export function AdBanner({
           </p>
         </div>
         <a
-          href={sponsor?.linkUrl || "https://wa.me/923001234567?text=Partner%20Inquiry%20from%20Footer%20Ad"}
+          href={sponsor?.linkUrl || "https://wa.me/923197318425?text=Partner%20Inquiry%20from%20Footer%20Ad"}
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 px-4 py-2 rounded-xl border border-[#0062FF] text-[#0062FF] hover:bg-[#0062FF] hover:text-white text-xs font-bold transition-all"

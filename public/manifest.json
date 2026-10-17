@@ -1,0 +1,26 @@
+{
+  "name": "KAMZO Marketplace - Pakistan Local Services",
+  "short_name": "KAMZO",
+  "description": "Certified Local Service Experts across Pakistan. Mechanic, AC Repair, Plumber, and Electrician with Flat Rs. 200 Visit Fee.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1128",
+  "theme_color": "#0062FF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "business", "lifestyle"],
+  "lang": "en-PK"
+}

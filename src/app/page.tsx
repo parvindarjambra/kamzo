@@ -147,7 +147,7 @@ export default function STCStyleMarketplacePage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
+      setShowScrollTop(window.scrollY > 200);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -199,9 +199,9 @@ export default function STCStyleMarketplacePage() {
       {/* ─── STC / MEDICOENGINEER DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo Brand: Larger 3D Emblem without circular crop */}
-          <Link href="/" className="flex items-center gap-3.5 group shrink-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shadow-lg shadow-blue-500/10 border border-slate-200/80 dark:border-slate-700/80 transition-all group-hover:scale-105 shrink-0 bg-slate-900">
+          {/* Logo Brand: Larger 3D Emblem matching theme */}
+          <Link href="/" className="flex items-center gap-3.5 group shrink-0 select-none">
+            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-md shadow-blue-500/20 border border-blue-500/30 transition-all group-hover:scale-105 group-hover:shadow-blue-500/35 shrink-0">
               <img
                 src="/logo.jpg"
                 alt="KAMZO Logo"
@@ -677,7 +677,7 @@ export default function STCStyleMarketplacePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-md shrink-0">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden border border-blue-500/30 shadow-md shadow-blue-500/20 shrink-0">
                 <img src="/logo.jpg" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col">
@@ -706,15 +706,16 @@ export default function STCStyleMarketplacePage() {
 
       {/* ─── FLOATING ACTION WIDGETS (Proper Grounded Positioning) ─── */}
       <a
-        href="https://wa.me/923001234567?text=Assalam-o-Alaikum%20KAMZO%20Support,%20I%20need%20assistance%20with%20service%20booking"
+        href="https://wa.me/923197318425?text=Assalam-o-Alaikum%20KAMZO%20Support,%20I%20need%20assistance%20with%20service%20booking"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Support"
         className="fixed bottom-6 right-6 z-40 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
       >
         <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-[#25D366]" />
-        <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1 px-2.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-md">
-          Chat on WhatsApp (فوری رابطہ)
+        <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
+          <span>WhatsApp: +92 319 7318425 (فوری رابطہ)</span>
         </span>
       </a>
 
@@ -722,9 +723,12 @@ export default function STCStyleMarketplacePage() {
         <button
           onClick={scrollToTop}
           aria-label="Back to Top"
-          className="fixed bottom-22 right-6 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white flex items-center justify-center shadow-lg border border-slate-200/80 dark:border-slate-700 transition-all hover:scale-110 cursor-pointer animate-in fade-in"
+          className="fixed bottom-24 right-6 z-40 w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-[#0062FF] hover:bg-[#0052D9] text-white flex items-center justify-center shadow-xl shadow-blue-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
         >
-          <ArrowUp className="w-5 h-5 text-slate-700 dark:text-slate-200" />
+          <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:-translate-y-0.5 transition-transform" />
+          <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700">
+            Scroll to Top (اوپر جائیں)
+          </span>
         </button>
       )}
 
@@ -913,7 +917,7 @@ export default function STCStyleMarketplacePage() {
                 </div>
 
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Our nearest certified <strong>{selectedService.name}</strong> will contact you via WhatsApp / Call within <strong>10 minutes</strong>.
+                  Our nearest certified <strong>{selectedService.name}</strong> will contact you via WhatsApp (+92 319 7318425) / Call within <strong>10 minutes</strong>.
                 </p>
 
                 <button
