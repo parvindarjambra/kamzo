@@ -23,14 +23,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2" },
-      { url: "/icon.png?v=2", type: "image/png" },
+      { url: "/icon.png?v=20261017", type: "image/png" },
+      { url: "/favicon.ico?v=20261017" },
+      { url: "/logo.png?v=20261017", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=2" },
-      { url: "/logo.png?v=2" },
+      { url: "/apple-touch-icon.png?v=20261017" },
+      { url: "/logo.png?v=20261017" },
     ],
-    shortcut: ["/favicon.ico?v=2"],
+    shortcut: ["/icon.png?v=20261017"],
   },
 };
 
@@ -42,10 +43,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png?v=2" />
-        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
+        <link rel="icon" type="image/png" href="/icon.png?v=20261017" sizes="any" />
+        <link rel="shortcut icon" type="image/png" href="/icon.png?v=20261017" />
+        <link rel="icon" href="/favicon.ico?v=20261017" sizes="any" />
+        <link rel="apple-touch-icon" href="/logo.png?v=20261017" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
