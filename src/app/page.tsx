@@ -1199,9 +1199,7 @@ export default function STCStyleMarketplacePage() {
             {services.map((srv) => {
               const displayName = getServiceName(srv);
               const displayCategory = getServiceCategory(srv);
-              const displayDesc = getServiceDescription(srv);
               const displayFee = getServiceFee(srv);
-              const displayItems = getServiceItems(srv);
 
               return (
                 <div
@@ -1243,36 +1241,14 @@ export default function STCStyleMarketplacePage() {
                       >
                         {displayName}
                       </h3>
-                      <p className="text-[11px] font-semibold text-slate-400 mt-0.5">{displayCategory}</p>
-                    </div>
-
-                    <p className="text-xs text-slate-500 leading-relaxed font-normal">
-                      {displayDesc}
-                    </p>
-
-                    <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        {t.commonIssuesLabel}
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {displayItems.map((issue, idx) => (
-                          <span
-                            key={idx}
-                            className={`text-[10px] px-2 py-0.5 rounded-md ${
-                              isDarkMode ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"
-                            } font-medium`}
-                          >
-                            • {issue}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="text-xs font-semibold text-slate-400 mt-1">{displayCategory}</p>
                     </div>
                   </div>
 
-                  <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800">
+                  <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800">
                     <button
                       onClick={() => handleOpenBooking(srv)}
-                      className="w-full py-2.5 px-4 bg-blue-50 group-hover:bg-[#0062FF] text-[#0062FF] group-hover:text-white font-bold text-xs rounded-xl border border-blue-200 group-hover:border-[#0062FF] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="w-full py-3 px-4 bg-blue-50 group-hover:bg-[#0062FF] text-[#0062FF] group-hover:text-white font-bold text-xs sm:text-sm rounded-xl border border-blue-200 group-hover:border-[#0062FF] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <span>
                         {t.bookNowPrefix}{displayName}{t.bookNowSuffix}
