@@ -145,6 +145,20 @@ export default function STCStyleMarketplacePage() {
   const [problemDetail, setProblemDetail] = useState("");
   const [confirmedBookingId, setConfirmedBookingId] = useState("");
 
+  // Secret Admin Access via 5 Rapid Logo Taps (For Mobile App & PWA where URL bar is hidden)
+  const [logoTaps, setLogoTaps] = useState(0);
+  const handleLogoSecretTap = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const nextCount = logoTaps + 1;
+    if (nextCount >= 5) {
+      setLogoTaps(0);
+      window.location.href = "/login";
+    } else {
+      setLogoTaps(nextCount);
+      setTimeout(() => setLogoTaps(0), 3000);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 200);
@@ -199,8 +213,8 @@ export default function STCStyleMarketplacePage() {
       {/* ─── STC / MEDICOENGINEER DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo Brand: Larger 3D Emblem matching theme */}
-          <Link href="/" className="flex items-center gap-3.5 group shrink-0 select-none">
+          {/* Logo Brand: Larger 3D Emblem matching theme (Secret 5-Tap Gateway for Admin) */}
+          <Link href="/" onClick={handleLogoSecretTap} className="flex items-center gap-3.5 group shrink-0 select-none cursor-pointer">
             <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-md shadow-blue-500/20 border border-blue-500/30 transition-all group-hover:scale-105 group-hover:shadow-blue-500/35 shrink-0">
               <img
                 src="/logo.jpg"
@@ -676,7 +690,7 @@ export default function STCStyleMarketplacePage() {
       <footer className={`${isDarkMode ? "bg-[#070D1E] border-slate-800" : "bg-[#0A1128] border-slate-900"} text-slate-400 py-12 border-t`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3.5 cursor-pointer select-none" onClick={handleLogoSecretTap}>
               <div className="w-12 h-12 rounded-2xl overflow-hidden border border-blue-500/30 shadow-md shadow-blue-500/20 shrink-0">
                 <img src="/logo.jpg" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
