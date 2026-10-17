@@ -86,24 +86,24 @@ export function Sidebar() {
     <aside className="w-64 bg-[#141414] text-gray-300 flex flex-col h-screen fixed left-0 top-0 z-30 border-r border-[#262626] select-none shadow-2xl">
       {/* Brand Header */}
       <div className="h-20 px-5 py-4 flex items-center border-b border-[#262626] gap-3.5">
-        <div className="w-12 h-12 rounded-2xl overflow-hidden border border-[#0062FF]/50 shadow-md shadow-[#0062FF]/30 shrink-0 bg-slate-900 flex items-center justify-center">
+        <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-[#0062FF]/25 shrink-0 flex items-center justify-center">
           <img
-            src="/logo.jpg"
+            src="/logo.png"
             alt="KAMZO Logo"
             className="w-full h-full object-cover"
           />
         </div>
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
-            <span className="font-extrabold text-white text-lg tracking-wider">
-              KAMZO
+            <span className="font-black text-white text-lg tracking-tight">
+              KAM<span className="text-[#0062FF]">ZO</span>
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
+            <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
               Admin
             </span>
           </div>
-          <span className="text-[11px] text-gray-400 font-medium tracking-tight">
-            Pakistan Service Hub
+          <span className="text-[9px] text-gray-400 font-extrabold uppercase tracking-widest">
+            SERVICES HUB
           </span>
         </div>
       </div>

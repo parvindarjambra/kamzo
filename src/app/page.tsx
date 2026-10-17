@@ -213,26 +213,26 @@ export default function STCStyleMarketplacePage() {
       {/* ─── STC / MEDICOENGINEER DEVELOPER STYLE NAVBAR (No Admin Link, Perfect Spacing) ─── */}
       <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo Brand: Larger 3D Emblem matching theme (Secret 5-Tap Gateway for Admin) */}
+          {/* Logo Brand: Official KAMZO App Icon & Typography (Secret 5-Tap Gateway for Admin) */}
           <Link href="/" onClick={handleLogoSecretTap} className="flex items-center gap-3.5 group shrink-0 select-none cursor-pointer">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-md shadow-blue-500/20 border border-blue-500/30 transition-all group-hover:scale-105 group-hover:shadow-blue-500/35 shrink-0">
+            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl overflow-hidden shadow-md shadow-blue-500/25 transition-all group-hover:scale-105 shrink-0">
               <img
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="KAMZO Logo"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex flex-col shrink-0">
-              <div className="flex items-baseline gap-1.5">
-                <span className={`text-2xl sm:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
-                  KAMZO
+              <div className="flex items-baseline gap-0.5">
+                <span className={`text-2xl sm:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0B132B]"}`}>
+                  KAM
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-[#0062FF]">
-                  Marketplace
+                <span className="text-2xl sm:text-3xl font-black tracking-tight text-[#0062FF]">
+                  ZO
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-[#0062FF] font-bold tracking-tight -mt-0.5">
-                آپ کی ضرورت، ہمارے ماہر
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.24em] font-extrabold text-slate-400 dark:text-slate-400 -mt-1">
+                SERVICES MARKETPLACE
               </p>
             </div>
           </Link>
@@ -691,15 +691,16 @@ export default function STCStyleMarketplacePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-3.5 cursor-pointer select-none" onClick={handleLogoSecretTap}>
-              <div className="w-12 h-12 rounded-2xl overflow-hidden border border-blue-500/30 shadow-md shadow-blue-500/20 shrink-0">
-                <img src="/logo.jpg" alt="KAMZO Logo" className="w-full h-full object-cover" />
+              <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-blue-500/25 shrink-0">
+                <img src="/logo.png" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-black text-white tracking-wider">KAMZO</span>
-                  <span className="text-xl font-black text-[#0062FF]">Marketplace</span>
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-xl font-black text-white tracking-tight">KAM</span>
+                  <span className="text-xl font-black text-[#0062FF] tracking-tight">ZO</span>
                 </div>
-                <p className="text-[11px] text-[#0062FF] font-bold">آپ کی ضرورت، ہمارے ماہر</p>
+                <p className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-slate-400">SERVICES MARKETPLACE</p>
+                <p className="text-[10px] text-[#0062FF] font-bold">آپ کی ضرورت، ہمارے ماہر</p>
               </div>
             </div>
 

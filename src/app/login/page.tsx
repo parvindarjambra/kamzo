@@ -74,18 +74,21 @@ export default function SecureAdminLoginPage() {
         <div className="bg-[#0B132B]/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-7 sm:p-9 shadow-2xl shadow-black/80 space-y-6">
           {/* Logo & Header */}
           <div className="text-center space-y-3">
-            <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden border-2 border-[#0062FF]/40 shadow-2xl shadow-blue-500/20 bg-slate-900 transition-transform hover:scale-105">
+            <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/30 transition-transform hover:scale-105">
               <img
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="KAMZO Logo"
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
               <h1 className="text-2xl font-black tracking-tight text-white">
-                KAMZO Control Center
+                KAM<span className="text-[#0062FF]">ZO</span> Control Center
               </h1>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-0.5">
+                SERVICES MARKETPLACE
+              </p>
+              <p className="text-xs text-blue-400 font-medium mt-1">
                 Authorized Personnel Only (صرف ایڈمنسٹریٹر کے لیے)
               </p>
             </div>

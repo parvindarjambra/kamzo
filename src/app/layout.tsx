@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
-    apple: "/logo.jpg",
+    apple: "/logo.png",
   },
 };
 
@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/logo.jpg" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0062FF" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
