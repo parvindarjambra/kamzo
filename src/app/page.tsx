@@ -109,8 +109,8 @@ const services: ServiceData[] = [
     categorySindhi: "پاڻي لڪيج ۽ فٽنگ",
     icon: Droplets,
     image: "/worker-plumber.jpg",
-    color: "#0062FF",
-    badgeBg: "bg-blue-50 text-[#0062FF] border-blue-200",
+    color: "#16A34A",
+    badgeBg: "bg-emerald-50 text-[#16A34A] border-emerald-200",
     description: "Concealed pipeline leak detection, motor water pump repair, sanitary fittings, drain unblocking, and geyser setup.",
     descriptionUrdu: "پائپ لائن لیکیج کا سراغ، موٹر پمپ مرمت، باتھ روم سینیٹری، نالی کی صفائی اور گیزر فٹنگ۔",
     descriptionSindhi: "پائپ ليڪيج چيڪنگ، پاڻي واري موٽر مرمت، غسل خاني جي فٽنگ ۽ نالي صفائي۔",
@@ -867,7 +867,7 @@ export default function STCStyleMarketplacePage() {
       dir={lang === "ur" || lang === "sd" ? "rtl" : "ltr"}
       className={`min-h-screen w-full max-w-[100vw] overflow-x-hidden ${
         isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"
-      } font-sans transition-colors duration-200 selection:bg-[#0062FF] selection:text-white relative pb-24 md:pb-0`}
+      } font-sans transition-colors duration-200 selection:bg-[#16A34A] selection:text-white relative pb-24 md:pb-0`}
     >
       {/* Subtle MedicoEngineer Background Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
@@ -885,7 +885,7 @@ export default function STCStyleMarketplacePage() {
             onClick={handleLogoSecretTap}
             className="flex items-center gap-2.5 sm:gap-3.5 group shrink-0 select-none cursor-pointer"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl overflow-hidden shadow-md shadow-blue-500/25 transition-all group-hover:scale-105 shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl overflow-hidden shadow-md shadow-emerald-500/25 transition-all group-hover:scale-105 shrink-0">
               <img src="/logo.png" alt="KAMZO Logo" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col shrink-0">
@@ -893,7 +893,7 @@ export default function STCStyleMarketplacePage() {
                 <span className={`text-xl sm:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0B132B]"}`}>
                   KAM
                 </span>
-                <span className="text-xl sm:text-3xl font-black tracking-tight text-[#0062FF]">
+                <span className="text-xl sm:text-3xl font-black tracking-tight text-[#16A34A]">
                   ZO
                 </span>
               </div>
@@ -905,13 +905,13 @@ export default function STCStyleMarketplacePage() {
 
           {/* Centered Navigation Links (Desktop) */}
           <nav className="hidden xl:flex items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
-            <a href="#services" className="hover:text-[#0062FF] transition-colors py-1">
+            <a href="#services" className="hover:text-[#16A34A] transition-colors py-1">
               {t.navServices}
             </a>
-            <a href="#how-it-works" className="hover:text-[#0062FF] transition-colors py-1">
+            <a href="#how-it-works" className="hover:text-[#16A34A] transition-colors py-1">
               {t.navHowItWorks}
             </a>
-            <a href="#benefits" className="hover:text-[#0062FF] transition-colors py-1">
+            <a href="#benefits" className="hover:text-[#16A34A] transition-colors py-1">
               {t.navWhyUs}
             </a>
           </nav>
@@ -922,7 +922,7 @@ export default function STCStyleMarketplacePage() {
             {!isAppInstalled && (
               <button
                 onClick={handleInstallApp}
-                className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-blue-500/30 bg-blue-50/70 hover:bg-blue-100 text-[#0062FF] dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700/50 transition-all cursor-pointer shrink-0 shadow-xs"
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-emerald-500/30 bg-emerald-50/70 hover:bg-emerald-100 text-[#16A34A] dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700/50 transition-all cursor-pointer shrink-0 shadow-xs"
                 title="Install KAMZO Application on your Phone or Laptop"
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -954,7 +954,7 @@ export default function STCStyleMarketplacePage() {
                 onClick={() => setLang("en")}
                 className={`px-2 py-1 rounded-lg transition-all cursor-pointer text-[11px] sm:text-xs ${
                   lang === "en"
-                    ? "bg-[#0062FF] text-white shadow-xs font-black"
+                    ? "bg-[#16A34A] text-white shadow-xs font-black"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -965,7 +965,7 @@ export default function STCStyleMarketplacePage() {
                 onClick={() => setLang("ur")}
                 className={`px-2 py-1 rounded-lg transition-all cursor-pointer text-[11px] sm:text-xs font-bold ${
                   lang === "ur"
-                    ? "bg-[#0062FF] text-white shadow-xs font-black"
+                    ? "bg-[#16A34A] text-white shadow-xs font-black"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -976,7 +976,7 @@ export default function STCStyleMarketplacePage() {
                 onClick={() => setLang("sd")}
                 className={`px-2 py-1 rounded-lg transition-all cursor-pointer text-[11px] sm:text-xs font-bold ${
                   lang === "sd"
-                    ? "bg-[#0062FF] text-white shadow-xs font-black"
+                    ? "bg-[#16A34A] text-white shadow-xs font-black"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -989,15 +989,15 @@ export default function STCStyleMarketplacePage() {
 
       {/* ─── HERO SECTION ─── */}
       <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-20 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 blur-3xl pointer-events-none rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/5 blur-3xl pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Content Column */}
             <div className={`lg:col-span-7 space-y-6 ${lang === "ur" || lang === "sd" ? "text-center lg:text-right" : "text-center lg:text-left"}`}>
               {/* Top Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/60 text-[#0062FF] text-xs font-extrabold tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-[#0062FF]" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-[#16A34A] text-xs font-extrabold tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-[#16A34A]" />
                 <span>{t.taglineBadge}</span>
               </div>
 
@@ -1006,7 +1006,7 @@ export default function STCStyleMarketplacePage() {
                 <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.18] ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
                   {t.mainHeadline}
                 </h1>
-                <p className="text-2xl sm:text-3xl font-black text-[#0062FF] leading-snug">
+                <p className="text-2xl sm:text-3xl font-black text-[#16A34A] leading-snug">
                   {t.subHeadline}
                 </p>
               </div>
@@ -1020,13 +1020,13 @@ export default function STCStyleMarketplacePage() {
               <div
                 className={`${
                   isDarkMode ? "bg-slate-900/90 border-slate-800" : "bg-white border-slate-200/80"
-                } rounded-2xl p-4 sm:p-5 shadow-xl shadow-blue-900/5 border max-w-xl mx-auto lg:mx-0`}
+                } rounded-2xl p-4 sm:p-5 shadow-xl shadow-emerald-950/5 border max-w-xl mx-auto lg:mx-0`}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* Button 1: Customer Booking */}
                   <button
                     onClick={() => handleOpenBooking(selectedService)}
-                    className="w-full py-4 px-4 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-between gap-3 cursor-pointer text-left rtl:text-right"
+                    className="w-full py-4 px-4 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-between gap-3 cursor-pointer text-left rtl:text-right"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
@@ -1036,7 +1036,7 @@ export default function STCStyleMarketplacePage() {
                         <div className="font-extrabold truncate text-sm">
                           {t.bookAsCustomer}
                         </div>
-                        <div className="text-[10px] text-blue-100 truncate font-normal">
+                        <div className="text-[10px] text-emerald-100 truncate font-normal">
                           {t.bookAsCustomerSub}
                         </div>
                       </div>
@@ -1087,7 +1087,7 @@ export default function STCStyleMarketplacePage() {
                 </div>
                 <div className="h-4 w-px bg-slate-300" />
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
-                  <Users className="w-4 h-4 text-[#0062FF]" />
+                  <Users className="w-4 h-4 text-[#16A34A]" />
                   <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
                     {t.activeTechnicians}
                   </span>
@@ -1106,8 +1106,8 @@ export default function STCStyleMarketplacePage() {
                       isDarkMode ? "bg-slate-900/90 border-slate-800 text-white" : "bg-white border-slate-200/80 text-slate-800"
                     }`}
                   >
-                    <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0 border border-blue-100 dark:border-blue-900/50">
-                      <ShieldCheck className="w-5 h-5 text-[#0062FF]" />
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#16A34A] shrink-0 border border-emerald-100 dark:border-emerald-900/50">
+                      <ShieldCheck className="w-5 h-5 text-[#16A34A]" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">
@@ -1125,14 +1125,14 @@ export default function STCStyleMarketplacePage() {
                       isDarkMode ? "bg-slate-900/90 border-slate-800 text-white" : "bg-white border-slate-200/80 text-slate-800"
                     }`}
                   >
-                    <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0 border border-blue-100 dark:border-blue-900/50">
-                      <Wallet className="w-4 h-4 text-[#0062FF]" />
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#16A34A] shrink-0 border border-emerald-100 dark:border-emerald-900/50">
+                      <Wallet className="w-4 h-4 text-[#16A34A]" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">
                         {t.visitFeeLabel}
                       </p>
-                      <p className="text-xs font-black text-[#0062FF] leading-tight truncate">
+                      <p className="text-xs font-black text-[#16A34A] leading-tight truncate">
                         {t.visitFeeValue}
                       </p>
                     </div>
@@ -1142,7 +1142,7 @@ export default function STCStyleMarketplacePage() {
                 {/* ─── CLEAR & UNOBSTRUCTED IMAGE (Picture 100% Clear Show Hogi) ─── */}
                 <div
                   className={`rounded-3xl overflow-hidden shadow-2xl border-4 ${
-                    isDarkMode ? "border-slate-800 shadow-blue-950/20" : "border-white shadow-blue-900/10"
+                    isDarkMode ? "border-slate-800 shadow-emerald-950/20" : "border-white shadow-emerald-950/10"
                   } bg-slate-100 group relative`}
                 >
                   <img
@@ -1161,8 +1161,8 @@ export default function STCStyleMarketplacePage() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="relative flex h-3 w-3 shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0062FF] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0062FF]" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#16A34A]" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs sm:text-sm font-black truncate">{t.certifiedTechsBanner}</p>
@@ -1171,7 +1171,7 @@ export default function STCStyleMarketplacePage() {
                         </p>
                       </div>
                     </div>
-                    <span className="text-[10px] sm:text-xs font-extrabold bg-[#0062FF] text-white px-3 py-1.5 rounded-xl shadow-md shadow-blue-500/25 shrink-0 flex items-center gap-1">
+                    <span className="text-[10px] sm:text-xs font-extrabold bg-[#16A34A] text-white px-3 py-1.5 rounded-xl shadow-md shadow-emerald-500/25 shrink-0 flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{t.verifiedBadge}</span>
                     </span>
@@ -1187,7 +1187,7 @@ export default function STCStyleMarketplacePage() {
       <section className="py-20" id="services">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
+            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#16A34A]">
               {t.coreServicesTag}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1209,8 +1209,8 @@ export default function STCStyleMarketplacePage() {
                   key={srv.id}
                   className={`${
                     isDarkMode
-                      ? "bg-slate-900 border-slate-800 hover:border-[#0062FF]/50"
-                      : "bg-white border-slate-200/80 hover:border-[#0062FF]/40"
+                      ? "bg-slate-900 border-slate-800 hover:border-[#16A34A]/50"
+                      : "bg-white border-slate-200/80 hover:border-[#16A34A]/40"
                   } rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group`}
                 >
                   <div className="space-y-4">
@@ -1229,7 +1229,7 @@ export default function STCStyleMarketplacePage() {
                       </div>
                       {/* Certified Badge Overlay */}
                       <div className="absolute bottom-2.5 left-2.5">
-                        <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-[#0062FF] text-white shadow-sm flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-[#16A34A] text-white shadow-sm flex items-center gap-1.5">
                           <ShieldCheck className="w-3.5 h-3.5 text-white" />
                           <span>{t.certifiedTechBadge}</span>
                         </span>
@@ -1240,7 +1240,7 @@ export default function STCStyleMarketplacePage() {
                       <h3
                         className={`text-lg font-bold ${
                           isDarkMode ? "text-white" : "text-[#0A1128]"
-                        } group-hover:text-[#0062FF] transition-colors`}
+                        } group-hover:text-[#16A34A] transition-colors`}
                       >
                         {displayName}
                       </h3>
@@ -1251,7 +1251,7 @@ export default function STCStyleMarketplacePage() {
                   <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800">
                     <button
                       onClick={() => handleOpenBooking(srv)}
-                      className="w-full py-3 px-4 bg-blue-50 group-hover:bg-[#0062FF] text-[#0062FF] group-hover:text-white font-bold text-xs sm:text-sm rounded-xl border border-blue-200 group-hover:border-[#0062FF] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="w-full py-3 px-4 bg-emerald-50 group-hover:bg-[#16A34A] text-[#16A34A] group-hover:text-white font-bold text-xs sm:text-sm rounded-xl border border-emerald-200 group-hover:border-[#16A34A] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <span>
                         {t.bookNowPrefix}{displayName}{t.bookNowSuffix}
@@ -1275,7 +1275,7 @@ export default function STCStyleMarketplacePage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
+            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#16A34A]">
               {t.whyChooseTag}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1292,7 +1292,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
               } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0062FF] flex items-center justify-center mx-auto border border-blue-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
                 <ShieldCheck className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1308,7 +1308,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
               } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0062FF] flex items-center justify-center mx-auto border border-blue-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
                 <Wallet className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1324,7 +1324,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
               } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0062FF] flex items-center justify-center mx-auto border border-blue-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
                 <Clock className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1342,7 +1342,7 @@ export default function STCStyleMarketplacePage() {
       <section className="py-20" id="how-it-works">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
+            <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#16A34A]">
               {t.howItWorksTag}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1359,7 +1359,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-900 border-slate-800" : "bg-slate-50 border-slate-200"
               } p-8 rounded-3xl border text-center space-y-4`}
             >
-              <div className="w-12 h-12 rounded-xl bg-[#0062FF] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-blue-500/20">
+              <div className="w-12 h-12 rounded-xl bg-[#16A34A] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-emerald-500/20">
                 01
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1375,7 +1375,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-900 border-slate-800" : "bg-slate-50 border-slate-200"
               } p-8 rounded-3xl border text-center space-y-4`}
             >
-              <div className="w-12 h-12 rounded-xl bg-[#0062FF] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-blue-500/20">
+              <div className="w-12 h-12 rounded-xl bg-[#16A34A] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-emerald-500/20">
                 02
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1391,7 +1391,7 @@ export default function STCStyleMarketplacePage() {
                 isDarkMode ? "bg-slate-900 border-slate-800" : "bg-slate-50 border-slate-200"
               } p-8 rounded-3xl border text-center space-y-4`}
             >
-              <div className="w-12 h-12 rounded-xl bg-[#0062FF] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-blue-500/20">
+              <div className="w-12 h-12 rounded-xl bg-[#16A34A] text-white font-black text-lg flex items-center justify-center mx-auto shadow-md shadow-emerald-500/20">
                 03
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1414,18 +1414,18 @@ export default function STCStyleMarketplacePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
             <div className="flex items-center gap-3.5 cursor-pointer select-none" onClick={handleLogoSecretTap}>
-              <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-blue-500/25 shrink-0">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-emerald-500/25 shrink-0">
                 <img src="/logo.png" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col">
                 <div className="flex items-baseline gap-0.5">
                   <span className="text-xl font-black text-white tracking-tight">KAM</span>
-                  <span className="text-xl font-black text-[#0062FF] tracking-tight">ZO</span>
+                  <span className="text-xl font-black text-[#16A34A] tracking-tight">ZO</span>
                 </div>
                 <p className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-slate-400">
                   SERVICES MARKETPLACE
                 </p>
-                <p className="text-[10px] text-[#0062FF] font-bold">{t.footerTagline}</p>
+                <p className="text-[10px] text-[#16A34A] font-bold">{t.footerTagline}</p>
               </div>
             </div>
 
@@ -1438,7 +1438,7 @@ export default function STCStyleMarketplacePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <p>{t.footerCopyright}</p>
-            <p className="text-[#0062FF] font-semibold">{t.footerLocations}</p>
+            <p className="text-[#16A34A] font-semibold">{t.footerLocations}</p>
           </div>
         </div>
       </footer>
@@ -1462,7 +1462,7 @@ export default function STCStyleMarketplacePage() {
         <button
           onClick={scrollToTop}
           aria-label="Back to Top"
-          className="fixed bottom-20 md:bottom-24 right-4 sm:right-6 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#0062FF] hover:bg-[#0052D9] text-white flex items-center justify-center shadow-xl shadow-blue-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
+          className="fixed bottom-20 md:bottom-24 right-4 sm:right-6 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xl shadow-emerald-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
         >
           <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:-translate-y-0.5 transition-transform" />
           <span className="absolute right-14 sm:right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 hidden sm:inline-block">
@@ -1475,7 +1475,7 @@ export default function STCStyleMarketplacePage() {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-2xl px-3 py-1.5 flex items-center justify-between safe-bottom">
         <button
           onClick={scrollToTop}
-          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#16A34A] flex-1 transition-colors"
         >
           <Home className="w-5 h-5" />
           <span className="text-[10px] font-semibold mt-0.5">Home</span>
@@ -1483,7 +1483,7 @@ export default function STCStyleMarketplacePage() {
 
         <a
           href="#services"
-          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+          className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#16A34A] flex-1 transition-colors"
         >
           <Layers className="w-5 h-5" />
           <span className="text-[10px] font-semibold mt-0.5">{t.navServices}</span>
@@ -1494,10 +1494,10 @@ export default function STCStyleMarketplacePage() {
           onClick={() => handleOpenBooking()}
           className="flex flex-col items-center justify-center -mt-5 py-0.5 px-2 flex-1 group"
         >
-          <div className="w-12 h-12 rounded-full bg-[#0062FF] text-white flex items-center justify-center shadow-lg shadow-blue-600/40 group-active:scale-95 transition-transform border-3 border-white dark:border-[#0B132B]">
+          <div className="w-12 h-12 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow-lg shadow-emerald-600/40 group-active:scale-95 transition-transform border-3 border-white dark:border-[#0B132B]">
             <Wrench className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-bold text-[#0062FF] mt-0.5 whitespace-nowrap">{t.bottomNavBook}</span>
+          <span className="text-[10px] font-bold text-[#16A34A] mt-0.5 whitespace-nowrap">{t.bottomNavBook}</span>
         </button>
 
         <a
@@ -1513,20 +1513,20 @@ export default function STCStyleMarketplacePage() {
         {SHOW_BROWSER_APP_INSTALL ? (
           <button
             onClick={handleInstallApp}
-            className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+            className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#16A34A] flex-1 transition-colors"
           >
-            <Smartphone className="w-5 h-5 text-[#0062FF]" />
-            <span className="text-[10px] font-bold text-[#0062FF] mt-0.5">App</span>
+            <Smartphone className="w-5 h-5 text-[#16A34A]" />
+            <span className="text-[10px] font-bold text-[#16A34A] mt-0.5">App</span>
           </button>
         ) : (
           <a
             href="https://play.google.com/store/apps/details?id=com.kamzo.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#0062FF] flex-1 transition-colors"
+            className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-[#16A34A] flex-1 transition-colors"
           >
-            <Smartphone className="w-5 h-5 text-[#0062FF]" />
-            <span className="text-[10px] font-bold text-[#0062FF] mt-0.5">Play Store</span>
+            <Smartphone className="w-5 h-5 text-[#16A34A]" />
+            <span className="text-[10px] font-bold text-[#16A34A] mt-0.5">Play Store</span>
           </a>
         )}
       </nav>
@@ -1541,7 +1541,7 @@ export default function STCStyleMarketplacePage() {
           >
             <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Smartphone className="w-5 h-5 text-[#0062FF]" />
+                <Smartphone className="w-5 h-5 text-[#16A34A]" />
                 <h4 className="font-bold text-sm">Install KAMZO on iPhone / iPad</h4>
               </div>
               <button
@@ -1553,19 +1553,19 @@ export default function STCStyleMarketplacePage() {
             </div>
             <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
               <p className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 text-[#16A34A] font-bold flex items-center justify-center shrink-0 text-[11px]">
                   1
                 </span>
                 <span>Safari browser me neeche <strong>Share button</strong> par tap karein.</span>
               </p>
               <p className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 text-[#16A34A] font-bold flex items-center justify-center shrink-0 text-[11px]">
                   2
                 </span>
                 <span>Menu ko scroll karein aur <strong>Add to Home Screen</strong> select karein.</span>
               </p>
               <p className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-100 text-[#0062FF] font-bold flex items-center justify-center shrink-0 text-[11px]">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 text-[#16A34A] font-bold flex items-center justify-center shrink-0 text-[11px]">
                   3
                 </span>
                 <span>Top right par <strong>Add</strong> par click karein. KAMZO aapke phone par app ki tarah save ho jayegi!</span>
@@ -1573,7 +1573,7 @@ export default function STCStyleMarketplacePage() {
             </div>
             <button
               onClick={() => setShowIOSInstallGuide(false)}
-              className="w-full py-2.5 bg-[#0062FF] text-white text-xs font-bold rounded-xl shadow-md cursor-pointer"
+              className="w-full py-2.5 bg-[#16A34A] text-white text-xs font-bold rounded-xl shadow-md cursor-pointer"
             >
               OK (Done)
             </button>
@@ -1600,7 +1600,7 @@ export default function STCStyleMarketplacePage() {
             {bookingStep === "details" && (
               <form onSubmit={handleDetailsSubmit} className="space-y-4 text-left rtl:text-right">
                 <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0062FF]">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{m.bookingStep1Badge}</span>
                   </div>
@@ -1608,7 +1608,7 @@ export default function STCStyleMarketplacePage() {
                     {m.bookTitle} {getServiceName(selectedService)}
                   </h3>
                   <p className="text-xs text-slate-400">
-                    {m.initialInspectionFee} <strong className="text-[#0062FF]">{getServiceFee(selectedService)}</strong>
+                    {m.initialInspectionFee} <strong className="text-[#16A34A]">{getServiceFee(selectedService)}</strong>
                   </p>
                 </div>
 
@@ -1625,7 +1625,7 @@ export default function STCStyleMarketplacePage() {
                         onClick={() => setSelectedService(srv)}
                         className={`p-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                           selectedService.id === srv.id
-                            ? "bg-[#0062FF] text-white border-[#0062FF]"
+                            ? "bg-[#16A34A] text-white border-[#16A34A]"
                             : isDarkMode
                             ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
                             : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -1652,7 +1652,7 @@ export default function STCStyleMarketplacePage() {
                     onChange={(e) => setSelectedCity(e.target.value)}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-800"
-                    } text-xs font-semibold focus:outline-none focus:border-[#0062FF]`}
+                    } text-xs font-semibold focus:outline-none focus:border-[#16A34A]`}
                   >
                     {pakistaniCities[lang].map((city) => (
                       <option key={city} value={city}>
@@ -1671,8 +1671,8 @@ export default function STCStyleMarketplacePage() {
                         onChange={(e) => setCustomCityName(e.target.value)}
                         placeholder={m.customCityPlaceholder}
                         className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                          isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-blue-50/40"
-                        } text-xs font-semibold focus:outline-none focus:border-[#0062FF] placeholder:text-slate-400`}
+                          isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-emerald-50/40"
+                        } text-xs font-semibold focus:outline-none focus:border-[#16A34A] placeholder:text-slate-400`}
                       />
                     </div>
                   )}
@@ -1691,7 +1691,7 @@ export default function STCStyleMarketplacePage() {
                     placeholder={m.fullNamePlaceholder}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs focus:outline-none focus:border-[#0062FF]`}
+                    } text-xs focus:outline-none focus:border-[#16A34A]`}
                   />
                 </div>
 
@@ -1716,7 +1716,7 @@ export default function STCStyleMarketplacePage() {
                       placeholder="319 7318425"
                       className={`w-full px-3.5 py-2.5 rounded-r-xl border ${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                      } text-xs focus:outline-none focus:border-[#0062FF]`}
+                      } text-xs focus:outline-none focus:border-[#16A34A]`}
                     />
                   </div>
                 </div>
@@ -1734,24 +1734,24 @@ export default function STCStyleMarketplacePage() {
                     placeholder={m.problemPlaceholder}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs focus:outline-none focus:border-[#0062FF] resize-none`}
+                    } text-xs focus:outline-none focus:border-[#16A34A] resize-none`}
                   />
                 </div>
 
                 {/* Visit fee breakdown */}
-                <div className="bg-blue-50 dark:bg-blue-950/40 rounded-xl p-3 border border-blue-100 dark:border-blue-900/50 text-xs space-y-1">
-                  <div className="flex justify-between font-bold text-blue-950 dark:text-blue-200">
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 rounded-xl p-3 border border-emerald-100 dark:border-emerald-900/50 text-xs space-y-1">
+                  <div className="flex justify-between font-bold text-emerald-950 dark:text-emerald-200">
                     <span>{m.feeBreakdownTitle}</span>
-                    <span className="text-[#0062FF]">{getServiceFee(selectedService)}</span>
+                    <span className="text-[#16A34A]">{getServiceFee(selectedService)}</span>
                   </div>
-                  <p className="text-[11px] text-blue-700 dark:text-blue-300">
+                  <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
                     {m.feeBreakdownSub}
                   </p>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{m.nextPaymentBtn}</span>
                   <ArrowRight className="w-4 h-4 rtl:rotate-180" />
@@ -1763,7 +1763,7 @@ export default function STCStyleMarketplacePage() {
             {bookingStep === "payment" && (
               <form onSubmit={handlePaymentSubmit} className="space-y-4 text-left rtl:text-right">
                 <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0062FF]">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <CreditCard className="w-3.5 h-3.5" />
                     <span>{m.bookingStep2Badge}</span>
                   </div>
@@ -1778,7 +1778,7 @@ export default function STCStyleMarketplacePage() {
                     onClick={() => setPaymentMethod("jazzcash")}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
                       paymentMethod === "jazzcash"
-                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
                         : isDarkMode
                         ? "bg-slate-800 text-slate-300 border-slate-700"
                         : "bg-slate-50 text-slate-700 border-slate-200"
@@ -1791,7 +1791,7 @@ export default function STCStyleMarketplacePage() {
                     onClick={() => setPaymentMethod("easypaisa")}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
                       paymentMethod === "easypaisa"
-                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
                         : isDarkMode
                         ? "bg-slate-800 text-slate-300 border-slate-700"
                         : "bg-slate-50 text-slate-700 border-slate-200"
@@ -1804,7 +1804,7 @@ export default function STCStyleMarketplacePage() {
                     onClick={() => setPaymentMethod("bank_transfer")}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
                       paymentMethod === "bank_transfer"
-                        ? "bg-[#0062FF] text-white border-[#0062FF] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
                         : isDarkMode
                         ? "bg-slate-800 text-slate-300 border-slate-700"
                         : "bg-slate-50 text-slate-700 border-slate-200"
@@ -1815,10 +1815,10 @@ export default function STCStyleMarketplacePage() {
                 </div>
 
                 {/* Official Account Box */}
-                <div className="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-900/50 space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-blue-900 dark:text-blue-200 font-bold">
+                <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/50 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-emerald-900 dark:text-emerald-200 font-bold">
                     <span>{m.depositDetails}</span>
-                    <span className="text-xs bg-[#0062FF] text-white px-2 py-0.5 rounded-full font-mono">
+                    <span className="text-xs bg-[#16A34A] text-white px-2 py-0.5 rounded-full font-mono">
                       Rs. 200
                     </span>
                   </div>
@@ -1827,7 +1827,7 @@ export default function STCStyleMarketplacePage() {
                     <div className="space-y-1 text-slate-800 dark:text-slate-200">
                       <div className="flex justify-between">
                         <span className="text-slate-500">JazzCash Mobile:</span>
-                        <span className="font-mono font-black text-sm text-[#0062FF]" dir="ltr">0319 7318425</span>
+                        <span className="font-mono font-black text-sm text-[#16A34A]" dir="ltr">0319 7318425</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500">Account Title:</span>
@@ -1840,7 +1840,7 @@ export default function STCStyleMarketplacePage() {
                     <div className="space-y-1 text-slate-800 dark:text-slate-200">
                       <div className="flex justify-between">
                         <span className="text-slate-500">Easypaisa Mobile:</span>
-                        <span className="font-mono font-black text-sm text-[#0062FF]" dir="ltr">0319 7318425</span>
+                        <span className="font-mono font-black text-sm text-[#16A34A]" dir="ltr">0319 7318425</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500">Account Title:</span>
@@ -1866,7 +1866,7 @@ export default function STCStyleMarketplacePage() {
                     </div>
                   )}
 
-                  <p className="text-[11px] text-blue-700 dark:text-blue-300 pt-1 border-t border-blue-200/60 dark:border-blue-900/50">
+                  <p className="text-[11px] text-emerald-700 dark:text-emerald-300 pt-1 border-t border-emerald-200/60 dark:border-emerald-900/50">
                     {m.transferInstruction(paymentMethod === "jazzcash" ? "JazzCash" : paymentMethod === "easypaisa" ? "Easypaisa" : "Bank")}
                   </p>
                 </div>
@@ -1886,7 +1886,7 @@ export default function STCStyleMarketplacePage() {
                     dir="ltr"
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs font-mono focus:outline-none focus:border-[#0062FF]`}
+                    } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
                   />
                 </div>
 
@@ -1902,8 +1902,8 @@ export default function STCStyleMarketplacePage() {
                       receiptPreview
                         ? "border-emerald-400 bg-emerald-50/50"
                         : isDarkMode
-                        ? "border-slate-700 bg-slate-800/50 hover:border-blue-500"
-                        : "border-slate-200 bg-slate-50/70 hover:border-blue-400"
+                        ? "border-slate-700 bg-slate-800/50 hover:border-emerald-500"
+                        : "border-slate-200 bg-slate-50/70 hover:border-emerald-400"
                     }`}
                   >
                     <input
@@ -1927,12 +1927,12 @@ export default function STCStyleMarketplacePage() {
                               <span>{m.receiptAttached}</span>
                             </div>
                             <p className="text-[11px] text-slate-500 truncate">{receiptFileName || "screenshot.png"}</p>
-                            <span className="text-[10px] text-[#0062FF] underline font-semibold">{m.changeScreenshot}</span>
+                            <span className="text-[10px] text-[#16A34A] underline font-semibold">{m.changeScreenshot}</span>
                           </div>
                         </div>
                       ) : (
                         <div className="py-2.5 space-y-1">
-                          <Upload className="w-6 h-6 text-[#0062FF] mx-auto" />
+                          <Upload className="w-6 h-6 text-[#16A34A] mx-auto" />
                           <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
                             {m.tapUploadReceipt}
                           </div>
@@ -1959,7 +1959,7 @@ export default function STCStyleMarketplacePage() {
 
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-[#0062FF] hover:bg-[#0052D9] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <FileCheck className="w-4 h-4" />
                     <span>{m.submitProofBtn}</span>
@@ -1971,12 +1971,12 @@ export default function STCStyleMarketplacePage() {
             {/* STEP 3: BOOKING CONFIRMED */}
             {bookingStep === "confirmed" && (
               <div className="text-center space-y-4 py-2">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-[#0062FF] flex items-center justify-center mx-auto border-2 border-blue-200">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#16A34A] flex items-center justify-center mx-auto border-2 border-emerald-200">
                   <FileCheck className="w-8 h-8" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-black">{m.bookingRegistered}</h3>
-                  <p className="text-xs text-[#0062FF] font-bold mt-1">{m.bookingSuccessMsg}</p>
+                  <p className="text-xs text-[#16A34A] font-bold mt-1">{m.bookingSuccessMsg}</p>
                   <div className="inline-block mt-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold">
                     {m.underVerification}
                   </div>
@@ -1989,7 +1989,7 @@ export default function STCStyleMarketplacePage() {
                 >
                   <div className="flex justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
                     <span className="text-slate-400">{m.bookingRef}</span>
-                    <span className="font-mono font-bold text-[#0062FF]" dir="ltr">{confirmedBookingId}</span>
+                    <span className="font-mono font-bold text-[#16A34A]" dir="ltr">{confirmedBookingId}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">{m.serviceLabel}</span>
@@ -2009,13 +2009,13 @@ export default function STCStyleMarketplacePage() {
                       {paymentMethod.toUpperCase()} • {transactionRef || "Proof Attached"}
                     </span>
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-[#0062FF] font-bold">
+                  <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-[#16A34A] font-bold">
                     <span>{m.initialFeeTransferred}</span>
                     <span>Rs. 200</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 text-[11px] text-blue-900 dark:text-blue-200 leading-relaxed text-left rtl:text-right">
+                <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-[11px] text-emerald-900 dark:text-emerald-200 leading-relaxed text-left rtl:text-right">
                   <p className="font-semibold pb-1">{m.nextStepsTitle}</p>
                   <p>{m.step1AdminVerify}</p>
                   <p>{m.step2Dispatch}</p>
@@ -2034,7 +2034,7 @@ export default function STCStyleMarketplacePage() {
                   </a>
                   <button
                     onClick={() => setIsBookingModalOpen(false)}
-                    className="py-2.5 px-5 bg-[#0062FF] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+                    className="py-2.5 px-5 bg-[#16A34A] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
                   >
                     {m.doneBtn}
                   </button>

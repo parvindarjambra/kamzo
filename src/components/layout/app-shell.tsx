@@ -52,8 +52,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (isAuthenticated !== true) {
     return (
       <div className="min-h-screen bg-[#070D1E] flex flex-col items-center justify-center p-6 text-white font-sans">
-        <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#0062FF] mb-4">
-          <Loader2 className="w-8 h-8 animate-spin text-[#0062FF]" />
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[#16A34A] mb-4">
+          <Loader2 className="w-8 h-8 animate-spin text-[#16A34A]" />
         </div>
         <h3 className="text-lg font-bold">Checking Admin Privileges...</h3>
         <p className="text-xs text-slate-400 mt-1">

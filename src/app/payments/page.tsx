@@ -195,7 +195,7 @@ function PaymentsContent() {
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium flex items-center gap-2 transition-all duration-300 ${
             toastMessage.type === "success"
-              ? "bg-[#0062FF] text-white border-blue-700"
+              ? "bg-[#16A34A] text-white border-emerald-700"
               : "bg-rose-700 text-white border-rose-800"
           }`}
         >
@@ -221,7 +221,7 @@ function PaymentsContent() {
             onClick={() => setActiveTab("visit_fee")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
               activeTab === "visit_fee"
-                ? "bg-white text-[#0062FF] shadow-sm"
+                ? "bg-white text-[#16A34A] shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
@@ -232,7 +232,7 @@ function PaymentsContent() {
             onClick={() => setActiveTab("commission")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
               activeTab === "commission"
-                ? "bg-white text-[#0062FF] shadow-sm"
+                ? "bg-white text-[#16A34A] shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
@@ -252,7 +252,7 @@ function PaymentsContent() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by reference #, booking #, or name..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0062FF]/20 focus:border-[#0062FF]"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#16A34A]"
           />
         </div>
 
@@ -267,7 +267,7 @@ function PaymentsContent() {
               onClick={() => setStatusFilter(status)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
                 statusFilter === status
-                  ? "bg-[#0062FF] text-white shadow-sm"
+                  ? "bg-[#16A34A] text-white shadow-sm"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -336,9 +336,9 @@ function PaymentsContent() {
                             ref: item.reference_number,
                           })
                         }
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-gray-100 hover:bg-blue-50 hover:text-[#0062FF] text-gray-700 text-xs font-medium border border-gray-200 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-gray-100 hover:bg-emerald-50 hover:text-[#16A34A] text-gray-700 text-xs font-medium border border-gray-200 transition-colors"
                       >
-                        <Eye className="w-3.5 h-3.5 text-[#0062FF]" />
+                        <Eye className="w-3.5 h-3.5 text-[#16A34A]" />
                         <span>View Proof</span>
                       </button>
                     </td>

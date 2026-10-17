@@ -3,7 +3,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 export const viewport: Viewport = {
-  themeColor: "#0062FF",
+  themeColor: "#16A34A",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,

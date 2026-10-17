@@ -54,7 +54,7 @@ export function Header({ onOpenSidebar }: HeaderProps) {
         )}
         <Link
           href="/"
-          className="text-gray-500 hover:text-[#0062FF] font-medium transition-colors shrink-0"
+          className="text-gray-500 hover:text-[#16A34A] font-medium transition-colors shrink-0"
         >
           KAMZO
         </Link>
@@ -74,8 +74,8 @@ export function Header({ onOpenSidebar }: HeaderProps) {
       <div className="flex items-center gap-3">
         {/* Environment Badge */}
         <div className="hidden sm:flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#0062FF] border border-blue-200 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#0062FF] animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
             Live PK Network
           </span>
         </div>
@@ -95,7 +95,7 @@ export function Header({ onOpenSidebar }: HeaderProps) {
 
         {/* Admin Identity */}
         <div className="flex items-center gap-3 pl-1">
-          <div className="w-8 h-8 rounded-full bg-[#0062FF] text-white flex items-center justify-center font-bold text-xs ring-2 ring-blue-100 shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-[#16A34A] text-white flex items-center justify-center font-bold text-xs ring-2 ring-emerald-100 shadow-sm">
             K
           </div>
           <div className="hidden md:block text-left text-xs">

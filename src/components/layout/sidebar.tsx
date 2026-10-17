@@ -107,7 +107,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         {/* Brand Header */}
         <div className="h-20 px-5 py-4 flex items-center justify-between border-b border-[#262626]">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-[#0062FF]/25 shrink-0 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shadow-[#16A34A]/25 shrink-0 flex items-center justify-center">
               <img
                 src="/logo.png"
                 alt="KAMZO Logo"
@@ -117,9 +117,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-black text-white text-lg tracking-tight">
-                  KAM<span className="text-[#0062FF]">ZO</span>
+                  KAM<span className="text-[#16A34A]">ZO</span>
                 </span>
-                <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
+                <span className="text-[9px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/40">
                   Admin
                 </span>
               </div>
@@ -159,7 +159,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               className={cn(
                 "group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-[#0062FF] text-white shadow-lg shadow-blue-600/30 font-semibold"
+                  ? "bg-[#16A34A] text-white shadow-lg shadow-emerald-600/30 font-semibold"
                   : "text-gray-300 hover:bg-[#202020] hover:text-white"
               )}
             >
@@ -169,7 +169,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                     "w-4 h-4 transition-colors",
                     isActive
                       ? "text-white"
-                      : "text-gray-400 group-hover:text-blue-400"
+                      : "text-gray-400 group-hover:text-emerald-400"
                   )}
                 />
                 <span>{item.title}</span>
@@ -180,7 +180,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 </span>
               )}
               {isActive && (
-                <ChevronRight className="w-4 h-4 text-blue-200/80" />
+                <ChevronRight className="w-4 h-4 text-emerald-200/80" />
               )}
             </Link>
           );
@@ -191,13 +191,13 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       <div className="px-3 py-2">
         <Link
           href="/"
-          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-blue-950/40 text-blue-300 border border-blue-800/40 hover:bg-blue-900/60 transition-colors"
+          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 hover:bg-emerald-900/60 transition-colors"
         >
           <div className="flex items-center gap-2">
             <ExternalLink className="w-3.5 h-3.5" />
             <span>Public Customer Site</span>
           </div>
-          <span className="text-[10px] bg-[#0062FF] px-1.5 py-0.5 rounded text-white font-bold">Live</span>
+          <span className="text-[10px] bg-[#16A34A] px-1.5 py-0.5 rounded text-white font-bold">Live</span>
         </Link>
       </div>
 
@@ -205,9 +205,9 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       <div className="p-3 border-t border-[#262626] space-y-2 bg-[#171717]">
         <div className="bg-[#202020] rounded-xl p-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative w-8 h-8 rounded-full bg-blue-950/70 border border-blue-500/40 flex items-center justify-center text-blue-300 font-semibold text-xs shrink-0">
-              <ShieldCheck className="w-4 h-4 text-blue-400" />
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#0062FF] ring-2 ring-[#202020]" />
+            <div className="relative w-8 h-8 rounded-full bg-emerald-950/70 border border-emerald-500/40 flex items-center justify-center text-emerald-300 font-semibold text-xs shrink-0">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#16A34A] ring-2 ring-[#202020]" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-white truncate">

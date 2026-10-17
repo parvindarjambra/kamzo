@@ -198,16 +198,16 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner in STC Royal Electric Blue to Tech Navy */}
-      <div className="bg-gradient-to-r from-[#0062FF] via-[#0052D9] to-[#0A1128] rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-900/10 relative overflow-hidden border border-blue-500/20">
+      {/* Welcome Banner in Green Gradient */}
+      <div className="bg-gradient-to-r from-[#16A34A] via-[#15803D] to-[#064E3B] rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/20 relative overflow-hidden border border-emerald-500/20">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-blue-100 text-xs font-semibold mb-3 backdrop-blur-md border border-white/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-emerald-100 text-xs font-semibold mb-3 backdrop-blur-md border border-white/20">
             <span>🇵🇰</span> Live Operations in Umerkot, Karachi, Lahore, Islamabad & Nationwide
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Welcome to KAMZO Control Center
           </h1>
-          <p className="text-blue-100/90 text-sm sm:text-base mt-2 font-normal leading-relaxed">
+          <p className="text-emerald-100/90 text-sm sm:text-base mt-2 font-normal leading-relaxed">
             Monitor real-time bookings, verify bank and wallet transfers, review worker performance,
             and manage platform commission distributions.
           </p>
@@ -215,7 +215,7 @@ export default async function DashboardPage() {
           <div className="flex flex-wrap items-center gap-3 mt-6">
             <Link
               href="/payments"
-              className="inline-flex items-center px-4 py-2.5 rounded-xl bg-white text-[#0062FF] hover:bg-blue-50 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              className="inline-flex items-center px-4 py-2.5 rounded-xl bg-white text-[#16A34A] hover:bg-emerald-50 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
             >
               Review Pending Payments ({stats.pendingPaymentVerifications})
             </Link>
@@ -229,7 +229,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Decorative background shapes */}
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-blue-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute right-40 top-0 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
@@ -341,7 +341,7 @@ export default async function DashboardPage() {
             subtitle="Latest on-demand service dispatches across Pakistan"
             action={
               <Link href="/payments">
-                <Button variant="ghost" size="sm" className="text-xs text-[#0062FF] hover:text-[#0052D9]">
+                <Button variant="ghost" size="sm" className="text-xs text-[#16A34A] hover:text-[#15803D]">
                   View All <ArrowUpRight className="w-3.5 h-3.5 ml-1" />
                 </Button>
               </Link>
@@ -349,8 +349,8 @@ export default async function DashboardPage() {
           >
             {stats.recentBookings.length === 0 ? (
               <div className="py-12 px-4 text-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0062FF] flex items-center justify-center mx-auto">
-                  <Clock className="w-6 h-6 text-[#0062FF]" />
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto">
+                  <Clock className="w-6 h-6 text-[#16A34A]" />
                 </div>
                 <p className="font-bold text-gray-900 text-sm">No Live Bookings Yet (کوئی بکنگ نہیں)</p>
                 <p className="text-xs text-gray-500 max-w-sm mx-auto">
@@ -448,17 +448,17 @@ export default async function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/70 border border-blue-200/60">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-50/70 border border-emerald-200/60">
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold text-blue-900">
+                  <p className="text-xs font-semibold text-emerald-900">
                     Worker Commissions
                   </p>
-                  <p className="text-[11px] text-blue-700">
+                  <p className="text-[11px] text-emerald-700">
                     {stats.pendingCommissionPayments} worker deposits submitted
                   </p>
                 </div>
                 <Link href="/payments?tab=commissions">
-                  <Button size="sm" variant="outline" className="h-7 text-xs border-blue-300 text-[#0062FF] bg-white hover:bg-blue-100">
+                  <Button size="sm" variant="outline" className="h-7 text-xs border-emerald-300 text-[#16A34A] bg-white hover:bg-emerald-100">
                     Verify
                   </Button>
                 </Link>
@@ -500,7 +500,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-gray-500">{item.count}</p>
-                    <span className="text-[10px] text-blue-600 font-medium">● {item.status}</span>
+                    <span className="text-[10px] text-emerald-600 font-medium">● {item.status}</span>
                   </div>
                 </div>
               ))}
