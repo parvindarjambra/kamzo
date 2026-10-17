@@ -39,7 +39,7 @@ export function Header() {
       <div className="flex items-center gap-2 text-sm">
         <Link
           href="/"
-          className="text-gray-500 hover:text-[#1B5E20] font-medium transition-colors"
+          className="text-gray-500 hover:text-[#0062FF] font-medium transition-colors"
         >
           KAMZO
         </Link>
@@ -59,10 +59,10 @@ export function Header() {
       <div className="flex items-center gap-3">
         {/* Environment Badge */}
         <div className="hidden sm:flex items-center gap-2">
-          <Badge variant="success" size="sm" className="gap-1.5 py-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#0062FF] border border-blue-200 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#0062FF] animate-pulse" />
             Live PK Network
-          </Badge>
+          </span>
         </div>
 
         {/* Quick Links / Notifications */}
@@ -80,7 +80,7 @@ export function Header() {
 
         {/* Admin Identity */}
         <div className="flex items-center gap-3 pl-1">
-          <div className="w-8 h-8 rounded-full bg-[#1B5E20] text-white flex items-center justify-center font-bold text-xs ring-2 ring-emerald-100 shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-[#0062FF] text-white flex items-center justify-center font-bold text-xs ring-2 ring-blue-100 shadow-sm">
             K
           </div>
           <div className="hidden md:block text-left text-xs">

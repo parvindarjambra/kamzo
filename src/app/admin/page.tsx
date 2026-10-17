@@ -241,44 +241,39 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+      {/* Welcome Banner in STC Royal Electric Blue to Tech Navy */}
+      <div className="bg-gradient-to-r from-[#0062FF] via-[#0052D9] to-[#0A1128] rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-900/10 relative overflow-hidden border border-blue-500/20">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-emerald-100 text-xs font-medium mb-3 backdrop-blur-sm">
-            <span>🇵🇰</span> Live Operations in Karachi, Lahore, Islamabad & Rawalpindi
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-blue-100 text-xs font-semibold mb-3 backdrop-blur-md border border-white/20">
+            <span>🇵🇰</span> Live Operations in Umerkot, Karachi, Lahore, Islamabad & Nationwide
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Welcome to KAMZO Control Center
           </h1>
-          <p className="text-emerald-100/90 text-sm sm:text-base mt-2 font-normal leading-relaxed">
+          <p className="text-blue-100/90 text-sm sm:text-base mt-2 font-normal leading-relaxed">
             Monitor real-time bookings, verify bank and wallet transfers, review worker performance,
             and manage platform commission distributions.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 mt-5">
-            <Link href="/payments">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-white text-[#1B5E20] hover:bg-emerald-50 border-0 font-semibold"
-              >
-                Review Pending Payments ({stats.pendingPaymentVerifications})
-              </Button>
+          <div className="flex flex-wrap items-center gap-3 mt-6">
+            <Link
+              href="/payments"
+              className="inline-flex items-center px-4 py-2.5 rounded-xl bg-white text-[#0062FF] hover:bg-blue-50 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+            >
+              Review Pending Payments ({stats.pendingPaymentVerifications})
             </Link>
-            <Link href="/workers">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-white border-white/30 hover:bg-white/10 hover:text-white"
-              >
-                Inspect Worker Network
-              </Button>
+            <Link
+              href="/workers"
+              className="inline-flex items-center px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs sm:text-sm border border-white/30 backdrop-blur-md transition-all cursor-pointer"
+            >
+              Inspect Worker Network
             </Link>
           </div>
         </div>
 
-        {/* Decorative background shape */}
-        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+        {/* Decorative background shapes */}
+        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-blue-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute right-40 top-0 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>
 
       {/* Primary KPI Grid (9 Stat Cards) */}
@@ -389,7 +384,7 @@ export default async function DashboardPage() {
             subtitle="Latest on-demand service dispatches across Pakistan"
             action={
               <Link href="/payments">
-                <Button variant="ghost" size="sm" className="text-xs text-[#1B5E20]">
+                <Button variant="ghost" size="sm" className="text-xs text-[#0062FF] hover:text-[#0052D9]">
                   View All <ArrowUpRight className="w-3.5 h-3.5 ml-1" />
                 </Button>
               </Link>
@@ -484,17 +479,17 @@ export default async function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-50/70 border border-emerald-200/60">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/70 border border-blue-200/60">
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold text-emerald-900">
+                  <p className="text-xs font-semibold text-blue-900">
                     Worker Commissions
                   </p>
-                  <p className="text-[11px] text-emerald-700">
+                  <p className="text-[11px] text-blue-700">
                     {stats.pendingCommissionPayments} worker deposits submitted
                   </p>
                 </div>
                 <Link href="/payments?tab=commissions">
-                  <Button size="sm" variant="outline" className="h-7 text-xs border-emerald-300 text-[#1B5E20] bg-white hover:bg-emerald-100">
+                  <Button size="sm" variant="outline" className="h-7 text-xs border-blue-300 text-[#0062FF] bg-white hover:bg-blue-100">
                     Verify
                   </Button>
                 </Link>
@@ -524,9 +519,10 @@ export default async function DashboardPage() {
           >
             <CardContent className="space-y-3 pt-3">
               {[
-                { city: "Karachi", share: "45%", count: "172 active workers", status: "High Demand" },
-                { city: "Lahore", share: "32%", count: "128 active workers", status: "Optimal" },
-                { city: "Islamabad & RWP", share: "23%", count: "82 active workers", status: "Optimal" },
+                { city: "Karachi", share: "38%", count: "145 active workers", status: "High Demand" },
+                { city: "Lahore", share: "30%", count: "115 active workers", status: "Optimal" },
+                { city: "Islamabad & RWP", share: "20%", count: "78 active workers", status: "Optimal" },
+                { city: "Umerkot & Rural", share: "12%", count: "44 active workers", status: "Growing" },
               ].map((item) => (
                 <div key={item.city} className="flex items-center justify-between text-xs py-2 border-b border-gray-50 last:border-0">
                   <div>
@@ -535,7 +531,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-gray-500">{item.count}</p>
-                    <span className="text-[10px] text-emerald-600 font-medium">● {item.status}</span>
+                    <span className="text-[10px] text-blue-600 font-medium">● {item.status}</span>
                   </div>
                 </div>
               ))}

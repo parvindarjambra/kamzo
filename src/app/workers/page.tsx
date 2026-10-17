@@ -277,7 +277,7 @@ export default function WorkersPage() {
     <div className="space-y-6">
       {/* Toast Alert */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#1B5E20] text-white px-4 py-3 rounded-xl shadow-lg border border-emerald-700 text-sm font-medium flex items-center gap-2">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0062FF] text-white px-4 py-3 rounded-xl shadow-lg border border-blue-700 text-sm font-medium flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />
           <span>{toast}</span>
         </div>

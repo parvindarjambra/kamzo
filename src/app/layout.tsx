@@ -22,7 +22,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/logo.jpg" />
-        <meta name="theme-color" content="#1B5E20" />
+        <meta name="theme-color" content="#0062FF" />
       </head>
       <body className="antialiased font-sans">
         <AppShell>{children}</AppShell>

@@ -82,7 +82,7 @@ export function Sidebar() {
     <aside className="w-64 bg-[#141414] text-gray-300 flex flex-col h-screen fixed left-0 top-0 z-30 border-r border-[#262626] select-none shadow-2xl">
       {/* Brand Header */}
       <div className="h-18 px-5 py-4 flex items-center border-b border-[#262626] gap-3">
-        <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#1B5E20]/50 shadow-md shadow-[#1B5E20]/30 shrink-0 bg-black flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl overflow-hidden border border-[#0062FF]/50 shadow-md shadow-[#0062FF]/30 shrink-0 bg-black flex items-center justify-center">
           <img
             src="/logo.jpg"
             alt="KAMZO Logo"
@@ -94,7 +94,7 @@ export function Sidebar() {
             <span className="font-extrabold text-white text-lg tracking-wider">
               KAMZO
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-[#1B5E20]/40 text-emerald-400 border border-emerald-500/30">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-500/40">
               Admin
             </span>
           </div>
@@ -123,7 +123,7 @@ export function Sidebar() {
               className={cn(
                 "group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-[#1B5E20] text-white shadow-lg shadow-[#1B5E20]/30 font-semibold"
+                  ? "bg-[#0062FF] text-white shadow-lg shadow-blue-600/30 font-semibold"
                   : "text-gray-300 hover:bg-[#202020] hover:text-white"
               )}
             >
@@ -133,7 +133,7 @@ export function Sidebar() {
                     "w-4 h-4 transition-colors",
                     isActive
                       ? "text-white"
-                      : "text-gray-400 group-hover:text-emerald-400"
+                      : "text-gray-400 group-hover:text-blue-400"
                   )}
                 />
                 <span>{item.title}</span>
@@ -144,7 +144,7 @@ export function Sidebar() {
                 </span>
               )}
               {isActive && (
-                <ChevronRight className="w-4 h-4 text-emerald-200/80" />
+                <ChevronRight className="w-4 h-4 text-blue-200/80" />
               )}
             </Link>
           );
@@ -155,13 +155,13 @@ export function Sidebar() {
       <div className="px-3 py-2">
         <Link
           href="/"
-          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 hover:bg-emerald-900/60 transition-colors"
+          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-blue-950/40 text-blue-300 border border-blue-800/40 hover:bg-blue-900/60 transition-colors"
         >
           <div className="flex items-center gap-2">
             <ExternalLink className="w-3.5 h-3.5" />
             <span>Public Customer Site</span>
           </div>
-          <span className="text-[10px] bg-emerald-700/60 px-1.5 py-0.5 rounded text-white">Live</span>
+          <span className="text-[10px] bg-[#0062FF] px-1.5 py-0.5 rounded text-white font-bold">Live</span>
         </Link>
       </div>
 
@@ -169,9 +169,9 @@ export function Sidebar() {
       <div className="p-3 border-t border-[#262626] space-y-2 bg-[#171717]">
         <div className="bg-[#202020] rounded-xl p-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative w-8 h-8 rounded-full bg-emerald-900/60 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-semibold text-xs shrink-0">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#202020]" />
+            <div className="relative w-8 h-8 rounded-full bg-blue-950/70 border border-blue-500/40 flex items-center justify-center text-blue-300 font-semibold text-xs shrink-0">
+              <ShieldCheck className="w-4 h-4 text-blue-400" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#0062FF] ring-2 ring-[#202020]" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-white truncate">
