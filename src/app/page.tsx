@@ -24,10 +24,8 @@ import {
   Sun,
   ArrowUp,
   MessageCircle,
-  HelpCircle,
   Award,
-  PhoneCall,
-  Lock,
+  Search,
 } from "lucide-react";
 
 interface ServiceData {
@@ -50,7 +48,7 @@ const services: ServiceData[] = [
     urduName: "آٹو مکینک",
     category: "Automobile & Roadside",
     icon: Wrench,
-    color: "#E11D48", // Rose Red
+    color: "#E11D48",
     badgeBg: "bg-rose-50 text-rose-600 border-rose-200",
     description: "Expert car diagnostics, engine tuning, brake repairs, oil change, suspension, and emergency roadside breakdown support.",
     inspectionFee: "Rs. 200",
@@ -62,7 +60,7 @@ const services: ServiceData[] = [
     urduName: "اے سی سروس و ریپیئر",
     category: "Cooling & Inverter PCB",
     icon: Snowflake,
-    color: "#0284C7", // Sky Blue
+    color: "#0284C7",
     badgeBg: "bg-sky-50 text-sky-600 border-sky-200",
     description: "Inverter AC diagnostics, deep master wash chemical cleaning, gas leakage detection, R410/R32 refill, and new installation.",
     inspectionFee: "Rs. 200",
@@ -86,7 +84,7 @@ const services: ServiceData[] = [
     urduName: "الیکٹریشن سروس",
     category: "Wiring & Breakers",
     icon: Zap,
-    color: "#D97706", // Amber
+    color: "#D97706",
     badgeBg: "bg-amber-50 text-amber-600 border-amber-200",
     description: "Short circuit troubleshooting, distribution box breakers, ceiling fan & chandelier installation, UPS & solar inverter wiring.",
     inspectionFee: "Rs. 200",
@@ -94,7 +92,7 @@ const services: ServiceData[] = [
   },
 ];
 
-// STC Style Circular Badges (from the user's screenshot)
+// STC Style Circular Badges
 const circularBadges = [
   { label: "Mechanic", urdu: "مکینک", icon: Wrench, color: "text-rose-500", bg: "bg-rose-50" },
   { label: "AC Repair", urdu: "اے سی", icon: Snowflake, color: "text-sky-500", bg: "bg-sky-50" },
@@ -106,17 +104,29 @@ const circularBadges = [
   { label: "Easypaisa", urdu: "ایزی پیسہ", icon: Award, color: "text-green-500", bg: "bg-green-50" },
 ];
 
+// Comprehensive Pakistani Cities List including Umerkot, Sindh, Punjab, KPK, Balochistan
 const pakistaniCities = [
-  "Lahore (لاہور)",
+  "Umerkot (عمرکوٹ)",
   "Karachi (کراچی)",
+  "Lahore (لاہور)",
   "Islamabad (اسلام آباد)",
   "Rawalpindi (راولپنڈی)",
+  "Hyderabad (حیدرآباد)",
+  "Mirpur Khas (میرپور خاص)",
+  "Sukkur (سکھر)",
+  "Larkana (لاڑکانہ)",
+  "Nawabshah / SBA (نواب شاہ)",
   "Faisalabad (فیصل آباد)",
   "Multan (ملتان)",
   "Peshawar (پشاور)",
   "Gujranwala (گوجرانوالہ)",
   "Sialkot (سیالکوٹ)",
   "Quetta (کوئٹہ)",
+  "Bahawalpur (بہاولپور)",
+  "Sargodha (سرگودھا)",
+  "Abbottabad (ایبٹ آباد)",
+  "Mardan (مردان)",
+  "Other / Type Your City (دیگر شہر / اپنا شہر لکھیں)",
 ];
 
 export default function STCStyleMarketplacePage() {
@@ -129,7 +139,8 @@ export default function STCStyleMarketplacePage() {
   // Form State
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [selectedCity, setSelectedCity] = useState(pakistaniCities[0]);
+  const [selectedCity, setSelectedCity] = useState(pakistaniCities[0]); // Defaults to Umerkot!
+  const [customCityName, setCustomCityName] = useState("");
   const [problemDetail, setProblemDetail] = useState("");
   const [confirmedBookingId, setConfirmedBookingId] = useState("");
 
@@ -158,10 +169,12 @@ export default function STCStyleMarketplacePage() {
     setBookingStep("confirmed");
   };
 
+  const effectiveCity = selectedCity.startsWith("Other") ? (customCityName || "Custom Location") : selectedCity;
+
   return (
     <div className={`min-h-screen ${isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"} font-sans transition-colors duration-200 selection:bg-[#0062FF] selection:text-white relative`}>
-      {/* ─── STC DEVELOPER STYLE NAVBAR ─── */}
-      <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/90 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
+      {/* ─── STC DEVELOPER STYLE NAVBAR (No Admin Link for Public!) ─── */}
+      <header className={`sticky top-0 z-40 ${isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"} backdrop-blur-md border-b transition-colors`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo Brand matching STC Developer style */}
           <Link href="/" className="flex items-center gap-3 group">
@@ -182,7 +195,7 @@ export default function STCStyleMarketplacePage() {
             </div>
           </Link>
 
-          {/* Centered Navigation Links (STC Developer Header Links) */}
+          {/* Centered Navigation Links (STC Developer Style - Clean Customer Nav) */}
           <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <Link
               href="/"
@@ -194,7 +207,7 @@ export default function STCStyleMarketplacePage() {
               Services
             </a>
             <a href="#specialise" className="hover:text-[#0062FF] transition-colors">
-              Technologies & Trades
+              Specialisations
             </a>
             <a href="#benefits" className="hover:text-[#0062FF] transition-colors">
               Benefits
@@ -213,7 +226,7 @@ export default function STCStyleMarketplacePage() {
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               aria-label="Toggle Dark Mode"
-              className={`p-2 rounded-full border transition-colors cursor-pointer ${
+              className={`p-2.5 rounded-full border transition-colors cursor-pointer ${
                 isDarkMode
                   ? "bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700"
                   : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -221,15 +234,6 @@ export default function STCStyleMarketplacePage() {
             >
               {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-
-            {/* Admin Portal Direct Button */}
-            <Link
-              href="/login"
-              className="px-4 py-2 text-xs font-bold text-slate-700 hover:text-[#0062FF] border border-slate-200 hover:border-[#0062FF] rounded-xl transition-all shadow-sm bg-white hover:bg-blue-50/50 flex items-center gap-1.5"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#0062FF]" />
-              <span className="hidden sm:inline">Admin Portal</span>
-            </Link>
 
             {/* Primary Action Button in STC Electric Blue */}
             <button
@@ -245,7 +249,6 @@ export default function STCStyleMarketplacePage() {
 
       {/* ─── HERO SECTION ─── */}
       <section className="relative pt-10 pb-16 lg:pt-16 lg:pb-20 overflow-hidden">
-        {/* Soft radial background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 blur-3xl pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -268,8 +271,8 @@ export default function STCStyleMarketplacePage() {
 
               {/* Subtitle */}
               <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
-                Connect with verified local mechanics, AC technicians, plumbers, and electricians across Pakistan.
-                Transparent flat <strong className={`${isDarkMode ? "text-white" : "text-slate-900"} font-bold`}>Rs. 200 visit/inspection fee</strong> and pay cash directly after satisfactory completion.
+                Connect with verified local mechanics, AC technicians, plumbers, and electricians anywhere in Pakistan.
+                Transparent flat <strong className={`${isDarkMode ? "text-white" : "text-slate-900"} font-bold`}>Rs. 200 inspection fee</strong> and pay cash directly after satisfactory completion.
               </p>
 
               {/* Quick Interactive Booking Card */}
@@ -313,9 +316,9 @@ export default function STCStyleMarketplacePage() {
                   <div className={`w-full sm:flex-1 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"} border rounded-xl px-3.5 py-2.5 flex items-center gap-2 text-xs text-slate-700`}>
                     <MapPin className="w-4 h-4 text-[#0062FF] shrink-0" />
                     <span className={`font-semibold ${isDarkMode ? "text-white" : "text-slate-900"} truncate`}>
-                      {selectedCity}
+                      {effectiveCity}
                     </span>
-                    <span className="text-[10px] text-slate-400 ml-auto">Nearby</span>
+                    <span className="text-[10px] text-slate-400 ml-auto">Pakistan</span>
                   </div>
 
                   <button
@@ -356,10 +359,8 @@ export default function STCStyleMarketplacePage() {
                     alt="KAMZO Certified Pakistani Technicians - Electrician, Plumber, AC Repair, Mechanic"
                     className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Overlay Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Overlay Badge */}
                   <div className="absolute bottom-4 left-4 right-4 text-white p-3.5 rounded-2xl bg-black/60 backdrop-blur-md border border-white/20">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -380,7 +381,7 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
-                {/* Floating STC Badge 1 */}
+                {/* Floating Badge 1 */}
                 <div className={`absolute -top-4 -left-4 ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-slate-100 text-slate-900"} rounded-2xl p-3 shadow-xl border flex items-center gap-2.5 hidden sm:flex`}>
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#0062FF]">
                     <ShieldCheck className="w-6 h-6 text-[#0062FF]" />
@@ -391,7 +392,7 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
-                {/* Floating STC Badge 2 */}
+                {/* Floating Badge 2 */}
                 <div className={`absolute -bottom-4 -right-4 ${isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-white border-slate-100 text-slate-900"} rounded-2xl p-3 shadow-xl border flex items-center gap-2.5 hidden sm:flex`}>
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#0062FF]">
                     <Wallet className="w-5 h-5 text-[#0062FF]" />
@@ -407,10 +408,9 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── STC DEVELOPER STYLE: "STACK" CIRCULAR ICONS SECTION ─── */}
+      {/* ─── STC DEVELOPER STYLE: CIRCULAR ICONS SECTION ─── */}
       <section className={`py-14 border-t border-b ${isDarkMode ? "bg-slate-900/60 border-slate-800" : "bg-slate-50/70 border-slate-100"}`} id="specialise">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* STC Uppercase Subtitle */}
           <div className="space-y-2">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
               TRADES & TECHNOLOGY
@@ -419,11 +419,11 @@ export default function STCStyleMarketplacePage() {
               Services We Specialise In
             </h2>
             <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto font-normal">
-              Our certified technicians deliver high-performance solutions using state-of-the-art tools and equipment.
+              Our certified technicians deliver high-performance solutions across Umerkot, Karachi, Lahore, and all cities.
             </p>
           </div>
 
-          {/* STC Floating Circular Tech Pills (Exactly like JS, React, Node circles!) */}
+          {/* STC Floating Circular Tech Pills */}
           <div className="flex items-center justify-center gap-5 sm:gap-8 flex-wrap pt-4">
             {circularBadges.map((badge, idx) => {
               const Icon = badge.icon;
@@ -448,10 +448,9 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── DETAILED 4 SERVICES CARDS (STC STYLE) ─── */}
+      {/* ─── DETAILED 4 SERVICES CARDS ─── */}
       <section className="py-20" id="services">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
               CORE SERVICES
@@ -464,7 +463,6 @@ export default function STCStyleMarketplacePage() {
             </p>
           </div>
 
-          {/* Service Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((srv) => {
               const Icon = srv.icon;
@@ -474,7 +472,6 @@ export default function STCStyleMarketplacePage() {
                   className={`${isDarkMode ? "bg-slate-900 border-slate-800 hover:border-[#0062FF]/50" : "bg-white border-slate-200/80 hover:border-[#0062FF]/40"} rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group`}
                 >
                   <div className="space-y-4">
-                    {/* Header */}
                     <div className="flex items-start justify-between">
                       <div className={`w-12 h-12 rounded-2xl ${isDarkMode ? "bg-slate-800" : "bg-blue-50"} text-[#0062FF] flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform`}>
                         <Icon className="w-6 h-6 text-[#0062FF]" />
@@ -484,7 +481,6 @@ export default function STCStyleMarketplacePage() {
                       </span>
                     </div>
 
-                    {/* Titles */}
                     <div>
                       <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"} group-hover:text-[#0062FF] transition-colors`}>
                         {srv.name}
@@ -493,12 +489,10 @@ export default function STCStyleMarketplacePage() {
                       <p className="text-[11px] font-semibold text-slate-400 mt-0.5">{srv.category}</p>
                     </div>
 
-                    {/* Description */}
                     <p className="text-xs text-slate-500 leading-relaxed font-normal">
                       {srv.description}
                     </p>
 
-                    {/* Common Repairs */}
                     <div className="space-y-1.5 pt-2 border-t border-slate-100">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         Common Issues:
@@ -516,7 +510,6 @@ export default function STCStyleMarketplacePage() {
                     </div>
                   </div>
 
-                  {/* Action Button */}
                   <div className="pt-6 mt-4 border-t border-slate-100">
                     <button
                       onClick={() => handleOpenBooking(srv)}
@@ -533,10 +526,9 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── STC STYLE: "BENEFITS" SECTION (from screenshot bottom) ─── */}
+      {/* ─── STC STYLE: "BENEFITS" SECTION ─── */}
       <section className={`py-20 border-t ${isDarkMode ? "bg-slate-900/50 border-slate-800" : "bg-slate-50/60 border-slate-100"}`} id="benefits">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* STC Uppercase Subtitle: BENEFITS */}
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-[#0062FF]">
               BENEFITS
@@ -589,7 +581,7 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── HOW IT WORKS (HOW IT WORKS SECTION) ─── */}
+      {/* ─── HOW IT WORKS SECTION ─── */}
       <section className="py-20" id="how-it-works">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -613,7 +605,7 @@ export default function STCStyleMarketplacePage() {
                 Request Service & Pay Visit Fee
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Select your service (Mechanic, AC, Plumber, Electrician), explain the issue, and pay flat Rs. 200 fee via JazzCash, Easypaisa, or 1Link.
+                Select your service (Mechanic, AC, Plumber, Electrician), select your city, and pay flat Rs. 200 fee via JazzCash, Easypaisa, or 1Link.
               </p>
             </div>
 
@@ -644,7 +636,7 @@ export default function STCStyleMarketplacePage() {
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
+      {/* ─── FOOTER (Clean Customer Footer - No Admin Link) ─── */}
       <footer className={`${isDarkMode ? "bg-[#070D1E] border-slate-800" : "bg-[#0A1128] border-slate-900"} text-slate-400 py-12 border-t`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
@@ -658,25 +650,22 @@ export default function STCStyleMarketplacePage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-5 text-xs font-semibold">
-              <Link href="/login" className="text-blue-400 hover:text-white transition-colors bg-blue-950/60 px-3.5 py-1.5 rounded-lg border border-blue-800/50">
-                ⚡ Admin Portal Login (ایڈمن)
-              </Link>
+            <div className="flex items-center gap-6 text-xs font-semibold">
               <a href="#services" className="hover:text-white transition-colors">Services</a>
               <a href="#benefits" className="hover:text-white transition-colors">Benefits</a>
               <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+              <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <p>© 2026 KAMZO Pakistan. Built for Pakistan&apos;s Local Services Industry.</p>
-            <p className="text-[#0062FF] font-semibold">Lahore • Karachi • Islamabad • Rawalpindi</p>
+            <p className="text-[#0062FF] font-semibold">Umerkot • Karachi • Lahore • Islamabad • Nationwide</p>
           </div>
         </div>
       </footer>
 
-      {/* ─── FLOATING ACTION WIDGETS (FROM STC SCREENSHOT BOTTOM RIGHT) ─── */}
-      {/* 1. Floating WhatsApp Button */}
+      {/* ─── FLOATING ACTION WIDGETS ─── */}
       <a
         href="https://wa.me/923001234567?text=Assalam-o-Alaikum%20KAMZO%20Support,%20I%20need%20assistance%20with%20service%20booking"
         target="_blank"
@@ -685,13 +674,11 @@ export default function STCStyleMarketplacePage() {
         className="fixed bottom-20 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
       >
         <MessageCircle className="w-7 h-7 fill-white text-[#25D366]" />
-        {/* Tooltip */}
         <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1 px-2.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-md">
           Chat on WhatsApp (فوری رابطہ)
         </span>
       </a>
 
-      {/* 2. Floating Scroll To Top Button */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
@@ -702,7 +689,7 @@ export default function STCStyleMarketplacePage() {
         </button>
       )}
 
-      {/* ─── INTERACTIVE ONLINE BOOKING MODAL ─── */}
+      {/* ─── INTERACTIVE ONLINE BOOKING MODAL WITH ANY CITY SUPPORT ─── */}
       {isBookingModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className={`${isDarkMode ? "bg-slate-900 text-white border-slate-800" : "bg-white text-slate-900 border-slate-100"} rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border relative space-y-5 max-h-[90vh] overflow-y-auto`}>
@@ -753,9 +740,11 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
-                {/* City Picker */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600">Select City (شہر):</label>
+                {/* City Picker with Umerkot and Custom City Input */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-600 flex items-center justify-between">
+                    <span>Select City / Location (شہر کا انتخاب کریں):</span>
+                  </label>
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
@@ -765,6 +754,20 @@ export default function STCStyleMarketplacePage() {
                       <option key={city} value={city}>{city}</option>
                     ))}
                   </select>
+
+                  {/* If user selected "Other / Type Your City" or wants to specify area */}
+                  {selectedCity.startsWith("Other") && (
+                    <div className="pt-1 animate-in fade-in">
+                      <input
+                        type="text"
+                        required
+                        value={customCityName}
+                        onChange={(e) => setCustomCityName(e.target.value)}
+                        placeholder="Type your City / Town / Area name (اپنے شہر یا علاقے کا نام لکھیں)"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-blue-50/40"} text-xs font-semibold focus:outline-none focus:border-[#0062FF] placeholder:text-slate-400`}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Customer Name */}
@@ -775,7 +778,7 @@ export default function STCStyleMarketplacePage() {
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="e.g. Muhammad Ali"
+                    placeholder="e.g. Parvindar Kumar / Muhammad Ali"
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs focus:outline-none focus:border-[#0062FF]`}
                   />
                 </div>
@@ -800,13 +803,13 @@ export default function STCStyleMarketplacePage() {
 
                 {/* Problem Description */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600">Problem Description (مسئلہ کی تفصیل):</label>
+                  <label className="text-xs font-bold text-slate-600">Problem / Work Detail (مسئلہ کی تفصیل):</label>
                   <textarea
                     rows={3}
                     required
                     value={problemDetail}
                     onChange={(e) => setProblemDetail(e.target.value)}
-                    placeholder="Describe what needs repair or servicing..."
+                    placeholder="Describe what needs repair, servicing, or installation..."
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"} text-xs focus:outline-none focus:border-[#0062FF] resize-none`}
                   />
                 </div>
@@ -854,7 +857,7 @@ export default function STCStyleMarketplacePage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">City / Location:</span>
-                    <span className="font-bold">{selectedCity}</span>
+                    <span className="font-bold">{effectiveCity}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Customer Name:</span>
