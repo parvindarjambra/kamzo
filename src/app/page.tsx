@@ -1190,7 +1190,7 @@ export default function STCStyleMarketplacePage() {
 
   return (
     <div
-      dir={lang === "ur" || lang === "sd" ? "rtl" : "ltr"}
+      dir="ltr"
       className={`min-h-screen w-full max-w-[100vw] overflow-x-hidden ${
         isDarkMode ? "bg-[#0B132B] text-slate-100" : "bg-white text-[#0A1128]"
       } font-sans transition-colors duration-200 selection:bg-[#16A34A] selection:text-white relative pb-24 md:pb-0`}
@@ -1203,19 +1203,21 @@ export default function STCStyleMarketplacePage() {
         className={`sticky top-0 z-40 ${
           isDarkMode ? "bg-[#0B132B]/95 border-slate-800" : "bg-white/95 border-slate-100"
         } backdrop-blur-md border-b transition-colors w-full overflow-hidden`}
+        dir="ltr"
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4" dir="ltr">
           {/* Logo Brand: Official KAMZO App Icon & Typography */}
           <Link
             href="/"
             onClick={handleLogoSecretTap}
             className="flex items-center gap-2.5 sm:gap-3.5 group shrink-0 select-none cursor-pointer"
+            dir="ltr"
           >
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl overflow-hidden shadow-md shadow-emerald-500/25 transition-all group-hover:scale-105 shrink-0">
               <img src="/logo.png" alt="KAMZO Logo" className="w-full h-full object-cover" />
             </div>
-            <div className="flex flex-col shrink-0">
-              <div className="flex items-baseline gap-0.5">
+            <div className="flex flex-col shrink-0 text-left" dir="ltr">
+              <div className="flex items-baseline gap-0.5" dir="ltr">
                 <span className={`text-xl sm:text-3xl font-black tracking-tight ${isDarkMode ? "text-white" : "text-[#0B132B]"}`}>
                   KAM
                 </span>
@@ -1223,7 +1225,7 @@ export default function STCStyleMarketplacePage() {
                   ZO
                 </span>
               </div>
-              <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-extrabold text-slate-400 dark:text-slate-400 -mt-0.5">
+              <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-extrabold text-slate-400 dark:text-slate-400 -mt-0.5" dir="ltr">
                 SERVICES MARKETPLACE
               </p>
             </div>
@@ -1364,7 +1366,7 @@ export default function STCStyleMarketplacePage() {
                 {/* Button 1: Customer Booking */}
                 <button
                   onClick={() => handleOpenBooking(selectedService)}
-                  className="w-full py-4 px-4 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-between gap-3 cursor-pointer text-left rtl:text-right"
+                  className="w-full py-4 px-4 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-between gap-3 cursor-pointer text-left"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
@@ -1379,7 +1381,7 @@ export default function STCStyleMarketplacePage() {
                       </div>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 shrink-0 text-white rtl:rotate-180" />
+                  <ArrowRight className="w-4 h-4 shrink-0 text-white" />
                 </button>
 
                 {/* Button 2: Worker Join / Registration */}
@@ -1389,7 +1391,7 @@ export default function STCStyleMarketplacePage() {
                     setWorkerStepNumber(1);
                     setIsWorkerModalOpen(true);
                   }}
-                  className={`w-full py-4 px-4 font-bold text-xs sm:text-sm rounded-xl border transition-all flex items-center justify-between gap-3 cursor-pointer text-left rtl:text-right ${
+                  className={`w-full py-4 px-4 font-bold text-xs sm:text-sm rounded-xl border transition-all flex items-center justify-between gap-3 cursor-pointer text-left ${
                     isDarkMode
                       ? "bg-emerald-950/70 text-emerald-300 border-emerald-600/70 hover:bg-emerald-900/60"
                       : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 shadow-sm"
@@ -1408,7 +1410,7 @@ export default function STCStyleMarketplacePage() {
                       </div>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400 rtl:rotate-180" />
+                  <ArrowRight className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                 </button>
               </div>
             </div>
@@ -1510,7 +1512,7 @@ export default function STCStyleMarketplacePage() {
                       <span>
                         {t.bookNowPrefix}{displayName}{t.bookNowSuffix}
                       </span>
-                      <ChevronRight className="w-4 h-4 rtl:rotate-180" />
+                      <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -1667,16 +1669,16 @@ export default function STCStyleMarketplacePage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
-            <div className="flex items-center gap-3.5 cursor-pointer select-none" onClick={handleLogoSecretTap}>
+            <div className="flex items-center gap-3.5 cursor-pointer select-none" onClick={handleLogoSecretTap} dir="ltr">
               <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-md shadow-emerald-500/25 shrink-0">
                 <img src="/logo.png" alt="KAMZO Logo" className="w-full h-full object-cover" />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-0.5">
+              <div className="flex flex-col text-left" dir="ltr">
+                <div className="flex items-baseline gap-0.5" dir="ltr">
                   <span className="text-xl font-black text-white tracking-tight">KAM</span>
                   <span className="text-xl font-black text-[#16A34A] tracking-tight">ZO</span>
                 </div>
-                <p className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-slate-400">
+                <p className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-slate-400" dir="ltr">
                   SERVICES MARKETPLACE
                 </p>
                 <p className="text-[10px] text-[#16A34A] font-bold">{t.footerTagline}</p>
@@ -1856,7 +1858,7 @@ export default function STCStyleMarketplacePage() {
             </button>
 
             {bookingStep === "details" && (
-              <form onSubmit={handleDetailsSubmit} className="space-y-4 text-left rtl:text-right">
+              <form onSubmit={handleDetailsSubmit} className="space-y-4 text-left">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <Sparkles className="w-3.5 h-3.5" />
@@ -2012,14 +2014,14 @@ export default function STCStyleMarketplacePage() {
                   className="w-full py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{m.nextPaymentBtn}</span>
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             )}
 
             {/* STEP 2: PAYMENT & RECEIPT PROOF ATTACHMENT */}
             {bookingStep === "payment" && (
-              <form onSubmit={handlePaymentSubmit} className="space-y-4 text-left rtl:text-right">
+              <form onSubmit={handlePaymentSubmit} className="space-y-4 text-left">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <CreditCard className="w-3.5 h-3.5" />
@@ -2173,7 +2175,7 @@ export default function STCStyleMarketplacePage() {
                     />
                     <label htmlFor="receipt-file-input" className="cursor-pointer block">
                       {receiptPreview ? (
-                        <div className="flex items-center gap-3 text-left rtl:text-right">
+                        <div className="flex items-center gap-3 text-left">
                           <img
                             src={receiptPreview}
                             alt="Receipt Preview"
@@ -2241,7 +2243,7 @@ export default function STCStyleMarketplacePage() {
                 </div>
 
                 {/* Worker Details Locked Notice until payment verification */}
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-start gap-2.5 text-left rtl:text-right">
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-start gap-2.5 text-left">
                   <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
                     <p className="font-extrabold text-xs">
@@ -2264,7 +2266,7 @@ export default function STCStyleMarketplacePage() {
                 <div
                   className={`${
                     isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-800"
-                  } rounded-2xl p-4 text-xs space-y-2 border text-left rtl:text-right`}
+                  } rounded-2xl p-4 text-xs space-y-2 border text-left`}
                 >
                   <div className="flex justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
                     <span className="text-slate-400">{m.bookingRef}</span>
@@ -2294,7 +2296,7 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-[11px] text-emerald-900 dark:text-emerald-200 leading-relaxed text-left rtl:text-right">
+                <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-[11px] text-emerald-900 dark:text-emerald-200 leading-relaxed text-left">
                   <p className="font-semibold pb-1">{m.nextStepsTitle}</p>
                   <p>{m.step1AdminVerify}</p>
                   <p>{m.step2Dispatch}</p>
@@ -2408,7 +2410,7 @@ export default function STCStyleMarketplacePage() {
 
                 {/* ─── STEP 1: PERSONAL DETAILS ─── */}
                 {workerStepNumber === 1 && (
-                  <form onSubmit={handleWorkerStep1Next} className="space-y-4 text-left rtl:text-right">
+                  <form onSubmit={handleWorkerStep1Next} className="space-y-4 text-left">
                     <div className="space-y-1">
                       <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                         <Briefcase className="w-3.5 h-3.5" />
@@ -2544,14 +2546,14 @@ export default function STCStyleMarketplacePage() {
                       className="w-full py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>{m.nextStep2Btn}</span>
-                      <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>
                 )}
 
                 {/* ─── STEP 2: PROFESSIONAL DETAILS ─── */}
                 {workerStepNumber === 2 && (
-                  <form onSubmit={handleWorkerStep2Next} className="space-y-4 text-left rtl:text-right">
+                  <form onSubmit={handleWorkerStep2Next} className="space-y-4 text-left">
                     <div className="space-y-1">
                       <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                         <Briefcase className="w-3.5 h-3.5" />
@@ -2586,7 +2588,7 @@ export default function STCStyleMarketplacePage() {
                               key={cat.id}
                               type="button"
                               onClick={() => handleToggleWorkerCategory(cat.id)}
-                              className={`p-3 rounded-xl border text-left rtl:text-right transition-all flex items-center gap-2.5 ${
+                              className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 ${
                                 isSelected
                                   ? "bg-emerald-50 dark:bg-emerald-950/50 border-[#16A34A] text-[#16A34A] shadow-sm"
                                   : isDarkMode
@@ -2712,7 +2714,7 @@ export default function STCStyleMarketplacePage() {
                         />
                         <label htmlFor="profile-photo-input" className="cursor-pointer block text-xs">
                           {workerProfilePhotoPreview ? (
-                            <div className="flex items-center gap-3 text-left rtl:text-right">
+                            <div className="flex items-center gap-3 text-left">
                               <img
                                 src={workerProfilePhotoPreview}
                                 alt="Profile Preview"
@@ -2757,7 +2759,7 @@ export default function STCStyleMarketplacePage() {
                         className="flex-1 py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <span>{m.nextStep3Btn}</span>
-                        <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                        <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
                   </form>
@@ -2765,7 +2767,7 @@ export default function STCStyleMarketplacePage() {
 
                 {/* ─── STEP 3: VERIFICATION & PAYOUT DETAILS ─── */}
                 {workerStepNumber === 3 && (
-                  <form onSubmit={handleWorkerFinalSubmit} className="space-y-4 text-left rtl:text-right">
+                  <form onSubmit={handleWorkerFinalSubmit} className="space-y-4 text-left">
                     <div className="space-y-1">
                       <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                         <ShieldCheck className="w-3.5 h-3.5" />
@@ -2939,7 +2941,7 @@ export default function STCStyleMarketplacePage() {
                           {m.termsAgreementLabel}
                         </label>
                       </div>
-                      <p className="text-[11px] text-emerald-800 dark:text-emerald-300 pl-6 rtl:pr-6 leading-relaxed">
+                      <p className="text-[11px] text-emerald-800 dark:text-emerald-300 pl-6 leading-relaxed">
                         {m.termsNotice}
                       </p>
                     </div>
@@ -2988,7 +2990,7 @@ export default function STCStyleMarketplacePage() {
                     <div
                       className={`${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-800"
-                      } rounded-2xl p-4 text-xs space-y-2 border text-left rtl:text-right`}
+                      } rounded-2xl p-4 text-xs space-y-2 border text-left`}
                     >
                       <div className="flex justify-between">
                         <span className="text-slate-400">{m.workerNameLabel}</span>
@@ -3013,7 +3015,7 @@ export default function STCStyleMarketplacePage() {
                     </div>
 
                     {/* Critical Dispatch Policy: Cannot receive bookings until admin approves */}
-                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left rtl:text-right space-y-1">
+                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left space-y-1">
                       <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-800 dark:text-amber-200">
                         <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                         <span>{m.noBookingsNoticeTitle}</span>
@@ -3050,7 +3052,7 @@ export default function STCStyleMarketplacePage() {
 
             {/* TAB 2: WORKER COMMISSION DASHBOARD & CALCULATOR */}
             {workerModalTab === "dashboard" && (
-              <div className="space-y-4 text-left rtl:text-right">
+              <div className="space-y-4 text-left">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <Percent className="w-3.5 h-3.5" />
