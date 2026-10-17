@@ -462,59 +462,72 @@ export default function STCStyleMarketplacePage() {
               </div>
             </div>
 
-            {/* Right Image Showcase Column (Clean Frame without Overlapping Clutter) */}
+            {/* Right Image Showcase Column (Badges placed OUTSIDE image: Above & Below so picture is 100% crystal clear) */}
             <div className="lg:col-span-5 relative mt-6 lg:mt-0">
-              <div className="relative mx-auto max-w-md lg:max-w-none">
-                <div className={`rounded-3xl overflow-hidden shadow-2xl border-4 ${isDarkMode ? "border-slate-800" : "border-white"} shadow-blue-950/15 bg-slate-100 group relative`}>
+              <div className="relative mx-auto max-w-md lg:max-w-none space-y-3.5">
+                {/* ─── UPER (ABOVE IMAGE): Security Check & Visit Fee Badges ─── */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Top-Left Badge: Security Check */}
+                  <div className={`rounded-2xl p-3 shadow-sm border flex items-center gap-2.5 transition-all ${
+                    isDarkMode ? "bg-slate-900/90 border-slate-800 text-white" : "bg-white border-slate-200/80 text-slate-800"
+                  }`}>
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0 border border-blue-100 dark:border-blue-900/50">
+                      <ShieldCheck className="w-5 h-5 text-[#0062FF]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">Security Check</p>
+                      <p className="text-xs font-black text-slate-900 dark:text-white leading-tight truncate">100% CNIC Verified</p>
+                    </div>
+                  </div>
+
+                  {/* Top-Right Badge: Visit Fee */}
+                  <div className={`rounded-2xl p-3 shadow-sm border flex items-center gap-2.5 transition-all ${
+                    isDarkMode ? "bg-slate-900/90 border-slate-800 text-white" : "bg-white border-slate-200/80 text-slate-800"
+                  }`}>
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0 border border-blue-100 dark:border-blue-900/50">
+                      <Wallet className="w-4 h-4 text-[#0062FF]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 leading-tight truncate">Visit Fee</p>
+                      <p className="text-xs font-black text-[#0062FF] leading-tight truncate">Flat Rs. 200</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ─── CLEAR & UNOBSTRUCTED IMAGE (Picture 100% Clear Show Hogi) ─── */}
+                <div className={`rounded-3xl overflow-hidden shadow-2xl border-4 ${
+                  isDarkMode ? "border-slate-800 shadow-blue-950/20" : "border-white shadow-blue-900/10"
+                } bg-slate-100 group relative`}>
                   <img
                     src="/services-grid.jpg"
                     alt="KAMZO Certified Pakistani Technicians - Electrician, Plumber, AC Repair, Mechanic"
-                    className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-102"
                   />
-                  
-                  {/* Subtle Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/25 pointer-events-none" />
+                </div>
 
-                  {/* Top-Left Floating Badge: Security Check */}
-                  <div className="absolute top-3.5 left-3.5 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl px-3 py-2 shadow-lg border border-slate-200/80 dark:border-slate-700 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0">
-                      <ShieldCheck className="w-5 h-5 text-[#0062FF]" />
-                    </div>
-                    <div>
-                      <p className="text-[9px] uppercase font-bold text-slate-400 leading-tight">Security Check</p>
-                      <p className="text-[11px] font-extrabold text-slate-800 dark:text-white leading-tight">100% CNIC Verified</p>
-                    </div>
-                  </div>
-
-                  {/* Top-Right Floating Badge: Visit Fee */}
-                  <div className="absolute top-3.5 right-3.5 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl px-3 py-2 shadow-lg border border-slate-200/80 dark:border-slate-700 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-[#0062FF] shrink-0">
-                      <Wallet className="w-4 h-4 text-[#0062FF]" />
-                    </div>
-                    <div>
-                      <p className="text-[9px] uppercase font-bold text-slate-400 leading-tight">Visit Fee</p>
-                      <p className="text-[11px] font-extrabold text-[#0062FF] leading-tight">Flat Rs. 200</p>
-                    </div>
-                  </div>
-
-                  {/* Bottom Banner: Certified Pakistani Technicians */}
-                  <div className="absolute bottom-3.5 left-3.5 right-3.5 z-20 text-white p-3 rounded-2xl bg-slate-950/85 backdrop-blur-md border border-white/15">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#0062FF] animate-ping shrink-0" />
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold text-white truncate">
-                            Certified Pakistani Technicians
-                          </p>
-                          <p className="text-[10px] text-blue-200 truncate">
-                            Mechanic • AC Repair • Plumber • Electrician
-                          </p>
-                        </div>
+                {/* ─── NICHA (BELOW IMAGE): Certified Pakistani Technicians Banner ─── */}
+                <div className={`p-3.5 sm:p-4 rounded-2xl shadow-md border transition-all ${
+                  isDarkMode ? "bg-slate-900/90 border-slate-800 text-white" : "bg-white border-slate-200/80 text-slate-900"
+                }`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="relative flex h-3 w-3 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0062FF] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0062FF]" />
                       </div>
-                      <span className="text-[10px] font-bold bg-[#0062FF] px-2.5 py-1 rounded-md text-white shadow-sm shrink-0">
-                        Verified
-                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs sm:text-sm font-black truncate">
+                          Certified Pakistani Technicians
+                        </p>
+                        <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                          Mechanic • AC Repair • Plumber • Electrician
+                        </p>
+                      </div>
                     </div>
+                    <span className="text-[10px] sm:text-xs font-extrabold bg-[#0062FF] text-white px-3 py-1.5 rounded-xl shadow-md shadow-blue-500/25 shrink-0 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Verified</span>
+                    </span>
                   </div>
                 </div>
               </div>
