@@ -42,6 +42,7 @@ interface ServiceData {
   urduName: string;
   category: string;
   icon: React.ComponentType<{ className?: string }>;
+  image: string;
   color: string;
   badgeBg: string;
   description: string;
@@ -56,6 +57,7 @@ const services: ServiceData[] = [
     urduName: "آٹو مکینک",
     category: "Automobile & Roadside",
     icon: Wrench,
+    image: "/worker-mechanic.jpg",
     color: "#E11D48",
     badgeBg: "bg-rose-50 text-rose-600 border-rose-200",
     description: "Expert car diagnostics, engine tuning, brake repairs, oil change, suspension, and emergency roadside breakdown support.",
@@ -68,6 +70,7 @@ const services: ServiceData[] = [
     urduName: "اے سی سروس و ریپیئر",
     category: "Cooling & Inverter PCB",
     icon: Snowflake,
+    image: "/worker-ac.jpg",
     color: "#0284C7",
     badgeBg: "bg-sky-50 text-sky-600 border-sky-200",
     description: "Inverter AC diagnostics, deep master wash chemical cleaning, gas leakage detection, R410/R32 refill, and new installation.",
@@ -80,6 +83,7 @@ const services: ServiceData[] = [
     urduName: "پلمبر سروس",
     category: "Leakage & Sanitary",
     icon: Droplets,
+    image: "/worker-plumber.jpg",
     color: "#0062FF", // STC Electric Blue
     badgeBg: "bg-blue-50 text-[#0062FF] border-blue-200",
     description: "Concealed pipeline leak detection, motor water pump installation, bathroom sanitary fittings, drain unblocking, and geyser setup.",
@@ -92,6 +96,7 @@ const services: ServiceData[] = [
     urduName: "الیکٹریشن سروس",
     category: "Wiring & Breakers",
     icon: Zap,
+    image: "/worker-electrician.jpg",
     color: "#D97706",
     badgeBg: "bg-amber-50 text-amber-600 border-amber-200",
     description: "Short circuit troubleshooting, distribution box breakers, ceiling fan & chandelier installation, UPS & solar inverter wiring.",
@@ -436,20 +441,25 @@ export default function STCStyleMarketplacePage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {services.map((srv) => {
                     const isSelected = selectedService.id === srv.id;
-                    const Icon = srv.icon;
                     return (
                       <button
                         key={srv.id}
                         onClick={() => setSelectedService(srv)}
-                        className={`p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 cursor-pointer ${
+                        className={`p-2.5 rounded-xl border text-center transition-all flex flex-col items-center gap-1.5 cursor-pointer ${
                           isSelected
-                            ? "bg-[#0062FF] text-white border-[#0062FF] shadow-md shadow-blue-500/20 font-bold"
+                            ? "bg-[#0062FF] text-white border-[#0062FF] shadow-md shadow-blue-500/20 font-bold scale-102"
                             : isDarkMode
                             ? "bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-800"
                             : "bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200"
                         }`}
                       >
-                        <Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-[#0062FF]"}`} />
+                        <img
+                          src={srv.image}
+                          alt={srv.name}
+                          className={`w-9 h-9 rounded-full object-cover border-2 shadow-sm ${
+                            isSelected ? "border-white" : "border-blue-400"
+                          }`}
+                        />
                         <span className="text-xs font-bold leading-tight">
                           {lang === "ur" ? srv.urduName : srv.name.split(" ")[0]}
                         </span>
@@ -649,13 +659,26 @@ export default function STCStyleMarketplacePage() {
                   className={`${isDarkMode ? "bg-slate-900 border-slate-800 hover:border-[#0062FF]/50" : "bg-white border-slate-200/80 hover:border-[#0062FF]/40"} rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group`}
                 >
                   <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div className={`w-12 h-12 rounded-2xl ${isDarkMode ? "bg-slate-800" : "bg-blue-50"} text-[#0062FF] flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-6 h-6 text-[#0062FF]" />
+                    {/* Real Worker Image Header */}
+                    <div className="relative rounded-2xl overflow-hidden h-44 bg-slate-100 group-hover:shadow-md transition-all border border-slate-200/60">
+                      <img
+                        src={srv.image}
+                        alt={srv.name}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {/* Fee Badge Overlay */}
+                      <div className="absolute top-2.5 right-2.5">
+                        <span className="text-xs font-extrabold px-2.5 py-1 rounded-lg border border-white/60 bg-white/95 text-slate-900 shadow-sm backdrop-blur-sm">
+                          {lang === "ur" ? "فیس: 200 روپے" : `Fee: ${srv.inspectionFee}`}
+                        </span>
                       </div>
-                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-slate-700">
-                        {lang === "ur" ? "فیس: 200 روپے" : `Fee: ${srv.inspectionFee}`}
-                      </span>
+                      {/* Certified Badge Overlay */}
+                      <div className="absolute bottom-2.5 left-2.5">
+                        <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-[#0062FF] text-white shadow-sm flex items-center gap-1.5">
+                          <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                          <span>{lang === "ur" ? "تصدیق شدہ کاریگر" : "Certified Technician"}</span>
+                        </span>
+                      </div>
                     </div>
 
                     <div>
@@ -1032,7 +1055,7 @@ export default function STCStyleMarketplacePage() {
                         type="button"
                         key={srv.id}
                         onClick={() => setSelectedService(srv)}
-                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                        className={`p-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                           selectedService.id === srv.id
                             ? "bg-[#0062FF] text-white border-[#0062FF]"
                             : isDarkMode
@@ -1040,8 +1063,13 @@ export default function STCStyleMarketplacePage() {
                             : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                         }`}
                       >
-                        <span>{srv.name.split(" ")[0]}</span>
-                        <span className="text-[10px] opacity-80">({srv.urduName})</span>
+                        <img
+                          src={srv.image}
+                          alt={srv.name}
+                          className="w-7 h-7 rounded-lg object-cover border border-white/40 shadow-xs shrink-0"
+                        />
+                        <span className="truncate">{srv.name.split(" ")[0]}</span>
+                        <span className="text-[10px] opacity-80 shrink-0">({srv.urduName})</span>
                       </button>
                     ))}
                   </div>
