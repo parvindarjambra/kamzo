@@ -8,8 +8,15 @@ export const metadata: Metadata = {
   description: "Connect with verified local mechanics, AC technicians, plumbers, and electricians across Pakistan. Fast, trustworthy, and transparent service.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/logo.png",
+    icon: [
+      { url: "/favicon.ico?v=2" },
+      { url: "/icon.png?v=2", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png?v=2" },
+      { url: "/logo.png?v=2" },
+    ],
+    shortcut: ["/favicon.ico?v=2"],
   },
 };
 
@@ -21,8 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png?v=2" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0062FF" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
