@@ -187,9 +187,9 @@ if (!global.__KAMZO_SETTINGS) {
     commission_rate: 10,
     payment_accounts: {
       jazzcashNumber: "0319 7318425",
-      jazzcashTitle: "KAMZO Services / Parvindar",
+      jazzcashTitle: "KAMZO Services Official",
       easypaisaNumber: "0319 7318425",
-      easypaisaTitle: "KAMZO Services / Parvindar",
+      easypaisaTitle: "KAMZO Services Official",
       bankName: "Allied Bank / Meezan Bank",
       bankTitle: "KAMZO Marketplace",
       bankIban: "PK36MEZN0001234567890123",

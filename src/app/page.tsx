@@ -317,7 +317,7 @@ const siteContent = {
     footerTagline: "Your Need, Our Verified Experts",
     footerCopyright: "© 2026 KAMZO Pakistan. Built for Pakistan's Local Services Industry.",
     footerLocations: "Umerkot • Karachi • Lahore • Islamabad • Nationwide",
-    whatsappTooltip: "WhatsApp Support: +92 319 7318425",
+    whatsappTooltip: "Chat on WhatsApp (24/7 Helpline)",
     scrollTopTooltip: "Scroll to Top",
     installAppBtn: "Install App",
     bottomNavBook: "Book",
@@ -375,7 +375,7 @@ const siteContent = {
     footerTagline: "آپ کی ضرورت، ہمارے ماہر",
     footerCopyright: "© 2026 کامزو پاکستان۔ لوکل سروسز مارکیٹ پلیس۔",
     footerLocations: "عمرکوٹ • کراچی • لاہور • اسلام آباد • پورے پاکستان میں",
-    whatsappTooltip: "واٹس ایپ رابطہ: +92 319 7318425",
+    whatsappTooltip: "واٹس ایپ ہیلپ لائن (24/7 رابطہ)",
     scrollTopTooltip: "اوپر جائیں",
     installAppBtn: "ایپ انسٹال کریں",
     bottomNavBook: "بک کریں",
@@ -433,7 +433,7 @@ const siteContent = {
     footerTagline: "توهان جي ضرورت، اسان جا ماهر",
     footerCopyright: "© 2026 ڪامزو پاڪستان۔ مقامي سروسز مارڪيٽ پليس۔",
     footerLocations: "عمرڪوٽ • ڪراچي • لاهور • اسلام آباد • سڄي پاڪستان ۾",
-    whatsappTooltip: "واٽس ايپ رابطو: +92 319 7318425",
+    whatsappTooltip: "واٽس ائپ هيڊلائين (24/7 رابطو)",
     scrollTopTooltip: "مٿي وڃو",
     installAppBtn: "ايپ انسٽال ڪريو",
     bottomNavBook: "بڪ ڪريو",
@@ -451,7 +451,7 @@ const modalContent = {
     selectCityLabel: "Select City / Location:",
     customCityPlaceholder: "Type your City / Town / Area name",
     fullNameLabel: "Your Full Name:",
-    fullNamePlaceholder: "e.g. Parvindar Kumar / Ali Khan",
+    fullNamePlaceholder: "e.g. Muhammad Ali / Ahmed Khan",
     mobileLabel: "Pakistani Mobile Number:",
     problemLabel: "Problem / Work Details:",
     problemPlaceholder: "Describe what needs repair, servicing, or installation...",
@@ -499,10 +499,10 @@ const modalContent = {
     workerStep2Tag: "Step 2: Professional Details",
     workerStep3Tag: "Step 3: Verification & Payout",
     workerNameLabel: "Full Name:",
-    workerNamePlaceholder: "e.g. Ramesh Kumar / Muhammad Usman",
+    workerNamePlaceholder: "e.g. Muhammad Usman / Tariq Mehmood",
     workerMobileLabel: "Mobile Number (+92):",
     workerWhatsAppLabel: "WhatsApp Number (Optional):",
-    workerWhatsAppPlaceholder: "e.g. 319 1234567",
+    workerWhatsAppPlaceholder: "e.g. 300 1234567",
     workerCityLabel: "Base City:",
     workerAreaLabel: "Area / Locality / Sector:",
     workerAreaPlaceholder: "e.g. Clifton, Gulshan-e-Iqbal, Saddar, Main Bazaar",
@@ -687,10 +687,10 @@ const modalContent = {
     workerStep2Tag: "مرحلہ 2: پیشہ ورانہ تفصیلات",
     workerStep3Tag: "مرحلہ 3: شناختی تصدیق و اکاؤنٹ",
     workerNameLabel: "کاریگر کا پورا نام:",
-    workerNamePlaceholder: "مثال: محمد عثمان / رمیش کمار",
+    workerNamePlaceholder: "مثال: محمد عثمان / طارق محمود",
     workerMobileLabel: "موبائل نمبر (+92):",
     workerWhatsAppLabel: "واٹس ایپ نمبر (اختیاری):",
-    workerWhatsAppPlaceholder: "مثال: 319 1234567",
+    workerWhatsAppPlaceholder: "مثال: 300 1234567",
     workerCityLabel: "آپ کا شہر:",
     workerAreaLabel: "علاقہ / محلہ / ٹاؤن:",
     workerAreaPlaceholder: "مثال: کلفٹن، گلشن اقبال، صدر، مین بازار",
@@ -827,7 +827,7 @@ const modalContent = {
     selectCityLabel: "شهر چونڊيو:",
     customCityPlaceholder: "پنهنجي شهر يا ڳوٺ جو نالو لکو",
     fullNameLabel: "توهان جو پورو نالو:",
-    fullNamePlaceholder: "مثال: رميش ڪمار / علي خان",
+    fullNamePlaceholder: "مثال: محمد علي / احمد خان",
     mobileLabel: "موبائل نمبر:",
     problemLabel: "مسئلي يا ڪم جا تفصيل:",
     problemPlaceholder: "خرابي يا گهربل ڪم جا تفصيل لکو...",
@@ -875,10 +875,10 @@ const modalContent = {
     workerStep2Tag: "مرحلو 2: پيشيورانه تفصيل",
     workerStep3Tag: "مرحلو 3: سڃاڻپ ۽ اڪائونٽ",
     workerNameLabel: "ڪاريگر جو پورو نالو:",
-    workerNamePlaceholder: "مثال: رميش ڪمار / محمد عثمان",
+    workerNamePlaceholder: "مثال: محمد عثمان / طارق محمود",
     workerMobileLabel: "موبائل نمبر (+92):",
     workerWhatsAppLabel: "واٽس ايپ نمبر (اختياري):",
-    workerWhatsAppPlaceholder: "مثال: 319 1234567",
+    workerWhatsAppPlaceholder: "مثال: 300 1234567",
     workerCityLabel: "توهان جو شهر:",
     workerAreaLabel: "علائقو / پاڙو / ٽائون:",
     workerAreaPlaceholder: "مثال: صدر، مين بازار، گلشن",
@@ -1429,7 +1429,7 @@ export default function STCStyleMarketplacePage() {
     try {
       const gEmail = authEmail.trim() || (customerPhone ? `${customerPhone.replace(/\D/g, "")}@gmail.com` : `customer_${Math.floor(1000 + Math.random() * 9000)}@gmail.com`);
       const gName = customerName.trim() || authName.trim() || "Google Customer";
-      const gPhone = customerPhone.trim() || authPhone.trim() || "03197318425";
+      const gPhone = customerPhone.trim() || authPhone.trim() || "0300" + Math.floor(1000000 + Math.random() * 9000000);
 
       const res = await fetch("/api/auth/customer", {
         method: "POST",
@@ -1781,6 +1781,18 @@ export default function STCStyleMarketplacePage() {
               <Briefcase className="w-3.5 h-3.5" />
               <span>{t.joinAsWorker}</span>
             </button>
+
+            {/* WhatsApp Support Button (Header) */}
+            <a
+              href="https://wa.me/923197318425?text=%23KAMZO%20Support%20Inquiry%20-%20Assalam-o-Alaikum"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-emerald-500/40 bg-emerald-50/70 hover:bg-emerald-100 text-[#16A34A] dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700/50 transition-all cursor-pointer shrink-0 shadow-xs"
+              title="Chat with KAMZO Support on WhatsApp"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-[#25D366] fill-[#25D366]" />
+              <span>WhatsApp</span>
+            </a>
 
             {/* PWA Install Button (For Desktop / Laptop) */}
             {!isAppInstalled && (
@@ -2227,7 +2239,7 @@ export default function STCStyleMarketplacePage() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Support"
-        className="hidden md:flex fixed bottom-6 right-6 z-40 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
+        className="flex fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white items-center justify-center shadow-xl shadow-green-900/30 transition-all hover:scale-110 cursor-pointer group"
       >
         <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-[#25D366]" />
         <span className="absolute right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 flex items-center gap-1.5">
@@ -2240,7 +2252,7 @@ export default function STCStyleMarketplacePage() {
         <button
           onClick={scrollToTop}
           aria-label="Back to Top"
-          className="fixed bottom-20 md:bottom-24 right-4 sm:right-6 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xl shadow-emerald-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
+          className="fixed bottom-36 md:bottom-24 right-4 sm:right-6 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xl shadow-emerald-500/35 border-2 border-white/20 transition-all hover:scale-110 cursor-pointer animate-in fade-in group"
         >
           <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:-translate-y-0.5 transition-transform" />
           <span className="absolute right-14 sm:right-16 bg-slate-900 text-white text-xs font-bold py-1.5 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl border border-slate-700 hidden sm:inline-block">
@@ -2495,7 +2507,7 @@ export default function STCStyleMarketplacePage() {
                       required
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="319 7318425"
+                      placeholder="300 1234567"
                       className={`w-full px-4 py-3 rounded-r-xl border ${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
                       } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
@@ -2638,7 +2650,7 @@ export default function STCStyleMarketplacePage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 font-medium">Account Title:</span>
-                        <span className="font-bold">KAMZO Services / Parvindar</span>
+                        <span className="font-bold">KAMZO Services Official</span>
                       </div>
                     </div>
                   )}
@@ -2651,7 +2663,7 @@ export default function STCStyleMarketplacePage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 font-medium">Account Title:</span>
-                        <span className="font-bold">KAMZO Services / Parvindar</span>
+                        <span className="font-bold">KAMZO Services Official</span>
                       </div>
                     </div>
                   )}
@@ -3189,7 +3201,7 @@ export default function STCStyleMarketplacePage() {
                     className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    <span dir="ltr">WhatsApp (+92 319 7318425)</span>
+                    <span dir="ltr">WhatsApp Support</span>
                   </a>
                   <button
                     onClick={() => setIsBookingModalOpen(false)}
@@ -4095,7 +4107,7 @@ export default function STCStyleMarketplacePage() {
                     </div>
                     <div className="flex justify-between text-[11px] text-slate-400">
                       <span>Account Title:</span>
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Parvindar Kumar / KAMZO</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">KAMZO Official</span>
                     </div>
                   </div>
 
