@@ -17,12 +17,23 @@ import {
   X,
   ExternalLink,
   Download,
+  MessageCircle,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPKR, formatDate, formatDateTime } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/client";
+
+function cleanPakistaniPhone(phone: string): string {
+  let cleaned = (phone || "").replace(/\D/g, "");
+  if (cleaned.startsWith("0")) {
+    cleaned = "92" + cleaned.slice(1);
+  } else if (!cleaned.startsWith("92")) {
+    cleaned = "92" + cleaned;
+  }
+  return cleaned;
+}
 import { PaymentStatus, PaymentMethod } from "@/types/database.types";
 
 interface PaymentItem {
@@ -386,33 +397,48 @@ function PaymentsContent() {
                       )}
                     </td>
                     <td className="py-3.5 px-5 text-right">
-                      {item.status === "submitted" ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => handleVerify(item)}
-                            className="h-8 text-xs bg-[#1B5E20] hover:bg-[#144717]"
-                          >
-                            <Check className="w-3.5 h-3.5 mr-1" />
-                            Verify
-                          </Button>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={() => {
-                              setRejectItem(item);
-                              setRejectionReason("");
-                            }}
-                            className="h-8 text-xs"
-                          >
-                            <X className="w-3.5 h-3.5 mr-1" />
-                            Reject
-                          </Button>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-gray-400 italic">Settled</span>
-                      )}
+                      <div className="flex items-center justify-end gap-1.5">
+                        <a
+                          href={`https://wa.me/${cleanPakistaniPhone(item.payer_phone)}?text=${encodeURIComponent(
+                            `#KAMZO Service Update\nAssalam-o-Alaikum ${item.payer_name}!\nRegarding your booking #${item.booking_number} payment (${item.reference_number}):\nStatus: ${item.status === "verified" ? "VERIFIED & APPROVED - Technician dispatched" : item.status === "rejected" ? `REJECTED (${item.rejection_reason || "Invalid TID"})` : "UNDER REVIEW"}\nKAMZO Helpline: +92 319 7318425`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#16A34A] border border-emerald-200 text-xs font-bold transition-colors shrink-0 shadow-xs"
+                          title="Open WhatsApp with #KAMZO tag"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">WhatsApp</span>
+                        </a>
+
+                        {item.status === "submitted" ? (
+                          <>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={() => handleVerify(item)}
+                              className="h-8 text-xs bg-[#1B5E20] hover:bg-[#144717]"
+                            >
+                              <Check className="w-3.5 h-3.5 mr-1" />
+                              Verify
+                            </Button>
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              onClick={() => {
+                                setRejectItem(item);
+                                setRejectionReason("");
+                              }}
+                              className="h-8 text-xs"
+                            >
+                              <X className="w-3.5 h-3.5 mr-1" />
+                              Reject
+                            </Button>
+                          </>
+                        ) : (
+                          <span className="text-xs text-gray-400 italic px-1">Settled</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

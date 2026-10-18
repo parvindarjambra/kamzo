@@ -21,6 +21,7 @@ import {
   AlertTriangle,
   UserX,
   UserCheck,
+  MessageCircle,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,16 @@ import { Button } from "@/components/ui/button";
 import { formatPKR, formatDate } from "@/lib/utils";
 import { WorkerProfile, Profile } from "@/types/database.types";
 import { supabase } from "@/lib/supabase/client";
+
+function cleanPakistaniPhone(phone: string): string {
+  let cleaned = (phone || "").replace(/\D/g, "");
+  if (cleaned.startsWith("0")) {
+    cleaned = "92" + cleaned.slice(1);
+  } else if (!cleaned.startsWith("92")) {
+    cleaned = "92" + cleaned;
+  }
+  return cleaned;
+}
 
 interface WorkerRecord {
   id: string;
@@ -376,7 +387,20 @@ export default function WorkersPage() {
                       )}
                     </td>
                     <td className="py-3.5 px-5 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <a
+                          href={`https://wa.me/${cleanPakistaniPhone(w.phone)}?text=${encodeURIComponent(
+                            `#KAMZO Worker Update\nAssalam-o-Alaikum ${w.name}!\nStatus: ${w.is_verified ? "CNIC VERIFIED & APPROVED" : "APPLICATION UNDER REVIEW"}\nTrades: ${w.services_offered.join(", ")}\nCity: ${w.city}\nKAMZO Helpline: +92 319 7318425`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#16A34A] border border-emerald-200 text-xs font-bold transition-colors shrink-0 shadow-xs"
+                          title="Open WhatsApp with #KAMZO tag"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">WhatsApp</span>
+                        </a>
+
                         <Button
                           variant="outline"
                           size="sm"

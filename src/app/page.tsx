@@ -2126,7 +2126,7 @@ export default function STCStyleMarketplacePage() {
 
       {/* ─── FLOATING ACTION WIDGETS ─── */}
       <a
-        href="https://wa.me/923197318425?text=Assalam-o-Alaikum%20KAMZO%20Support"
+        href="https://wa.me/923197318425?text=%23KAMZO%20Support%20Inquiry%20-%20Assalam-o-Alaikum"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Support"
@@ -2186,7 +2186,7 @@ export default function STCStyleMarketplacePage() {
         </button>
 
         <a
-          href="https://wa.me/923197318425?text=Assalam-o-Alaikum%20KAMZO%20Support"
+          href="https://wa.me/923197318425?text=%23KAMZO%20Support%20Inquiry%20-%20Assalam-o-Alaikum"
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center py-1 px-2 text-slate-600 dark:text-slate-300 hover:text-emerald-500 flex-1 transition-colors"
@@ -2755,7 +2755,9 @@ export default function STCStyleMarketplacePage() {
 
                 <div className="flex items-center gap-2">
                   <a
-                    href="https://wa.me/923197318425"
+                    href={`https://wa.me/923197318425?text=${encodeURIComponent(
+                      `#KAMZO Service Booking Inquiry\nAssalam-o-Alaikum Admin!\nBooking ID: ${confirmedBookingId || "KMZ-NEW"}\nCustomer: ${customerName} (${customerPhone})\nService: ${getServiceName(selectedService)}\nCity: ${effectiveCity}\nVisit Fee: ${platformVisitFee > 0 ? "Rs. " + platformVisitFee : "Free (Rs. 0)"}\nPayment: ${paymentMethod.toUpperCase()} (TID: ${transactionRef || "Free/Proof"})\nPlease confirm my booking status.`
+                    )}`}
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
@@ -4052,7 +4054,9 @@ export default function STCStyleMarketplacePage() {
                     <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
                       <span className="text-slate-400">Payment: {b.payment_method?.toUpperCase()}</span>
                       <a
-                        href={`https://wa.me/923197318425?text=Hello%20KAMZO%20Support,%20regarding%20my%20booking%20${b.booking_number}`}
+                        href={`https://wa.me/923197318425?text=${encodeURIComponent(
+                          `#KAMZO Customer Inquiry\nAssalam-o-Alaikum Support!\nRegarding my booking #${b.booking_number} (${b.service_name}) in ${b.city}.\nStatus: ${b.status}`
+                        )}`}
                         target="_blank"
                         rel="noreferrer"
                         className="font-bold text-[#16A34A] hover:underline flex items-center gap-1"

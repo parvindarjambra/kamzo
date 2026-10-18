@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverStore } from "@/lib/server-store";
 import { createAdminServerClient } from "@/lib/supabase/server";
+import { notifyCustomerOnPaymentDecision } from "@/lib/notification-service";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,26 @@ export async function POST(req: Request) {
 
     const newStatus = action === "verify" ? "verified" : "rejected";
     const updated = serverStore.updatePaymentStatus(paymentId, newStatus, rejectionReason);
+
+    // Dispatch Gmail notification & WhatsApp message to customer
+    let customerWhatsAppUrl = "";
+    if (updated) {
+      const booking = serverStore.getBookings().find((b) => b.booking_number === updated.booking_number);
+      if (booking) {
+        const customer = serverStore.findCustomer(booking.customer_phone);
+        try {
+          const notifyResult = await notifyCustomerOnPaymentDecision({
+            booking,
+            isVerified: newStatus === "verified",
+            rejectionReason,
+            customerEmail: customer?.email,
+          });
+          customerWhatsAppUrl = notifyResult.customerWhatsAppUrl;
+        } catch (e) {
+          console.warn("Customer notification dispatch skipped:", e);
+        }
+      }
+    }
 
     // Sync to Supabase
     try {
@@ -37,6 +58,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       payment: updated,
+      customerWhatsAppUrl,
     });
   } catch (err: any) {
     return NextResponse.json(

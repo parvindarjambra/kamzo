@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverStore } from "@/lib/server-store";
 import { createAdminServerClient } from "@/lib/supabase/server";
+import { notifyAdminOnNewBooking } from "@/lib/notification-service";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,15 @@ export async function POST(req: Request) {
       transaction_ref: transactionRef,
     });
 
+    // 4. Send Gmail to Admin (kundanpanriya978@gmail.com) & generate #KAMZO WhatsApp link
+    let adminWhatsAppUrl = "";
+    try {
+      const notifyResult = await notifyAdminOnNewBooking(newBooking);
+      adminWhatsAppUrl = notifyResult.adminWhatsAppUrl;
+    } catch (e) {
+      console.warn("Admin notification dispatch skipped:", e);
+    }
+
     // 4. Background sync to Supabase if configured
     try {
       const supabase = createAdminServerClient();
@@ -145,6 +155,7 @@ export async function POST(req: Request) {
       bookingNumber,
       booking: newBooking,
       payment: newPayment,
+      adminWhatsAppUrl,
     });
   } catch (err: any) {
     return NextResponse.json(

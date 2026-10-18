@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { serverStore } from "@/lib/server-store";
 import { createAdminServerClient } from "@/lib/supabase/server";
+import { notifyAdminOnNewWorker } from "@/lib/notification-service";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,15 @@ export async function POST(req: Request) {
       categories,
     });
 
+    // Background notification to Admin (Gmail kundanpanriya978@gmail.com & WhatsApp)
+    let adminWhatsAppUrl = "";
+    try {
+      const res = await notifyAdminOnNewWorker(newWorker);
+      adminWhatsAppUrl = res.adminWhatsAppUrl;
+    } catch (e) {
+      console.warn("Worker admin notification dispatch skipped:", e);
+    }
+
     // Background sync to Supabase
     try {
       const supabase = createAdminServerClient();
@@ -86,6 +96,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       worker: newWorker,
+      adminWhatsAppUrl,
     });
   } catch (err: any) {
     return NextResponse.json(
