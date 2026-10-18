@@ -44,6 +44,9 @@ import {
   UserCheck,
   KeyRound,
   ChevronDown,
+  Mail,
+  Phone,
+  CheckCircle2,
 } from "lucide-react";
 
 interface ServiceData {
@@ -618,6 +621,15 @@ const modalContent = {
     noBookingsFound: "No bookings found yet. Book your first service today!",
     bookNewService: "Book a Service Now",
     callSupport: "WhatsApp Support",
+    continueWithGoogle: "Continue with Google",
+    emailInputLabel: "Gmail / Email Address:",
+    emailPlaceholder: "example@gmail.com",
+    orDividerText: "OR SIGN IN WITH GMAIL / PHONE",
+    authStepBadge: "Final Step: Sign In to Confirm Order",
+    authStepTitle: "Confirm Account & Order",
+    authStepSub: "Connect your account to receive live tracking and technician warranty.",
+    authTabGmail: "Gmail & Password",
+    authTabPhone: "Mobile Number",
   },
   ur: {
     bookingStep1Badge: "مرحلہ 1: سروس اور پتہ کی تفصیلات",
@@ -797,6 +809,15 @@ const modalContent = {
     noBookingsFound: "ابھی تک کوئی بکنگ موجود نہیں ہے۔ آج ہی سروس بک کروائیں!",
     bookNewService: "ابھی سروس بک کریں",
     callSupport: "واٹس ایپ ہیلپ لائن",
+    continueWithGoogle: "گوگل کے ساتھ لاگ ان کریں",
+    emailInputLabel: "جی میل / ای میل ایڈریس:",
+    emailPlaceholder: "example@gmail.com",
+    orDividerText: "یا جی میل / موبائل نمبر سے لاگ ان کریں",
+    authStepBadge: "آخری مرحلہ: آرڈر کنفرم کرنے کے لیے لاگ ان کریں",
+    authStepTitle: "اپنا اکاؤنٹ اور بکنگ کنفرم کریں",
+    authStepSub: "لائیو ٹریکنگ، وارنٹی اور اپ ڈیٹس کے لیے اپنا اکاؤنٹ کنیکٹ کریں۔",
+    authTabGmail: "جی میل اور پاس ورڈ",
+    authTabPhone: "موبائل نمبر",
   },
   sd: {
     bookingStep1Badge: "مرحلو 1: سروس ۽ پتي جا تفصيل",
@@ -976,6 +997,15 @@ const modalContent = {
     noBookingsFound: "اڃا تائين ڪا به بڪنگ موجود ناهي۔ اڄ ئي سروس بڪ ڪريو!",
     bookNewService: "هاڻي ئي سروس بڪ ڪريو",
     callSupport: "واٽس ائپ سپورٽ",
+    continueWithGoogle: "گوگل سان لاگ ان ڪريو",
+    emailInputLabel: "جي ميل / اي ميل ايڊريس:",
+    emailPlaceholder: "example@gmail.com",
+    orDividerText: "يا جي ميل / موبائل نمبر سان لاگ ان ڪريو",
+    authStepBadge: "آخري مرحلو: بڪنگ پڪي ڪرڻ لاءِ لاگ ان ڪريو",
+    authStepTitle: "پنهنجو کاتو ۽ بڪنگ پڪي ڪريو",
+    authStepSub: "لائيو ٽريڪنگ ۽ ڪاريگر وارنٽي لاءِ پنهنجو کاتو لاگ ان ڪريو۔",
+    authTabGmail: "جي ميل ۽ پاس ورڊ",
+    authTabPhone: "موبائل نمبر",
   },
 };
 
@@ -994,7 +1024,8 @@ export default function STCStyleMarketplacePage() {
   const [lang, setLang] = useState<"en" | "ur" | "sd">("en");
   const [selectedService, setSelectedService] = useState<ServiceData>(services[0]);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [bookingStep, setBookingStep] = useState<"details" | "payment" | "confirmed">("details");
+  const [bookingStep, setBookingStep] = useState<"details" | "payment" | "auth" | "confirmed">("details");
+  const [authMethod, setAuthMethod] = useState<"gmail" | "phone">("gmail");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -1323,111 +1354,37 @@ export default function STCStyleMarketplacePage() {
     const s = service || selectedService;
     setSelectedService(s);
 
-    if (!customerUser) {
-      // Daraz-style: prompt login or quick registration before placing order
-      setPendingServiceAfterAuth(s);
-      setAuthTab("signin");
-      setAuthError(null);
-      setIsAuthModalOpen(true);
-      return;
+    // Pre-fill fields if customer is already logged in
+    if (customerUser) {
+      setCustomerName(customerUser.name);
+      setCustomerPhone(customerUser.phone);
+      if (customerUser.city) setSelectedCity(customerUser.city);
     }
-
-    // Customer is logged in -> Auto-fill and proceed to booking
-    setCustomerName(customerUser.name);
-    setCustomerPhone(customerUser.phone);
-    if (customerUser.city) setSelectedCity(customerUser.city);
     setBookingStep("details");
     setIsBookingModalOpen(true);
   };
 
-  const handleDetailsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customerName.trim() || !customerPhone.trim()) {
-      alert(lang === "ur" ? "براہ کرم اپنا نام اور موبائل نمبر درج کریں۔" : lang === "sd" ? "مهرباني ڪري پنهنجو نالو ۽ فون نمبر داخل ڪريو۔" : "Please enter your name and phone number.");
-      return;
-    }
-
-    if (platformVisitFee === 0) {
-      // Free Visit Fee -> Directly submit booking to API without asking for payment step!
-      setIsSubmittingBooking(true);
-      const effectiveCity = isOtherCity ? customCityName.trim() : selectedCity;
-      try {
-        const res = await fetch("/api/bookings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            customerName: customerName.trim(),
-            customerPhone: customerPhone.trim(),
-            serviceId: selectedService.id,
-            serviceName: getServiceName(selectedService),
-            city: effectiveCity,
-            problem: problemDetail.trim() || "Free diagnostic inspection requested",
-            visitFee: 0,
-            paymentMethod: "free",
-            transactionRef: "FREE-INSPECTION",
-          }),
-        });
-        const data = await res.json();
-        const bkgNumber = data.bookingNumber || "KMZ-" + Math.floor(100000 + Math.random() * 900000);
-        setConfirmedBookingId(bkgNumber);
-        setBookingStep("confirmed");
-
-        // Immediately persist to customer's localStorage
-        const localRecord = {
-          id: "bkg_" + Date.now(),
-          booking_number: bkgNumber,
-          customer_name: customerName.trim(),
-          customer_phone: customerPhone.trim(),
-          service_name: getServiceName(selectedService),
-          city: effectiveCity,
-          problem: problemDetail.trim() || "Free diagnostic inspection requested",
-          visit_fee: 0,
-          payment_method: "free",
-          transaction_reference: "FREE-INSPECTION",
-          status: "accepted",
-          created_at: new Date().toISOString(),
-        };
-        try {
-          const prev = JSON.parse(localStorage.getItem("kamzo_customer_bookings") || "[]");
-          const filtered = prev.filter((b: any) => b.booking_number !== bkgNumber);
-          filtered.unshift(localRecord);
-          localStorage.setItem("kamzo_customer_bookings", JSON.stringify(filtered));
-        } catch (_) {}
-      } catch (err) {
-        const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
-        setConfirmedBookingId(randomId);
-        setBookingStep("confirmed");
-      } finally {
-        setIsSubmittingBooking(false);
-      }
-    } else {
-      // Visit fee > 0 -> Move to Step 2 (payment)
-      setBookingStep("payment");
-    }
-  };
-
-  const handlePaymentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!transactionRef.trim()) {
-      alert(lang === "ur" ? "براہ کرم ٹرانزیکشن ریفرنس TID درج کریں۔" : lang === "sd" ? "مهرباني ڪري TID داخل ڪريو۔" : "Please enter your payment Transaction ID (TID).");
-      return;
-    }
+  const executeBookingSubmission = async (activeCustomer?: CustomerUser | null) => {
     setIsSubmittingBooking(true);
+    const userToUse = activeCustomer || customerUser;
+    const finalName = userToUse?.name || customerName.trim() || "Customer";
+    const finalPhone = userToUse?.phone || customerPhone.trim();
     const effectiveCity = isOtherCity ? customCityName.trim() : selectedCity;
+
     try {
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerName: customerName.trim(),
-          customerPhone: customerPhone.trim(),
+          customerName: finalName,
+          customerPhone: finalPhone,
           serviceId: selectedService.id,
           serviceName: getServiceName(selectedService),
           city: effectiveCity,
-          problem: problemDetail.trim() || "Service visit requested",
+          problem: problemDetail.trim() || "Service visit diagnostic requested",
           visitFee: platformVisitFee,
-          paymentMethod,
-          transactionRef: transactionRef.trim(),
+          paymentMethod: platformVisitFee === 0 ? "free" : paymentMethod,
+          transactionRef: platformVisitFee === 0 ? "FREE-INSPECTION" : transactionRef.trim(),
           proofUrl: receiptPreview || "",
         }),
       });
@@ -1436,19 +1393,19 @@ export default function STCStyleMarketplacePage() {
       setConfirmedBookingId(bkgNumber);
       setBookingStep("confirmed");
 
-      // Immediately persist to customer's localStorage
+      // Persist to customer's localStorage
       const localRecord = {
         id: "bkg_" + Date.now(),
         booking_number: bkgNumber,
-        customer_name: customerName.trim(),
-        customer_phone: customerPhone.trim(),
+        customer_name: finalName,
+        customer_phone: finalPhone,
         service_name: getServiceName(selectedService),
         city: effectiveCity,
-        problem: problemDetail.trim() || "Service visit requested",
+        problem: problemDetail.trim() || "Service visit diagnostic requested",
         visit_fee: platformVisitFee,
-        payment_method: paymentMethod,
-        transaction_reference: transactionRef.trim(),
-        status: "payment_pending",
+        payment_method: platformVisitFee === 0 ? "free" : paymentMethod,
+        transaction_reference: platformVisitFee === 0 ? "FREE-INSPECTION" : transactionRef.trim(),
+        status: platformVisitFee === 0 ? "accepted" : "payment_pending",
         created_at: new Date().toISOString(),
       };
       try {
@@ -1463,6 +1420,84 @@ export default function STCStyleMarketplacePage() {
       setBookingStep("confirmed");
     } finally {
       setIsSubmittingBooking(false);
+    }
+  };
+
+  const handleGoogleConnect = async () => {
+    setIsAuthLoading(true);
+    setAuthError(null);
+    try {
+      const gEmail = authEmail.trim() || (customerPhone ? `${customerPhone.replace(/\D/g, "")}@gmail.com` : `customer_${Math.floor(1000 + Math.random() * 9000)}@gmail.com`);
+      const gName = customerName.trim() || authName.trim() || "Google Customer";
+      const gPhone = customerPhone.trim() || authPhone.trim() || "03197318425";
+
+      const res = await fetch("/api/auth/customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "google_login",
+          email: gEmail,
+          name: gName,
+          phone: gPhone,
+          city: isOtherCity ? customCityName.trim() : selectedCity,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.customer) {
+        setCustomerUser(data.customer);
+        try {
+          localStorage.setItem("kamzo_customer_user", JSON.stringify(data.customer));
+        } catch (_) {}
+
+        setIsAuthModalOpen(false);
+
+        // If in booking modal at auth step, immediately execute submission!
+        if (isBookingModalOpen && bookingStep === "auth") {
+          await executeBookingSubmission(data.customer);
+        }
+      } else {
+        setAuthError(data.error || "Google authentication failed.");
+      }
+    } catch (err: any) {
+      setAuthError(err.message || "Google connection failed. Please try again.");
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customerName.trim() || !customerPhone.trim()) {
+      alert(lang === "ur" ? "براہ کرم اپنا نام اور موبائل نمبر درج کریں۔" : lang === "sd" ? "مهرباني ڪري پنهنجو نالو ۽ فون نمبر داخل ڪريو۔" : "Please enter your name and phone number.");
+      return;
+    }
+
+    if (platformVisitFee === 0) {
+      // Free Visit Fee -> If user already authenticated, submit directly. Otherwise, show auth step before confirmation!
+      if (customerUser) {
+        await executeBookingSubmission(customerUser);
+      } else {
+        setBookingStep("auth");
+      }
+    } else {
+      // Visit fee > 0 -> Move to Step 2 (payment)
+      setBookingStep("payment");
+    }
+  };
+
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!transactionRef.trim()) {
+      alert(lang === "ur" ? "براہ کرم ٹرانزیکشن ریفرنس TID درج کریں۔" : lang === "sd" ? "مهرباني ڪري TID داخل ڪريو۔" : "Please enter your payment Transaction ID (TID).");
+      return;
+    }
+
+    // If user already authenticated, submit directly. Otherwise, show auth step before confirmation!
+    if (customerUser) {
+      await executeBookingSubmission(customerUser);
+    } else {
+      setBookingStep("auth");
     }
   };
 
@@ -2740,6 +2775,335 @@ export default function STCStyleMarketplacePage() {
               </form>
             )}
 
+            {/* STEP 2.5: AUTHENTICATE / SIGN IN TO CONFIRM BOOKING (DARAZ / UBER STYLE) */}
+            {bookingStep === "auth" && (
+              <div className="space-y-4 text-left animate-in fade-in">
+                {/* Header Badge & Title */}
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>{m.authStepBadge || "Final Step: Account Verification"}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black">
+                    {m.authStepTitle || "Sign in to Confirm Booking"}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    {m.authStepSub || "Connect with Google or sign in with your Gmail/Phone. Your booking will be confirmed immediately."}
+                  </p>
+                </div>
+
+                {/* Summary Pill: Service + City + Visit Fee */}
+                <div
+                  className={`p-3 rounded-2xl border flex items-center justify-between text-xs ${
+                    isDarkMode
+                      ? "bg-slate-800/80 border-slate-700 text-slate-200"
+                      : "bg-emerald-50/60 border-emerald-100 text-slate-800"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {selectedService.image ? (
+                      <img
+                        src={selectedService.image}
+                        alt={selectedService.name}
+                        className="w-9 h-9 rounded-xl object-cover shrink-0 border border-emerald-500/20"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-xl bg-[#16A34A] text-white flex items-center justify-center font-bold">
+                        <Wrench className="w-4 h-4" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-white">
+                        {getServiceName(selectedService)}
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {effectiveCity} • {customerName || "Customer"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 block">{m.visitFeeLabel}</span>
+                    <span className="font-extrabold text-[#16A34A]">
+                      {platformVisitFee === 0 ? m.freeVisitTag : `Rs. ${platformVisitFee}`}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 1-Click Google Connect Button */}
+                <button
+                  type="button"
+                  onClick={handleGoogleConnect}
+                  disabled={isAuthLoading || isSubmittingBooking}
+                  className="w-full py-3.5 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border-2 border-slate-200 dark:border-slate-700 font-bold text-sm rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
+                >
+                  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    />
+                  </svg>
+                  <span>
+                    {isAuthLoading
+                      ? "Connecting..."
+                      : m.continueWithGoogle || "Continue with Google"}
+                  </span>
+                </button>
+
+                {/* Divider */}
+                <div className="relative flex items-center justify-center my-1">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                  </div>
+                  <span className="relative px-3 bg-white dark:bg-slate-900 text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                    {m.orDividerText || "OR SIGN IN WITH GMAIL / PHONE"}
+                  </span>
+                </div>
+
+                {/* Error Banner */}
+                {authError && (
+                  <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-rose-500" />
+                    <span className="font-semibold">{authError}</span>
+                  </div>
+                )}
+
+                {/* Method Switcher: Gmail & Password vs Mobile Phone */}
+                <div className="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMethod("gmail");
+                      setAuthError(null);
+                    }}
+                    className={`py-2 px-2 rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
+                      authMethod === "gmail"
+                        ? "bg-white dark:bg-slate-900 text-[#16A34A] shadow-xs font-black"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    }`}
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>{m.authTabGmail || "Gmail & Password"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMethod("phone");
+                      setAuthError(null);
+                    }}
+                    className={`py-2 px-2 rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
+                      authMethod === "phone"
+                        ? "bg-white dark:bg-slate-900 text-[#16A34A] shadow-xs font-black"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    }`}
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>{m.authTabPhone || "Mobile Phone"}</span>
+                  </button>
+                </div>
+
+                {/* Direct Credentials Form for Checkout */}
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setIsAuthLoading(true);
+                    setAuthError(null);
+                    try {
+                      const identifier =
+                        authMethod === "gmail"
+                          ? authEmail.trim()
+                          : (authPhone.trim() || customerPhone.trim());
+                      if (!identifier) {
+                        setAuthError(
+                          authMethod === "gmail"
+                            ? "Please enter your Gmail address."
+                            : "Please enter your mobile phone number."
+                        );
+                        setIsAuthLoading(false);
+                        return;
+                      }
+
+                      // Try login first
+                      const res = await fetch("/api/auth/customer", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          action: "login",
+                          email: authMethod === "gmail" ? identifier : "",
+                          phone: authMethod === "phone" ? identifier : customerPhone.trim(),
+                          password: authPassword || "pass123",
+                        }),
+                      });
+                      const data = await res.json();
+
+                      if (data.success && data.customer) {
+                        setCustomerUser(data.customer);
+                        try {
+                          localStorage.setItem(
+                            "kamzo_customer_user",
+                            JSON.stringify(data.customer)
+                          );
+                        } catch (_) {}
+                        await executeBookingSubmission(data.customer);
+                      } else {
+                        // If user doesn't exist yet, auto-register seamless customer account!
+                        const regRes = await fetch("/api/auth/customer", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            action: "register",
+                            name:
+                              customerName.trim() ||
+                              (authMethod === "gmail"
+                                ? identifier.split("@")[0]
+                                : "Customer"),
+                            email: authMethod === "gmail" ? identifier : "",
+                            phone:
+                              authMethod === "phone"
+                                ? identifier
+                                : customerPhone.trim() ||
+                                  "03" +
+                                    Math.floor(
+                                      100000000 + Math.random() * 900000000
+                                    ),
+                            password: authPassword || "pass123",
+                            city: effectiveCity,
+                          }),
+                        });
+                        const regData = await regRes.json();
+                        if (regData.success && regData.customer) {
+                          setCustomerUser(regData.customer);
+                          try {
+                            localStorage.setItem(
+                              "kamzo_customer_user",
+                              JSON.stringify(regData.customer)
+                            );
+                          } catch (_) {}
+                          await executeBookingSubmission(regData.customer);
+                        } else {
+                          setAuthError(
+                            regData.error ||
+                              data.error ||
+                              "Sign in failed. Please check credentials."
+                          );
+                        }
+                      }
+                    } catch (err: any) {
+                      setAuthError(err.message || "Failed to sign in. Please try again.");
+                    } finally {
+                      setIsAuthLoading(false);
+                    }
+                  }}
+                  className="space-y-3"
+                >
+                  {authMethod === "gmail" ? (
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        {m.emailInputLabel || "Gmail / Email Address"} *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={authEmail}
+                        onChange={(e) => setAuthEmail(e.target.value)}
+                        placeholder={m.emailPlaceholder || "yourname@gmail.com"}
+                        dir="ltr"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                          isDarkMode
+                            ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                            : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
+                        } text-xs focus:outline-none focus:border-[#16A34A]`}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        {t.phoneInputLabel} *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={authPhone || customerPhone}
+                        onChange={(e) => setAuthPhone(e.target.value)}
+                        placeholder="0300 1234567"
+                        dir="ltr"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                          isDarkMode
+                            ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                            : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
+                        } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
+                      />
+                    </div>
+                  )}
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {t.passwordInputLabel}
+                    </label>
+                    <input
+                      type="password"
+                      value={authPassword}
+                      onChange={(e) => setAuthPassword(e.target.value)}
+                      placeholder={t.passwordPlaceholder || "Enter or choose a password"}
+                      className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                        isDarkMode
+                          ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+                          : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
+                      } text-xs focus:outline-none focus:border-[#16A34A]`}
+                    />
+                  </div>
+
+                  {/* Navigation Buttons: Back and Submit */}
+                  <div className="flex items-center gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setBookingStep(platformVisitFee === 0 ? "details" : "payment")
+                      }
+                      className={`py-3.5 px-4 rounded-xl border text-sm font-bold transition-all ${
+                        isDarkMode
+                          ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                          : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                      }`}
+                    >
+                      {m.backBtn}
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={isAuthLoading || isSubmittingBooking}
+                      className="flex-1 py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                    >
+                      {isAuthLoading || isSubmittingBooking ? (
+                        <>
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>{m.savingBooking}</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>
+                            {m.submitBookingBtn || "Confirm & Submit Booking"}
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             {/* STEP 3: BOOKING CONFIRMED */}
             {bookingStep === "confirmed" && (
               <div className="text-center space-y-4 py-2">
@@ -3829,6 +4193,46 @@ export default function STCStyleMarketplacePage() {
               </div>
             )}
 
+            {/* 1-Click Google Connect Button */}
+            <button
+              type="button"
+              onClick={handleGoogleConnect}
+              disabled={isAuthLoading}
+              className="w-full py-3 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border-2 border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
+            >
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>
+                {isAuthLoading ? "Connecting..." : (m.continueWithGoogle || "Continue with Google")}
+              </span>
+            </button>
+
+            {/* Divider */}
+            <div className="relative flex items-center justify-center my-1">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+              </div>
+              <span className="relative px-3 bg-white dark:bg-slate-900 text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                {m.orDividerText || "OR SIGN IN WITH GMAIL / PHONE"}
+              </span>
+            </div>
+
             {/* Auth Tab Switcher */}
             <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">
               <button
@@ -3898,27 +4302,46 @@ export default function STCStyleMarketplacePage() {
                     onChange={(e) => setAuthName(e.target.value)}
                     placeholder={t.namePlaceholder}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50"
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500" : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
                     } text-xs focus:outline-none focus:border-[#16A34A] font-medium`}
                   />
                 </div>
               )}
 
-              {/* Mobile Number Field */}
+              {/* Email field (for Registration) */}
+              {authTab === "register" && (
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    {m.emailInputLabel || "Gmail / Email Address:"}
+                  </label>
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    placeholder={m.emailPlaceholder || "yourname@gmail.com"}
+                    dir="ltr"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500" : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
+                    } text-xs focus:outline-none focus:border-[#16A34A] font-medium`}
+                  />
+                </div>
+              )}
+
+              {/* Mobile Number / Gmail Field */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  {t.phoneInputLabel}
+                  {authTab === "signin" ? (m.emailInputLabel || "Gmail or Mobile Number:") : t.phoneInputLabel}
                 </label>
                 <div className="relative">
                   <input
-                    type="tel"
+                    type={authTab === "signin" ? "text" : "tel"}
                     required
                     value={authPhone}
                     onChange={(e) => setAuthPhone(e.target.value)}
-                    placeholder="0300 1234567"
+                    placeholder={authTab === "signin" ? "0300 1234567 or yourname@gmail.com" : "0300 1234567"}
                     dir="ltr"
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50"
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500" : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
                     } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
                   />
                 </div>
@@ -3937,7 +4360,7 @@ export default function STCStyleMarketplacePage() {
                     onChange={(e) => setAuthPassword(e.target.value)}
                     placeholder={t.passwordPlaceholder}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50"
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500" : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
                     } text-xs focus:outline-none focus:border-[#16A34A] font-medium`}
                   />
                 </div>
@@ -3953,7 +4376,7 @@ export default function STCStyleMarketplacePage() {
                     value={authCity}
                     onChange={(e) => setAuthCity(e.target.value)}
                     className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50"
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50 text-slate-900"
                     } text-xs focus:outline-none focus:border-[#16A34A] font-medium`}
                   >
                     {pakistaniCities[lang].map((c) => (

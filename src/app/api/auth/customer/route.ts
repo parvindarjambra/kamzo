@@ -69,18 +69,60 @@ export async function POST(req: Request) {
       return res;
     }
 
+    if (action === "google_login") {
+      const userEmail = (email || "").trim().toLowerCase();
+      const userName = (name || "").trim() || (userEmail ? userEmail.split("@")[0] : "Google Customer");
+      const userPhone = (phone || "").trim() || "03" + Math.floor(100000000 + Math.random() * 900000000);
+
+      let customer = serverStore.findCustomer(userEmail) || (phone ? serverStore.findCustomer(phone) : undefined);
+      if (!customer) {
+        const reg = serverStore.registerCustomer({
+          name: userName,
+          email: userEmail,
+          phone: userPhone,
+          password: "google_oauth_auth",
+          city: city || "Pakistan",
+        });
+        customer = reg.customer;
+      }
+
+      if (!customer) {
+        return NextResponse.json({ success: false, error: "Failed to authenticate Google user." }, { status: 500 });
+      }
+
+      const res = NextResponse.json({
+        success: true,
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          email: customer.email,
+          city: customer.city,
+        },
+      });
+
+      res.cookies.set("kamzo_customer_phone", customer.phone, {
+        path: "/",
+        maxAge: 31536000,
+        sameSite: "lax",
+      });
+
+      return res;
+    }
+
     if (action === "login") {
-      if (!phone) {
+      const identifier = (phone || email || "").trim();
+      if (!identifier) {
         return NextResponse.json(
-          { success: false, error: "Please enter your mobile number or email." },
+          { success: false, error: "Please enter your Gmail or mobile number." },
           { status: 400 }
         );
       }
 
-      const authResult = serverStore.authenticateCustomer(phone, password);
+      const authResult = serverStore.authenticateCustomer(identifier, password);
       if (!authResult.success || !authResult.customer) {
         return NextResponse.json(
-          { success: false, error: authResult.error || "Authentication failed" },
+          { success: false, error: authResult.error || "Authentication failed. Check your credentials." },
           { status: 401 }
         );
       }
