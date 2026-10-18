@@ -31,7 +31,7 @@ export async function POST(req: Request) {
             booking,
             isVerified: newStatus === "verified",
             rejectionReason,
-            customerEmail: customer?.email,
+            customerEmail: booking.customer_email || customer?.email,
           });
           customerWhatsAppUrl = notifyResult.customerWhatsAppUrl;
         } catch (e) {

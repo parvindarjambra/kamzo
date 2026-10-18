@@ -109,6 +109,8 @@ export async function notifyAdminOnNewBooking(booking: StoredBooking) {
     `Order #: ${booking.booking_number}\n` +
     `Customer: ${booking.customer_name}\n` +
     `Phone: ${booking.customer_phone}\n` +
+    `WhatsApp: ${booking.customer_whatsapp || booking.customer_phone}\n` +
+    `Email: ${booking.customer_email || "N/A"}\n` +
     `Service: ${booking.service_name}\n` +
     `City: ${booking.city}\n` +
     `Problem: ${booking.problem}\n` +
@@ -138,6 +140,14 @@ export async function notifyAdminOnNewBooking(booking: StoredBooking) {
           <tr style="border-bottom: 1px solid #f1f5f9;">
             <td style="padding: 8px 0; color: #64748b;">Phone Number:</td>
             <td style="padding: 8px 0; font-weight: bold; color: #16A34A;">${booking.customer_phone}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 8px 0; color: #64748b;">Customer WhatsApp:</td>
+            <td style="padding: 8px 0; font-weight: bold; color: #25D366;">${booking.customer_whatsapp || booking.customer_phone}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 8px 0; color: #64748b;">Customer Gmail:</td>
+            <td style="padding: 8px 0; color: #0f172a;">${booking.customer_email || "N/A"}</td>
           </tr>
           <tr style="border-bottom: 1px solid #f1f5f9;">
             <td style="padding: 8px 0; color: #64748b;">Service Requested:</td>
@@ -183,6 +193,25 @@ export async function notifyAdminOnNewBooking(booking: StoredBooking) {
   return {
     adminWhatsAppUrl,
   };
+}
+
+export function buildCustomerInvoiceWhatsApp(booking: StoredBooking): string {
+  const targetPhone = booking.customer_whatsapp || booking.customer_phone;
+  const whatsappMessage = `${ADMIN_CONFIG.tag} SERVICE INVOICE & ORDER CONFIRMATION\n` +
+    `--------------------------------\n` +
+    `Order #: ${booking.booking_number}\n` +
+    `Customer: ${booking.customer_name}\n` +
+    `Service: ${booking.service_name}\n` +
+    `City: ${booking.city}\n` +
+    `Visit Fee: ${booking.visit_fee > 0 ? "Rs. " + booking.visit_fee : "Free Diagnostic"}\n` +
+    `Payment Method: ${booking.payment_method.toUpperCase()}\n` +
+    `TID / Ref: ${booking.transaction_reference || "N/A"}\n` +
+    `Status: ${booking.status === "accepted" ? "Confirmed" : "Payment Verification Pending"}\n` +
+    `--------------------------------\n` +
+    `KAMZO Helpline: +92 319 7318425\n` +
+    `Thank you for choosing KAMZO Services!`;
+
+  return buildWhatsAppLink(targetPhone, whatsappMessage);
 }
 
 /**
@@ -247,9 +276,10 @@ export async function notifyCustomerOnPaymentDecision(params: {
   `;
 
   // 1. Send customer email if email is known
-  if (customerEmail) {
+  const targetEmail = customerEmail || booking.customer_email;
+  if (targetEmail) {
     await sendEmail({
-      to: customerEmail,
+      to: targetEmail,
       subject: emailSubject,
       html: emailHtml,
       text: whatsappMessage,
@@ -271,7 +301,8 @@ export async function notifyCustomerOnPaymentDecision(params: {
   );
 
   // 3. Generate WhatsApp link for admin to click and notify customer directly
-  const customerWhatsAppUrl = buildWhatsAppLink(booking.customer_phone, whatsappMessage);
+  const targetPhone = booking.customer_whatsapp || booking.customer_phone;
+  const customerWhatsAppUrl = buildWhatsAppLink(targetPhone, whatsappMessage);
 
   return {
     customerWhatsAppUrl,

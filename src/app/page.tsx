@@ -1051,10 +1051,21 @@ export default function STCStyleMarketplacePage() {
   // Form State
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [customerWhatsApp, setCustomerWhatsApp] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [isSameWhatsApp, setIsSameWhatsApp] = useState(true);
   const [selectedCity, setSelectedCity] = useState("Umerkot");
   const [customCityName, setCustomCityName] = useState("");
   const [problemDetail, setProblemDetail] = useState("");
   const [confirmedBookingId, setConfirmedBookingId] = useState("");
+  const [adminWhatsAppUrl, setAdminWhatsAppUrl] = useState("");
+  const [customerWhatsAppInvoiceUrl, setCustomerWhatsAppInvoiceUrl] = useState("");
+
+  // Checkout Authentication State
+  const [checkoutAuthTab, setCheckoutAuthTab] = useState<"signin" | "register" | "whatsapp">("signin");
+  const [checkoutAuthPassword, setCheckoutAuthPassword] = useState("");
+  const [checkoutAuthName, setCheckoutAuthName] = useState("");
+  const [checkoutAuthError, setCheckoutAuthError] = useState<string | null>(null);
 
   // Payment Proof State (Customer Rs. 200 visit fee transfer)
   const [paymentMethod, setPaymentMethod] = useState<"jazzcash" | "easypaisa" | "bank_transfer">("jazzcash");
@@ -1370,6 +1381,8 @@ export default function STCStyleMarketplacePage() {
     const finalName = userToUse?.name || customerName.trim() || "Customer";
     const finalPhone = userToUse?.phone || customerPhone.trim();
     const effectiveCity = isOtherCity ? customCityName.trim() : selectedCity;
+    const effectiveWhatsApp = isSameWhatsApp || !customerWhatsApp.trim() ? finalPhone : customerWhatsApp.trim();
+    const effectiveEmail = customerEmail.trim() || userToUse?.email || "";
 
     try {
       const res = await fetch("/api/bookings", {
@@ -1378,6 +1391,8 @@ export default function STCStyleMarketplacePage() {
         body: JSON.stringify({
           customerName: finalName,
           customerPhone: finalPhone,
+          customerWhatsApp: effectiveWhatsApp,
+          customerEmail: effectiveEmail,
           serviceId: selectedService.id,
           serviceName: getServiceName(selectedService),
           city: effectiveCity,
@@ -1391,6 +1406,15 @@ export default function STCStyleMarketplacePage() {
       const data = await res.json();
       const bkgNumber = data.bookingNumber || "KMZ-" + Math.floor(100000 + Math.random() * 900000);
       setConfirmedBookingId(bkgNumber);
+
+      if (data.adminWhatsAppUrl) {
+        setAdminWhatsAppUrl(data.adminWhatsAppUrl);
+        try { window.open(data.adminWhatsAppUrl, "_blank"); } catch (_) {}
+      }
+      if (data.customerWhatsAppInvoiceUrl) {
+        setCustomerWhatsAppInvoiceUrl(data.customerWhatsAppInvoiceUrl);
+      }
+
       setBookingStep("confirmed");
 
       // Persist to customer's localStorage
@@ -1399,6 +1423,8 @@ export default function STCStyleMarketplacePage() {
         booking_number: bkgNumber,
         customer_name: finalName,
         customer_phone: finalPhone,
+        customer_whatsapp: effectiveWhatsApp,
+        customer_email: effectiveEmail,
         service_name: getServiceName(selectedService),
         city: effectiveCity,
         problem: problemDetail.trim() || "Service visit diagnostic requested",
@@ -1426,9 +1452,19 @@ export default function STCStyleMarketplacePage() {
   const handleGoogleConnect = async () => {
     setIsAuthLoading(true);
     setAuthError(null);
+    setCheckoutAuthError(null);
     try {
-      const gEmail = authEmail.trim() || (customerPhone ? `${customerPhone.replace(/\D/g, "")}@gmail.com` : `customer_${Math.floor(1000 + Math.random() * 9000)}@gmail.com`);
-      const gName = customerName.trim() || authName.trim() || "Google Customer";
+      let gEmail = customerEmail.trim() || authEmail.trim();
+      if (!gEmail || !gEmail.includes("@")) {
+        const promptEmail = prompt("Please enter your Google / Gmail account (e.g. yourname@gmail.com):", "customer@gmail.com");
+        if (!promptEmail || !promptEmail.includes("@")) {
+          setIsAuthLoading(false);
+          return;
+        }
+        gEmail = promptEmail.trim();
+      }
+
+      const gName = customerName.trim() || authName.trim() || gEmail.split("@")[0];
       const gPhone = customerPhone.trim() || authPhone.trim() || "0300" + Math.floor(1000000 + Math.random() * 9000000);
 
       const res = await fetch("/api/auth/customer", {
@@ -1457,10 +1493,65 @@ export default function STCStyleMarketplacePage() {
           await executeBookingSubmission(data.customer);
         }
       } else {
-        setAuthError(data.error || "Google authentication failed.");
+        const err = data.error || "Google authentication failed.";
+        setAuthError(err);
+        setCheckoutAuthError(err);
       }
     } catch (err: any) {
-      setAuthError(err.message || "Google connection failed. Please try again.");
+      const msg = err.message || "Google connection failed. Please try again.";
+      setAuthError(msg);
+      setCheckoutAuthError(msg);
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleWhatsAppConnect = async () => {
+    setIsAuthLoading(true);
+    setAuthError(null);
+    setCheckoutAuthError(null);
+    try {
+      const waPhone = (customerWhatsApp || customerPhone || authPhone).trim();
+      if (!waPhone) {
+        const err = "Please provide your WhatsApp number.";
+        setAuthError(err);
+        setCheckoutAuthError(err);
+        setIsAuthLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/auth/customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "whatsapp_login",
+          phone: waPhone,
+          name: customerName.trim() || authName.trim() || "WhatsApp Customer",
+          city: isOtherCity ? customCityName.trim() : selectedCity,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.customer) {
+        setCustomerUser(data.customer);
+        try {
+          localStorage.setItem("kamzo_customer_user", JSON.stringify(data.customer));
+        } catch (_) {}
+
+        setIsAuthModalOpen(false);
+
+        if (isBookingModalOpen && bookingStep === "auth") {
+          await executeBookingSubmission(data.customer);
+        }
+      } else {
+        const err = data.error || "WhatsApp verification failed.";
+        setAuthError(err);
+        setCheckoutAuthError(err);
+      }
+    } catch (err: any) {
+      const msg = err.message || "WhatsApp verification failed.";
+      setAuthError(msg);
+      setCheckoutAuthError(msg);
     } finally {
       setIsAuthLoading(false);
     }
@@ -1569,13 +1660,13 @@ export default function STCStyleMarketplacePage() {
     }
     setIsSubmittingWorker(true);
     try {
-      await fetch("/api/workers/register", {
+      const res = await fetch("/api/workers/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: workerName.trim(),
           phone: workerPhone.trim(),
-          whatsapp: workerWhatsApp.trim(),
+          whatsapp: workerWhatsApp.trim() || workerPhone.trim(),
           city: workerCity,
           area: workerArea.trim(),
           workAddress: workerAddress.trim(),
@@ -1588,6 +1679,12 @@ export default function STCStyleMarketplacePage() {
           payoutAccount: workerAccountNumber.trim(),
         }),
       });
+      const data = await res.json();
+      if (data?.adminWhatsAppUrl) {
+        try {
+          window.open(data.adminWhatsAppUrl, "_blank");
+        } catch (_) {}
+      }
     } catch (_) {}
     finally {
       setIsSubmittingWorker(false);
@@ -2506,13 +2603,87 @@ export default function STCStyleMarketplacePage() {
                       type="tel"
                       required
                       value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setCustomerPhone(val);
+                        if (isSameWhatsApp) {
+                          setCustomerWhatsApp(val);
+                        }
+                      }}
                       placeholder="300 1234567"
                       className={`w-full px-4 py-3 rounded-r-xl border ${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
                       } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
                     />
                   </div>
+                </div>
+
+                {/* Customer WhatsApp Number */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                      <span>{lang === "ur" ? "کسٹمر واٹس ایپ نمبر" : lang === "sd" ? "ڪسٽمر واٽس ايپ نمبر" : "WhatsApp Number (For Order Updates)"}</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = !isSameWhatsApp;
+                        setIsSameWhatsApp(next);
+                        if (next) setCustomerWhatsApp(customerPhone);
+                      }}
+                      className="text-xs text-[#16A34A] hover:underline font-bold cursor-pointer"
+                    >
+                      {isSameWhatsApp ? "✓ Same as Mobile" : "+ Different Number"}
+                    </button>
+                  </div>
+                  {!isSameWhatsApp ? (
+                    <div className="flex" dir="ltr">
+                      <span
+                        className={`inline-flex items-center px-3.5 rounded-l-xl border border-r-0 ${
+                          isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-100 border-slate-200 text-slate-600"
+                        } text-sm font-bold`}
+                      >
+                        +92
+                      </span>
+                      <input
+                        type="tel"
+                        required
+                        value={customerWhatsApp}
+                        onChange={(e) => setCustomerWhatsApp(e.target.value)}
+                        placeholder="300 1234567"
+                        className={`w-full px-4 py-3 rounded-r-xl border ${
+                          isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
+                        } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
+                      />
+                    </div>
+                  ) : (
+                    <div className="px-3.5 py-2.5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-200 flex items-center justify-between">
+                      <span className="font-semibold">WhatsApp: +92 {customerPhone || "300 1234567"}</span>
+                      <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">Same as Mobile</span>
+                    </div>
+                  )}
+                  <p className="text-[11px] text-slate-500">Booking verification & approval alerts will be dispatched to this WhatsApp.</p>
+                </div>
+
+                {/* Customer Gmail Address */}
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                    <Mail className="w-4 h-4 text-rose-500" />
+                    <span>{lang === "ur" ? "کسٹمر جی میل ایڈریس" : lang === "sd" ? "ڪسٽمر جي ميل پتو" : "Customer Gmail Address"}</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    placeholder="yourname@gmail.com"
+                    dir="ltr"
+                    className={`w-full px-4 py-3 rounded-xl border ${
+                      isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
+                    } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
+                  />
+                  <p className="text-[11px] text-slate-500">Official order receipt & admin verification notice will be sent to this Gmail.</p>
                 </div>
 
                 {/* Problem Description */}
@@ -2787,7 +2958,7 @@ export default function STCStyleMarketplacePage() {
               </form>
             )}
 
-            {/* STEP 2.5: AUTHENTICATE / SIGN IN TO CONFIRM BOOKING (DARAZ / UBER STYLE) */}
+            {/* STEP 2.5: AUTHENTICATE / SIGN IN TO CONFIRM BOOKING (STRICT & REAL) */}
             {bookingStep === "auth" && (
               <div className="space-y-4 text-left animate-in fade-in">
                 {/* Header Badge & Title */}
@@ -2797,14 +2968,14 @@ export default function STCStyleMarketplacePage() {
                     <span>{m.authStepBadge || "Final Step: Account Verification"}</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black">
-                    {m.authStepTitle || "Sign in to Confirm Booking"}
+                    {m.authStepTitle || "Sign In to Confirm Booking"}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    {m.authStepSub || "Connect with Google or sign in with your Gmail/Phone. Your booking will be confirmed immediately."}
+                    Please sign in to your KAMZO account or create a new one to secure your booking.
                   </p>
                 </div>
 
-                {/* Summary Pill: Service + City + Visit Fee */}
+                {/* Summary Pill */}
                 <div
                   className={`p-3 rounded-2xl border flex items-center justify-between text-xs ${
                     isDarkMode
@@ -2841,195 +3012,160 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
-                {/* 1-Click Google Connect Button */}
-                <button
-                  type="button"
-                  onClick={handleGoogleConnect}
-                  disabled={isAuthLoading || isSubmittingBooking}
-                  className="w-full py-3.5 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border-2 border-slate-200 dark:border-slate-700 font-bold text-sm rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
-                >
-                  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                    />
-                  </svg>
-                  <span>
-                    {isAuthLoading
-                      ? "Connecting..."
-                      : m.continueWithGoogle || "Continue with Google"}
-                  </span>
-                </button>
+                {/* Quick 1-Click Verification Options: Google & WhatsApp */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleGoogleConnect}
+                    disabled={isAuthLoading || isSubmittingBooking}
+                    className="py-3 px-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border-2 border-slate-200 dark:border-slate-700 font-bold text-xs rounded-2xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                    </svg>
+                    <span className="truncate">Google Sign In</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppConnect}
+                    disabled={isAuthLoading || isSubmittingBooking}
+                    className="py-3 px-3 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 text-[#16A34A] border-2 border-emerald-200 dark:border-emerald-800 font-bold text-xs rounded-2xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
+                    <span className="truncate">WhatsApp Login</span>
+                  </button>
+                </div>
 
                 {/* Divider */}
-                <div className="relative flex items-center justify-center my-1">
+                <div className="relative flex items-center justify-center my-0.5">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-slate-200 dark:border-slate-800" />
                   </div>
                   <span className="relative px-3 bg-white dark:bg-slate-900 text-[10px] uppercase font-bold tracking-wider text-slate-400">
-                    {m.orDividerText || "OR SIGN IN WITH GMAIL / PHONE"}
+                    OR SIGN IN WITH PASSWORD
                   </span>
                 </div>
 
                 {/* Error Banner */}
-                {authError && (
+                {(checkoutAuthError || authError) && (
                   <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0 text-rose-500" />
-                    <span className="font-semibold">{authError}</span>
+                    <span className="font-semibold">{checkoutAuthError || authError}</span>
                   </div>
                 )}
 
-                {/* Method Switcher: Gmail & Password vs Mobile Phone */}
+                {/* Switcher: Sign In vs Create Account */}
                 <div className="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">
                   <button
                     type="button"
                     onClick={() => {
-                      setAuthMethod("gmail");
+                      setCheckoutAuthTab("signin");
+                      setCheckoutAuthError(null);
                       setAuthError(null);
                     }}
                     className={`py-2 px-2 rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
-                      authMethod === "gmail"
+                      checkoutAuthTab === "signin"
                         ? "bg-white dark:bg-slate-900 text-[#16A34A] shadow-xs font-black"
                         : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                     }`}
                   >
-                    <Mail className="w-3.5 h-3.5" />
-                    <span>{m.authTabGmail || "Gmail & Password"}</span>
+                    <KeyRound className="w-3.5 h-3.5" />
+                    <span>Sign In (Existing)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      setAuthMethod("phone");
+                      setCheckoutAuthTab("register");
+                      setCheckoutAuthError(null);
                       setAuthError(null);
                     }}
                     className={`py-2 px-2 rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
-                      authMethod === "phone"
+                      checkoutAuthTab === "register"
                         ? "bg-white dark:bg-slate-900 text-[#16A34A] shadow-xs font-black"
                         : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                     }`}
                   >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>{m.authTabPhone || "Mobile Phone"}</span>
+                    <UserCheck className="w-3.5 h-3.5" />
+                    <span>Create Account (New)</span>
                   </button>
                 </div>
 
-                {/* Direct Credentials Form for Checkout */}
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    setIsAuthLoading(true);
-                    setAuthError(null);
-                    try {
-                      const identifier =
-                        authMethod === "gmail"
-                          ? authEmail.trim()
-                          : (authPhone.trim() || customerPhone.trim());
+                {/* SIGN IN FORM */}
+                {checkoutAuthTab === "signin" && (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setIsAuthLoading(true);
+                      setCheckoutAuthError(null);
+                      setAuthError(null);
+
+                      const identifier = (customerEmail || customerPhone || authPhone).trim();
                       if (!identifier) {
-                        setAuthError(
-                          authMethod === "gmail"
-                            ? "Please enter your Gmail address."
-                            : "Please enter your mobile phone number."
-                        );
+                        setCheckoutAuthError("Please provide your Gmail or mobile number.");
                         setIsAuthLoading(false);
                         return;
                       }
 
-                      // Try login first
-                      const res = await fetch("/api/auth/customer", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          action: "login",
-                          email: authMethod === "gmail" ? identifier : "",
-                          phone: authMethod === "phone" ? identifier : customerPhone.trim(),
-                          password: authPassword || "pass123",
-                        }),
-                      });
-                      const data = await res.json();
+                      if (!checkoutAuthPassword.trim()) {
+                        setCheckoutAuthError("Please enter your account password.");
+                        setIsAuthLoading(false);
+                        return;
+                      }
 
-                      if (data.success && data.customer) {
-                        setCustomerUser(data.customer);
-                        try {
-                          localStorage.setItem(
-                            "kamzo_customer_user",
-                            JSON.stringify(data.customer)
-                          );
-                        } catch (_) {}
-                        await executeBookingSubmission(data.customer);
-                      } else {
-                        // If user doesn't exist yet, auto-register seamless customer account!
-                        const regRes = await fetch("/api/auth/customer", {
+                      try {
+                        const res = await fetch("/api/auth/customer", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
-                            action: "register",
-                            name:
-                              customerName.trim() ||
-                              (authMethod === "gmail"
-                                ? identifier.split("@")[0]
-                                : "Customer"),
-                            email: authMethod === "gmail" ? identifier : "",
-                            phone:
-                              authMethod === "phone"
-                                ? identifier
-                                : customerPhone.trim() ||
-                                  "03" +
-                                    Math.floor(
-                                      100000000 + Math.random() * 900000000
-                                    ),
-                            password: authPassword || "pass123",
-                            city: effectiveCity,
+                            action: "login",
+                            phone: identifier.includes("@") ? "" : identifier,
+                            email: identifier.includes("@") ? identifier : "",
+                            password: checkoutAuthPassword.trim(),
                           }),
                         });
-                        const regData = await regRes.json();
-                        if (regData.success && regData.customer) {
-                          setCustomerUser(regData.customer);
-                          try {
-                            localStorage.setItem(
-                              "kamzo_customer_user",
-                              JSON.stringify(regData.customer)
-                            );
-                          } catch (_) {}
-                          await executeBookingSubmission(regData.customer);
-                        } else {
-                          setAuthError(
-                            regData.error ||
-                              data.error ||
-                              "Sign in failed. Please check credentials."
-                          );
+                        const data = await res.json();
+
+                        if (!data.success || !data.customer) {
+                          setCheckoutAuthError(data.error || "Incorrect password or account not found. If new, please switch to 'Create Account'.");
+                          setIsAuthLoading(false);
+                          return;
                         }
+
+                        setCustomerUser(data.customer);
+                        try {
+                          localStorage.setItem("kamzo_customer_user", JSON.stringify(data.customer));
+                        } catch (_) {}
+
+                        await executeBookingSubmission(data.customer);
+                      } catch (err: any) {
+                        setCheckoutAuthError(err.message || "Failed to sign in. Please verify your credentials.");
+                      } finally {
+                        setIsAuthLoading(false);
                       }
-                    } catch (err: any) {
-                      setAuthError(err.message || "Failed to sign in. Please try again.");
-                    } finally {
-                      setIsAuthLoading(false);
-                    }
-                  }}
-                  className="space-y-3"
-                >
-                  {authMethod === "gmail" ? (
+                    }}
+                    className="space-y-3"
+                  >
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                        {m.emailInputLabel || "Gmail / Email Address"} *
+                        Gmail or Registered Mobile Number *
                       </label>
                       <input
-                        type="email"
+                        type="text"
                         required
-                        value={authEmail}
-                        onChange={(e) => setAuthEmail(e.target.value)}
-                        placeholder={m.emailPlaceholder || "yourname@gmail.com"}
+                        value={customerEmail || customerPhone}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val.includes("@")) {
+                            setCustomerEmail(val);
+                          } else {
+                            setCustomerPhone(val);
+                          }
+                        }}
+                        placeholder="0300 1234567 or yourname@gmail.com"
                         dir="ltr"
                         className={`w-full px-3.5 py-2.5 rounded-xl border ${
                           isDarkMode
@@ -3038,81 +3174,225 @@ export default function STCStyleMarketplacePage() {
                         } text-xs focus:outline-none focus:border-[#16A34A]`}
                       />
                     </div>
-                  ) : (
+
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                        {t.phoneInputLabel} *
+                        Password *
                       </label>
                       <input
-                        type="tel"
+                        type="password"
                         required
-                        value={authPhone || customerPhone}
-                        onChange={(e) => setAuthPhone(e.target.value)}
-                        placeholder="0300 1234567"
-                        dir="ltr"
+                        value={checkoutAuthPassword}
+                        onChange={(e) => setCheckoutAuthPassword(e.target.value)}
+                        placeholder="Enter your account password"
                         className={`w-full px-3.5 py-2.5 rounded-xl border ${
                           isDarkMode
                             ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
                             : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
-                        } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
+                        } text-xs focus:outline-none focus:border-[#16A34A]`}
                       />
                     </div>
-                  )}
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {t.passwordInputLabel}
-                    </label>
-                    <input
-                      type="password"
-                      value={authPassword}
-                      onChange={(e) => setAuthPassword(e.target.value)}
-                      placeholder={t.passwordPlaceholder || "Enter or choose a password"}
-                      className={`w-full px-3.5 py-2.5 rounded-xl border ${
-                        isDarkMode
-                          ? "bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
-                          : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
-                      } text-xs focus:outline-none focus:border-[#16A34A]`}
-                    />
-                  </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setBookingStep(platformVisitFee === 0 ? "details" : "payment")}
+                        className={`py-3 px-4 rounded-xl border text-xs font-bold transition-all ${
+                          isDarkMode
+                            ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                            : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                        }`}
+                      >
+                        {m.backBtn}
+                      </button>
 
-                  {/* Navigation Buttons: Back and Submit */}
-                  <div className="flex items-center gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setBookingStep(platformVisitFee === 0 ? "details" : "payment")
+                      <button
+                        type="submit"
+                        disabled={isAuthLoading || isSubmittingBooking}
+                        className="flex-1 py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                      >
+                        {isAuthLoading || isSubmittingBooking ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Verifying & Submitting...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Sign In & Confirm Order</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* CREATE ACCOUNT FORM */}
+                {checkoutAuthTab === "register" && (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setIsAuthLoading(true);
+                      setCheckoutAuthError(null);
+                      setAuthError(null);
+
+                      const nameToUse = (customerName || checkoutAuthName).trim();
+                      const phoneToUse = customerPhone.trim().replace(/[\s-]/g, "");
+                      const emailToUse = customerEmail.trim();
+
+                      if (!nameToUse || nameToUse.length < 2) {
+                        setCheckoutAuthError("Please enter your full name (minimum 2 letters).");
+                        setIsAuthLoading(false);
+                        return;
                       }
-                      className={`py-3.5 px-4 rounded-xl border text-sm font-bold transition-all ${
-                        isDarkMode
-                          ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
-                          : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
-                      }`}
-                    >
-                      {m.backBtn}
-                    </button>
+                      if (!phoneToUse || phoneToUse.length < 10) {
+                        setCheckoutAuthError("Please enter a valid Pakistani mobile number (e.g. 03001234567).");
+                        setIsAuthLoading(false);
+                        return;
+                      }
+                      if (!checkoutAuthPassword.trim() || checkoutAuthPassword.trim().length < 6) {
+                        setCheckoutAuthError("Password must be at least 6 characters long.");
+                        setIsAuthLoading(false);
+                        return;
+                      }
 
-                    <button
-                      type="submit"
-                      disabled={isAuthLoading || isSubmittingBooking}
-                      className="flex-1 py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] disabled:opacity-50"
-                    >
-                      {isAuthLoading || isSubmittingBooking ? (
-                        <>
-                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>{m.savingBooking}</span>
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>
-                            {m.submitBookingBtn || "Confirm & Submit Booking"}
-                          </span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
+                      try {
+                        const res = await fetch("/api/auth/customer", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            action: "register",
+                            name: nameToUse,
+                            phone: phoneToUse,
+                            email: emailToUse,
+                            password: checkoutAuthPassword.trim(),
+                            city: effectiveCity,
+                          }),
+                        });
+                        const data = await res.json();
+
+                        if (!data.success || !data.customer) {
+                          setCheckoutAuthError(data.error || "Failed to create account. If already registered, please switch to 'Sign In'.");
+                          setIsAuthLoading(false);
+                          return;
+                        }
+
+                        setCustomerUser(data.customer);
+                        try {
+                          localStorage.setItem("kamzo_customer_user", JSON.stringify(data.customer));
+                        } catch (_) {}
+
+                        await executeBookingSubmission(data.customer);
+                      } catch (err: any) {
+                        setCheckoutAuthError(err.message || "Failed to create account.");
+                      } finally {
+                        setIsAuthLoading(false);
+                      }
+                    }}
+                    className="space-y-3"
+                  >
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={customerName || checkoutAuthName}
+                        onChange={(e) => {
+                          setCustomerName(e.target.value);
+                          setCheckoutAuthName(e.target.value);
+                        }}
+                        placeholder="Your full name"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                          isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50 text-slate-900"
+                        } text-xs focus:outline-none focus:border-[#16A34A]`}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Mobile Number *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={customerPhone}
+                          onChange={(e) => setCustomerPhone(e.target.value)}
+                          placeholder="0300 1234567"
+                          dir="ltr"
+                          className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                            isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50 text-slate-900"
+                          } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Gmail Address
+                        </label>
+                        <input
+                          type="email"
+                          value={customerEmail}
+                          onChange={(e) => setCustomerEmail(e.target.value)}
+                          placeholder="yourname@gmail.com"
+                          dir="ltr"
+                          className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                            isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50 text-slate-900"
+                          } text-xs focus:outline-none focus:border-[#16A34A]`}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Create Password (Min 6 Characters) *
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={checkoutAuthPassword}
+                        onChange={(e) => setCheckoutAuthPassword(e.target.value)}
+                        placeholder="Choose a secure password"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                          isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-slate-50 text-slate-900"
+                        } text-xs focus:outline-none focus:border-[#16A34A]`}
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setBookingStep(platformVisitFee === 0 ? "details" : "payment")}
+                        className={`py-3 px-4 rounded-xl border text-xs font-bold transition-all ${
+                          isDarkMode
+                            ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                            : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                        }`}
+                      >
+                        {m.backBtn}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={isAuthLoading || isSubmittingBooking}
+                        className="flex-1 py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                      >
+                        {isAuthLoading || isSubmittingBooking ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Creating Account...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Register & Submit Order</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
             )}
 
@@ -3173,6 +3453,16 @@ export default function STCStyleMarketplacePage() {
                     <span className="font-bold">{customerName} (+92 {customerPhone})</span>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-slate-400">Customer WhatsApp:</span>
+                    <span className="font-bold text-[#16A34A]">+92 {customerWhatsApp || customerPhone}</span>
+                  </div>
+                  {customerEmail && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Customer Gmail:</span>
+                      <span className="font-mono text-slate-700 dark:text-slate-300">{customerEmail}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
                     <span className="text-slate-400">{m.methodAndTid}</span>
                     <span className="font-mono font-bold text-slate-700 dark:text-slate-300" dir="ltr">
                       {paymentMethod.toUpperCase()} • {transactionRef || "Proof Attached"}
@@ -3184,6 +3474,13 @@ export default function STCStyleMarketplacePage() {
                   </div>
                 </div>
 
+                {customerEmail && (
+                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 text-[11px] text-blue-900 dark:text-blue-200 flex items-center gap-2 text-left">
+                    <Mail className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>Confirmation & invoice copy sent to <strong>{customerEmail}</strong></span>
+                  </div>
+                )}
+
                 <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-[11px] text-emerald-900 dark:text-emerald-200 leading-relaxed text-left">
                   <p className="font-semibold pb-1">{m.nextStepsTitle}</p>
                   <p>{m.step1AdminVerify}</p>
@@ -3191,23 +3488,36 @@ export default function STCStyleMarketplacePage() {
                   <p>{m.step3PayCash}</p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="space-y-2">
                   <a
-                    href={`https://wa.me/923197318425?text=${encodeURIComponent(
-                      `#KAMZO Service Booking Inquiry\nAssalam-o-Alaikum Admin!\nBooking ID: ${confirmedBookingId || "KMZ-NEW"}\nCustomer: ${customerName} (${customerPhone})\nService: ${getServiceName(selectedService)}\nCity: ${effectiveCity}\nVisit Fee: ${platformVisitFee > 0 ? "Rs. " + platformVisitFee : "Free (Rs. 0)"}\nPayment: ${paymentMethod.toUpperCase()} (TID: ${transactionRef || "Free/Proof"})\nPlease confirm my booking status.`
+                    href={adminWhatsAppUrl || `https://wa.me/923197318425?text=${encodeURIComponent(
+                      `#KAMZO Service Booking Inquiry\nAssalam-o-Alaikum Admin!\nBooking ID: ${confirmedBookingId || "KMZ-NEW"}\nCustomer: ${customerName} (+92 ${customerPhone})\nWhatsApp: +92 ${customerWhatsApp || customerPhone}\nService: ${getServiceName(selectedService)}\nCity: ${effectiveCity}\nVisit Fee: ${platformVisitFee > 0 ? "Rs. " + platformVisitFee : "Free (Rs. 0)"}\nPayment: ${paymentMethod.toUpperCase()} (TID: ${transactionRef || "Free/Proof"})\nPlease confirm my booking status.`
                     )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                    className="w-full py-3.5 px-4 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span dir="ltr">WhatsApp Support</span>
+                    <MessageCircle className="w-4 h-4 text-white" />
+                    <span>Send Order to Admin WhatsApp (#KAMZO)</span>
                   </a>
+
+                  {customerWhatsAppInvoiceUrl ? (
+                    <a
+                      href={customerWhatsAppInvoiceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full py-2.5 px-4 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-[#16A34A] border border-emerald-300 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Send Invoice to My WhatsApp (+92 {customerWhatsApp || customerPhone})</span>
+                    </a>
+                  ) : null}
+
                   <button
                     onClick={() => setIsBookingModalOpen(false)}
-                    className="py-2.5 px-5 bg-[#16A34A] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
+                    className="w-full py-2.5 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all cursor-pointer"
                   >
-                    {m.doneBtn}
+                    {m.doneBtn || "Done & View Bookings"}
                   </button>
                 </div>
               </div>

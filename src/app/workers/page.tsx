@@ -179,9 +179,16 @@ export default function WorkersPage() {
       if (selectedWorker?.id === workerId) {
         setSelectedWorker((prev) => (prev ? { ...prev, is_verified: newVerifiedState } : null));
       }
+      if (newVerifiedState) {
+        const cleanPhone = cleanPakistaniPhone(target.phone);
+        const waMsg = `#KAMZO Worker Verification Approved\nAssalam-o-Alaikum ${target.name}!\nCongratulations! Your technician profile for ${target.services_offered.join(", ")} in ${target.city} has been VERIFIED & APPROVED by KAMZO Admin.\nYou can now receive customer orders.\nKAMZO Helpline: +92 319 7318425`;
+        try {
+          window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`, "_blank");
+        } catch (_) {}
+      }
       showToast(
         newVerifiedState
-          ? `${target.name} has been officially Verified & Approved!`
+          ? `${target.name} verified & WhatsApp notification opened!`
           : `Verification revoked for ${target.name}.`
       );
     }

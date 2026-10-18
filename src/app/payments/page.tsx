@@ -146,11 +146,17 @@ function PaymentsContent() {
 
     try {
       setIsSubmitting(true);
-      await fetch("/api/payments/verify", {
+      const res = await fetch("/api/payments/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paymentId: item.id, action: "verify" }),
       });
+      const data = await res.json();
+      if (data?.customerWhatsAppUrl) {
+        try {
+          window.open(data.customerWhatsAppUrl, "_blank");
+        } catch (_) {}
+      }
 
       // Also attempt direct Supabase update
       try {
@@ -173,7 +179,7 @@ function PaymentsContent() {
         return next;
       });
       setIsSubmitting(false);
-      showToast(`Payment for ${item.booking_number} marked as Verified!`);
+      showToast(`Payment for ${item.booking_number} verified! Customer notified via WhatsApp & Email.`);
     }
   };
 
@@ -187,7 +193,7 @@ function PaymentsContent() {
 
     try {
       setIsSubmitting(true);
-      await fetch("/api/payments/verify", {
+      const res = await fetch("/api/payments/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -196,6 +202,12 @@ function PaymentsContent() {
           rejectionReason,
         }),
       });
+      const data = await res.json();
+      if (data?.customerWhatsAppUrl) {
+        try {
+          window.open(data.customerWhatsAppUrl, "_blank");
+        } catch (_) {}
+      }
 
       // Also attempt direct Supabase update
       try {

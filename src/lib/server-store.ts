@@ -11,6 +11,8 @@ export interface StoredBooking {
   booking_number: string;
   customer_name: string;
   customer_phone: string;
+  customer_whatsapp?: string;
+  customer_email?: string;
   service_id: string;
   service_name: string;
   city: string;
@@ -379,18 +381,44 @@ export const serverStore = {
   },
 
   registerCustomer(data: { name: string; phone: string; email?: string; password?: string; city?: string }): { success: boolean; customer?: StoredCustomer; error?: string } {
-    const existing = this.findCustomer(data.phone);
-    if (existing) {
+    if (!data.name || data.name.trim().length < 2) {
+      return { success: false, error: "Please enter your full name (minimum 2 characters)." };
+    }
+
+    const cleanPhone = (data.phone || "").trim().replace(/[\s-]/g, "");
+    if (!cleanPhone || cleanPhone.length < 10) {
+      return { success: false, error: "Please enter a valid Pakistani mobile number (e.g. 03001234567)." };
+    }
+
+    if (data.email && data.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email.trim())) {
+        return { success: false, error: "Please enter a valid Gmail / Email address (e.g. yourname@gmail.com)." };
+      }
+    }
+
+    if (!data.password || data.password.trim().length < 6) {
+      return { success: false, error: "Password must be at least 6 characters long." };
+    }
+
+    const existingByPhone = this.findCustomer(cleanPhone);
+    if (existingByPhone) {
       return { success: false, error: "An account with this mobile number already exists. Please sign in." };
     }
 
-    const cleanPhone = data.phone.trim().replace(/[\s-]/g, "");
+    if (data.email && data.email.trim()) {
+      const existingByEmail = this.findCustomer(data.email.trim().toLowerCase());
+      if (existingByEmail) {
+        return { success: false, error: "An account with this email address already exists. Please sign in." };
+      }
+    }
+
     const newCustomer: StoredCustomer = {
       id: "cust_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
       name: data.name.trim(),
       phone: cleanPhone,
       email: data.email?.trim().toLowerCase() || "",
-      password: data.password || "pass123",
+      password: data.password.trim(),
       city: data.city || "Umerkot",
       created_at: new Date().toISOString(),
     };
@@ -401,13 +429,22 @@ export const serverStore = {
   },
 
   authenticateCustomer(phoneOrEmail: string, password?: string): { success: boolean; customer?: StoredCustomer; error?: string } {
-    const customer = this.findCustomer(phoneOrEmail);
-    if (!customer) {
-      return { success: false, error: "Account not found with this mobile number or email. Please register." };
+    const cleanId = (phoneOrEmail || "").trim();
+    if (!cleanId) {
+      return { success: false, error: "Please enter your Gmail address or mobile number." };
     }
 
-    if (password && customer.password && customer.password !== password) {
-      return { success: false, error: "Incorrect password. Please try again or create a new account." };
+    const customer = this.findCustomer(cleanId);
+    if (!customer) {
+      return { success: false, error: "No account found with this mobile number or email. Please register." };
+    }
+
+    if (!password || !password.trim()) {
+      return { success: false, error: "Please enter your password." };
+    }
+
+    if (customer.password && customer.password !== password.trim()) {
+      return { success: false, error: "Incorrect password. Please enter your correct password." };
     }
 
     return { success: true, customer };

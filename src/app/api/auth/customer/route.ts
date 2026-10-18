@@ -10,18 +10,43 @@ export async function POST(req: Request) {
     const { action, phone, email, password, name, city } = body;
 
     if (action === "register") {
-      if (!name || !phone) {
+      if (!name || name.trim().length < 2) {
         return NextResponse.json(
-          { success: false, error: "Full name and mobile number are required." },
+          { success: false, error: "Full name is required (minimum 2 letters)." },
           { status: 400 }
         );
       }
 
+      const cleanPhone = (phone || "").trim().replace(/[\s-]/g, "");
+      if (!cleanPhone || cleanPhone.length < 10) {
+        return NextResponse.json(
+          { success: false, error: "Please enter a valid Pakistani mobile number (e.g. 03001234567)." },
+          { status: 400 }
+        );
+      }
+
+      if (!password || password.trim().length < 6) {
+        return NextResponse.json(
+          { success: false, error: "Password must be at least 6 characters long." },
+          { status: 400 }
+        );
+      }
+
+      if (email && email.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.trim())) {
+          return NextResponse.json(
+            { success: false, error: "Please enter a valid Gmail / Email address (e.g. yourname@gmail.com)." },
+            { status: 400 }
+          );
+        }
+      }
+
       const regResult = serverStore.registerCustomer({
-        name,
-        phone,
-        email: email || "",
-        password: password || "pass123",
+        name: name.trim(),
+        phone: cleanPhone,
+        email: email?.trim() || "",
+        password: password.trim(),
         city: city || "Umerkot",
       });
 
@@ -71,16 +96,23 @@ export async function POST(req: Request) {
 
     if (action === "google_login") {
       const userEmail = (email || "").trim().toLowerCase();
-      const userName = (name || "").trim() || (userEmail ? userEmail.split("@")[0] : "Google Customer");
-      const userPhone = (phone || "").trim() || "03" + Math.floor(100000000 + Math.random() * 900000000);
+      if (!userEmail || !userEmail.includes("@") || !userEmail.includes(".")) {
+        return NextResponse.json(
+          { success: false, error: "A valid Google account email is required." },
+          { status: 400 }
+        );
+      }
 
-      let customer = serverStore.findCustomer(userEmail) || (phone ? serverStore.findCustomer(phone) : undefined);
+      const userName = (name || "").trim() || userEmail.split("@")[0];
+      const userPhone = (phone || "").trim() || "0300" + Math.floor(1000000 + Math.random() * 9000000);
+
+      let customer = serverStore.findCustomer(userEmail);
       if (!customer) {
         const reg = serverStore.registerCustomer({
           name: userName,
           email: userEmail,
           phone: userPhone,
-          password: "google_oauth_auth",
+          password: "google_oauth_auth_" + Math.random().toString(36).substring(7),
           city: city || "Pakistan",
         });
         customer = reg.customer;
@@ -110,19 +142,71 @@ export async function POST(req: Request) {
       return res;
     }
 
-    if (action === "login") {
-      const identifier = (phone || email || "").trim();
-      if (!identifier) {
+    if (action === "whatsapp_login") {
+      const cleanPhone = (phone || "").trim().replace(/[\s-]/g, "");
+      if (!cleanPhone || cleanPhone.length < 10) {
         return NextResponse.json(
-          { success: false, error: "Please enter your Gmail or mobile number." },
+          { success: false, error: "Valid WhatsApp number is required (e.g. 03001234567)." },
           { status: 400 }
         );
       }
 
-      const authResult = serverStore.authenticateCustomer(identifier, password);
+      let customer = serverStore.findCustomer(cleanPhone);
+      if (!customer) {
+        const reg = serverStore.registerCustomer({
+          name: name?.trim() || `WhatsApp Customer`,
+          phone: cleanPhone,
+          email: email?.trim() || `${cleanPhone}@whatsapp.kamzo.pk`,
+          password: "wa_verified_" + Math.random().toString(36).substring(7),
+          city: city || "Pakistan",
+        });
+        customer = reg.customer;
+      }
+
+      if (!customer) {
+        return NextResponse.json({ success: false, error: "WhatsApp verification failed." }, { status: 500 });
+      }
+
+      const res = NextResponse.json({
+        success: true,
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          email: customer.email,
+          city: customer.city,
+        },
+      });
+
+      res.cookies.set("kamzo_customer_phone", customer.phone, {
+        path: "/",
+        maxAge: 31536000,
+        sameSite: "lax",
+      });
+
+      return res;
+    }
+
+    if (action === "login") {
+      const identifier = (phone || email || "").trim();
+      if (!identifier) {
+        return NextResponse.json(
+          { success: false, error: "Please enter your Gmail or registered mobile number." },
+          { status: 400 }
+        );
+      }
+
+      if (!password || !password.trim()) {
+        return NextResponse.json(
+          { success: false, error: "Please enter your account password." },
+          { status: 400 }
+        );
+      }
+
+      const authResult = serverStore.authenticateCustomer(identifier, password.trim());
       if (!authResult.success || !authResult.customer) {
         return NextResponse.json(
-          { success: false, error: authResult.error || "Authentication failed. Check your credentials." },
+          { success: false, error: authResult.error || "Authentication failed. Incorrect password or account not found." },
           { status: 401 }
         );
       }
