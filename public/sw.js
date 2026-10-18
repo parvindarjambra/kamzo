@@ -1,5 +1,5 @@
 // KAMZO Progressive Web Application (PWA) Service Worker
-const CACHE_NAME = 'kamzo-pwa-v1';
+const CACHE_NAME = 'kamzo-pwa-v2';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
