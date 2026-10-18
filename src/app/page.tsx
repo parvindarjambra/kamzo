@@ -448,11 +448,11 @@ const modalContent = {
     feeBreakdownTitle: "Initial Inspection / Visit Fee:",
     feeBreakdownSub: "Next step: Transfer Rs. 200 visit fee via JazzCash/Easypaisa to confirm technician dispatch.",
     nextPaymentBtn: "Next: Proceed to Visit Fee Payment",
-    bookingStep2Badge: "Step 2 of 2: Transfer Rs. 200 Visit Fee",
+    bookingStep2Badge: "Step 2 of 2: Transfer Visit Fee",
     attachProofTitle: "Attach Payment Proof",
-    attachProofSub: "Send Rs. 200 advance inspection fee to any account below and upload the screenshot.",
+    attachProofSub: "Send advance inspection fee to any account below and upload the screenshot.",
     depositDetails: "Deposit Account Details:",
-    transferInstruction: (method: string) => `Open your ${method} App, send Rs. 200, then paste the TID below.`,
+    transferInstruction: (method: string) => `Open your ${method} App, send the visit fee, then paste the TID below.`,
     tidLabel: "Transaction ID / TID:",
     tidRequired: "Required",
     tidPlaceholder: "e.g. TID 04982189421 / SMS Ref",
@@ -916,6 +916,11 @@ export default function STCStyleMarketplacePage() {
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [receiptFileName, setReceiptFileName] = useState("");
 
+  // Dynamic Visit Fee & Submission State (Synchronized with Admin Settings)
+  const [platformVisitFee, setPlatformVisitFee] = useState<number>(200);
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
+  const [isSubmittingWorker, setIsSubmittingWorker] = useState(false);
+
   // Worker Join Onboarding & Commission State
   const [isWorkerModalOpen, setIsWorkerModalOpen] = useState(false);
   const [workerModalTab, setWorkerModalTab] = useState<"register" | "dashboard">("register");
@@ -1000,6 +1005,27 @@ export default function STCStyleMarketplacePage() {
     }
   }, []);
 
+  // Synchronize dynamic visit fee set by admin
+  useEffect(() => {
+    async function loadPlatformSettings() {
+      try {
+        const res = await fetch("/api/settings", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.settings && data.settings.visit_fee !== undefined) {
+            setPlatformVisitFee(Number(data.settings.visit_fee));
+          }
+        }
+      } catch (_) {
+        try {
+          const saved = localStorage.getItem("kamzo_visit_fee");
+          if (saved !== null) setPlatformVisitFee(Number(saved));
+        } catch (_) {}
+      }
+    }
+    loadPlatformSettings();
+  }, []);
+
   const handleInstallApp = async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -1051,16 +1077,94 @@ export default function STCStyleMarketplacePage() {
     setIsBookingModalOpen(true);
   };
 
-  const handleDetailsSubmit = (e: React.FormEvent) => {
+  const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBookingStep("payment");
+    if (!customerName.trim() || !customerPhone.trim()) {
+      alert(lang === "ur" ? "براہ کرم اپنا نام اور موبائل نمبر درج کریں۔" : lang === "sd" ? "مهرباني ڪري پنهنجو نالو ۽ فون نمبر داخل ڪريو۔" : "Please enter your name and phone number.");
+      return;
+    }
+
+    if (platformVisitFee === 0) {
+      // Free Visit Fee -> Directly submit booking to API without asking for payment step!
+      setIsSubmittingBooking(true);
+      try {
+        const res = await fetch("/api/bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customerName: customerName.trim(),
+            customerPhone: customerPhone.trim(),
+            serviceId: selectedService.id,
+            serviceName: getServiceName(selectedService),
+            city: isOtherCity ? customCityName.trim() : selectedCity,
+            problem: problemDetail.trim() || "Free diagnostic inspection requested",
+            visitFee: 0,
+            paymentMethod: "free",
+            transactionRef: "FREE-INSPECTION",
+          }),
+        });
+        const data = await res.json();
+        if (data.success && data.bookingNumber) {
+          setConfirmedBookingId(data.bookingNumber);
+          setBookingStep("confirmed");
+        } else {
+          const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+          setConfirmedBookingId(randomId);
+          setBookingStep("confirmed");
+        }
+      } catch (err) {
+        const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+        setConfirmedBookingId(randomId);
+        setBookingStep("confirmed");
+      } finally {
+        setIsSubmittingBooking(false);
+      }
+    } else {
+      // Visit fee > 0 -> Move to Step 2 (payment)
+      setBookingStep("payment");
+    }
   };
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
-    setConfirmedBookingId(randomId);
-    setBookingStep("confirmed");
+    if (!transactionRef.trim()) {
+      alert(lang === "ur" ? "براہ کرم ٹرانزیکشن ریفرنس TID درج کریں۔" : lang === "sd" ? "مهرباني ڪري TID داخل ڪريو۔" : "Please enter your payment Transaction ID (TID).");
+      return;
+    }
+    setIsSubmittingBooking(true);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: customerName.trim(),
+          customerPhone: customerPhone.trim(),
+          serviceId: selectedService.id,
+          serviceName: getServiceName(selectedService),
+          city: isOtherCity ? customCityName.trim() : selectedCity,
+          problem: problemDetail.trim() || "Service visit requested",
+          visitFee: platformVisitFee,
+          paymentMethod,
+          transactionRef: transactionRef.trim(),
+          proofUrl: receiptPreview || "",
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.bookingNumber) {
+        setConfirmedBookingId(data.bookingNumber);
+        setBookingStep("confirmed");
+      } else {
+        const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+        setConfirmedBookingId(randomId);
+        setBookingStep("confirmed");
+      }
+    } catch (err) {
+      const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+      setConfirmedBookingId(randomId);
+      setBookingStep("confirmed");
+    } finally {
+      setIsSubmittingBooking(false);
+    }
   };
 
   const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1123,13 +1227,38 @@ export default function STCStyleMarketplacePage() {
     setWorkerStepNumber(3);
   };
 
-  const handleWorkerFinalSubmit = (e: React.FormEvent) => {
+  const handleWorkerFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!workerAgreedToTerms) {
       alert(lang === "ur" ? "براہ کرم کامزو کی 10% کمیشن پالیسی اور شرائط سے اتفاق کریں۔" : lang === "sd" ? "مهرباني ڪري 10 سيڪڙو ڪميشن پاليسي سان متفق ٿيو۔" : "Please agree to the 10% commission policy and terms.");
       return;
     }
-    setWorkerStepNumber(4); // Shows "Registration Submitted — Pending Verification"
+    setIsSubmittingWorker(true);
+    try {
+      await fetch("/api/workers/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: workerName.trim(),
+          phone: workerPhone.trim(),
+          whatsapp: workerWhatsApp.trim(),
+          city: workerCity,
+          area: workerArea.trim(),
+          workAddress: workerAddress.trim(),
+          categories: workerCategories,
+          experience: Number(workerExperience) || 0,
+          skills: workerSkillsDesc.trim(),
+          workType: workerWorkType,
+          cnic: workerCnic.trim(),
+          payoutMethod: workerPayoutMethod,
+          payoutAccount: workerAccountNumber.trim(),
+        }),
+      });
+    } catch (_) {}
+    finally {
+      setIsSubmittingWorker(false);
+      setWorkerStepNumber(4); // Shows "Registration Submitted — Pending Verification"
+    }
   };
 
   const handleCommissionDepositSubmit = (e: React.FormEvent) => {
@@ -1177,9 +1306,12 @@ export default function STCStyleMarketplacePage() {
   };
 
   const getServiceFee = (srv: ServiceData) => {
-    if (lang === "ur") return srv.inspectionFeeUrdu;
-    if (lang === "sd") return srv.inspectionFeeSindhi;
-    return srv.inspectionFee;
+    if (platformVisitFee === 0) {
+      if (lang === "ur") return "مفت معائنہ (Rs. 0)";
+      if (lang === "sd") return "مفت معائنو (Rs. 0)";
+      return "Free Diagnostic (Rs. 0)";
+    }
+    return `Rs. ${platformVisitFee}`;
   };
 
   const getServiceItems = (srv: ServiceData) => {
@@ -2000,10 +2132,34 @@ export default function STCStyleMarketplacePage() {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+                  disabled={isSubmittingBooking}
+                  className="w-full py-3.5 bg-[#16A34A] hover:bg-[#15803D] disabled:opacity-75 text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                 >
-                  <span>{m.nextPaymentBtn}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  {isSubmittingBooking ? (
+                    <span>Submitting Booking...</span>
+                  ) : platformVisitFee === 0 ? (
+                    <>
+                      <span>
+                        {lang === "ur"
+                          ? "بکنگ تصدیق کریں (مفت معائنہ)"
+                          : lang === "sd"
+                          ? "بڪنگ جي تصديق ڪريو (مفت معائنو)"
+                          : "Confirm Booking (Free Inspection)"}
+                      </span>
+                      <CheckCircle2 className="w-4 h-4" />
+                    </>
+                  ) : (
+                    <>
+                      <span>
+                        {lang === "ur"
+                          ? `آگے بڑھیں: وزٹ فیس (Rs. ${platformVisitFee}) کی ادائیگی`
+                          : lang === "sd"
+                          ? `اڳتي وڌو: وزٽ فيس (Rs. ${platformVisitFee}) جي ادائيگي`
+                          : `Next: Proceed to Pay Rs. ${platformVisitFee}`}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}
@@ -2014,10 +2170,22 @@ export default function STCStyleMarketplacePage() {
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A]">
                     <CreditCard className="w-3.5 h-3.5" />
-                    <span>{m.bookingStep2Badge}</span>
+                    <span>
+                      {lang === "ur"
+                        ? `مرحلہ 2: وزٹ فیس (Rs. ${platformVisitFee}) منتقل کریں`
+                        : lang === "sd"
+                        ? `مرحلو 2: وزٽ فيس (Rs. ${platformVisitFee}) موڪليو`
+                        : `Step 2 of 2: Transfer Rs. ${platformVisitFee} Visit Fee`}
+                    </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black">{m.attachProofTitle}</h3>
-                  <p className="text-xs sm:text-sm text-slate-400">{m.attachProofSub}</p>
+                  <p className="text-xs sm:text-sm text-slate-400">
+                    {lang === "ur"
+                      ? `نیچے دیے گئے کسی بھی اکاؤنٹ میں Rs. ${platformVisitFee} وزٹ فیس بھیجیں اور اسکرین شاٹ اپ لوڈ کریں۔`
+                      : lang === "sd"
+                      ? `هيٺ ڏنل ڪنهن به اڪائونٽ ۾ Rs. ${platformVisitFee} وزٽ فيس موڪليو ۽ اسڪرين شاٽ اپلوڊ ڪريو۔`
+                      : `Send Rs. ${platformVisitFee} advance inspection fee to any account below and upload the screenshot.`}
+                  </p>
                 </div>
 
                 {/* Payment Method Tabs */}
@@ -2068,7 +2236,7 @@ export default function STCStyleMarketplacePage() {
                   <div className="flex items-center justify-between text-emerald-900 dark:text-emerald-200 font-bold">
                     <span>{m.depositDetails}</span>
                     <span className="text-xs bg-[#16A34A] text-white px-2.5 py-0.5 rounded-full font-mono font-bold">
-                      Rs. 200
+                      Rs. {platformVisitFee}
                     </span>
                   </div>
 
@@ -2281,7 +2449,7 @@ export default function STCStyleMarketplacePage() {
                   </div>
                   <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-[#16A34A] font-bold">
                     <span>{m.initialFeeTransferred}</span>
-                    <span>Rs. 200</span>
+                    <span>{platformVisitFee > 0 ? `Rs. ${platformVisitFee}` : "Free (Rs. 0)"}</span>
                   </div>
                 </div>
 

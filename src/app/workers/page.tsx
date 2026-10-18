@@ -68,6 +68,50 @@ export default function WorkersPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const loadWorkers = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/workers/register");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.workers)) {
+          const mapped: WorkerRecord[] = json.workers.map((w: any) => ({
+            id: w.id,
+            user_id: w.id,
+            name: w.name,
+            phone: w.phone,
+            cnic_number: w.cnic || "Pending CNIC",
+            cnic_front_url: "",
+            cnic_back_url: "",
+            is_verified: w.status === "approved",
+            is_suspended: false,
+            suspension_reason: null,
+            level_name: "Level 1 (New)",
+            completed_jobs_count: 0,
+            rating: 5.0,
+            total_reviews: 0,
+            services_offered: w.categories || ["General"],
+            commission_balance: 0,
+            created_at: w.created_at,
+            city: w.city || "Pakistan",
+          }));
+          setWorkers(mapped);
+        }
+      }
+    } catch (e) {
+      console.warn("Workers fetch skipped:", e);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    loadWorkers();
+
+    const handleFeedUpdate = () => {
+      loadWorkers();
+    };
+    window.addEventListener("kamzo:feedUpdate", handleFeedUpdate);
+    return () => window.removeEventListener("kamzo:feedUpdate", handleFeedUpdate);
+  }, [loadWorkers]);
+
   const filteredWorkers = workers.filter((w) => {
     if (filterType === "verified" && !w.is_verified) return false;
     if (filterType === "unverified" && w.is_verified) return false;

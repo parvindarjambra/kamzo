@@ -24,6 +24,7 @@ import { formatPKR, formatDate } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Booking, BookingStatus } from "@/types/database.types";
+import { serverStore } from "@/lib/server-store";
 
 export const revalidate = 0; // Fresh live data on each dashboard load
 
@@ -138,28 +139,102 @@ async function getDashboardData(): Promise<DashboardStats> {
         .order("created_at", { ascending: false })
         .limit(6);
 
+      const storeBookings = serverStore.getBookings();
+      const storeWorkers = serverStore.getWorkers();
+      const storePayments = serverStore.getPayments();
+
+      const pendingFromStore = storePayments.filter((p) => p.status === "submitted").length;
+      const totalWorkersCount = Math.max(workersCount ?? 0, storeWorkers.length);
+      const totalPendingPayments = Math.max(pendingPaymentsCount ?? 0, pendingFromStore);
+      const totalTodayBookings = Math.max(todayBookingsCount ?? 0, storeBookings.length);
+
+      let mergedBookings = bookings && bookings.length > 0 ? [...bookings] : [];
+      if (storeBookings.length > 0) {
+        storeBookings.forEach((sb) => {
+          if (!mergedBookings.some((b) => b.booking_number === sb.booking_number)) {
+            mergedBookings.unshift({
+              id: sb.id,
+              booking_number: sb.booking_number,
+              address: sb.address,
+              visit_fee: sb.visit_fee,
+              final_amount: sb.visit_fee,
+              status: sb.status,
+              created_at: sb.created_at,
+              customer: { full_name: sb.customer_name, phone: sb.customer_phone },
+              worker: null,
+              service: { name: sb.service_name, category: sb.service_id },
+            });
+          }
+        });
+      }
+      mergedBookings = mergedBookings.slice(0, 6);
+
       // Return real-time database counts
       return {
-        totalCustomers: customersCount ?? 0,
-        totalWorkers: workersCount ?? 0,
+        totalCustomers: Math.max(customersCount ?? 0, storeBookings.length),
+        totalWorkers: totalWorkersCount,
         activeJobs: activeJobsCount ?? 0,
         completedJobs: completedJobsCount ?? 0,
-        todayBookings: todayBookingsCount ?? 0,
+        todayBookings: totalTodayBookings,
         todayRevenue: revenueSum || 0,
-        pendingPaymentVerifications: pendingPaymentsCount ?? 0,
+        pendingPaymentVerifications: totalPendingPayments,
         pendingCommissionPayments: pendingCommissionsCount ?? 0,
         pendingBonuses: pendingBonusesCount ?? 0,
-        recentBookings: bookings && bookings.length > 0 ? bookings : [],
+        recentBookings: mergedBookings,
       };
     } catch {
-      // Clean zero state on network disconnect or before database population
+      // Fallback directly to serverStore if Supabase throws
+      const storeBookings = serverStore.getBookings();
+      const storeWorkers = serverStore.getWorkers();
+      const storePayments = serverStore.getPayments();
+      return {
+        ...initialLiveStats,
+        totalCustomers: storeBookings.length,
+        totalWorkers: storeWorkers.length,
+        todayBookings: storeBookings.length,
+        pendingPaymentVerifications: storePayments.filter((p) => p.status === "submitted").length,
+        recentBookings: storeBookings.slice(0, 6).map((sb) => ({
+          id: sb.id,
+          booking_number: sb.booking_number,
+          address: sb.address,
+          visit_fee: sb.visit_fee,
+          final_amount: sb.visit_fee,
+          status: sb.status,
+          created_at: sb.created_at,
+          customer: { full_name: sb.customer_name, phone: sb.customer_phone },
+          worker: null,
+          service: { name: sb.service_name, category: sb.service_id },
+        })),
+      };
     }
-    return initialLiveStats;
   };
 
-  const timeoutTask = new Promise<DashboardStats>((resolve) =>
-    setTimeout(() => resolve(initialLiveStats), 1000)
-  );
+  const timeoutTask = new Promise<DashboardStats>((resolve) => {
+    setTimeout(() => {
+      const storeBookings = serverStore.getBookings();
+      const storeWorkers = serverStore.getWorkers();
+      const storePayments = serverStore.getPayments();
+      resolve({
+        ...initialLiveStats,
+        totalCustomers: storeBookings.length,
+        totalWorkers: storeWorkers.length,
+        todayBookings: storeBookings.length,
+        pendingPaymentVerifications: storePayments.filter((p) => p.status === "submitted").length,
+        recentBookings: storeBookings.slice(0, 6).map((sb) => ({
+          id: sb.id,
+          booking_number: sb.booking_number,
+          address: sb.address,
+          visit_fee: sb.visit_fee,
+          final_amount: sb.visit_fee,
+          status: sb.status,
+          created_at: sb.created_at,
+          customer: { full_name: sb.customer_name, phone: sb.customer_phone },
+          worker: null,
+          service: { name: sb.service_name, category: sb.service_id },
+        })),
+      });
+    }, 1500);
+  });
 
   return await Promise.race([fetchTask(), timeoutTask]);
 }

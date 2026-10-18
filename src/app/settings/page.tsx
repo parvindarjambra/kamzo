@@ -100,8 +100,31 @@ export default function SettingsPage() {
       if (savedLevels !== null) setWorkerLevels(JSON.parse(savedLevels));
     } catch (_) {}
 
-    // 2. Sync from Supabase admin_settings table
+    // 2. Sync from backend API (/api/settings) and Supabase
     async function loadRemoteSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.settings) {
+            if (typeof json.settings.visit_fee === "number") {
+              setVisitFee(json.settings.visit_fee);
+              try { localStorage.setItem("kamzo_visit_fee", json.settings.visit_fee.toString()); } catch (_) {}
+            }
+            if (typeof json.settings.commission_rate === "number") {
+              setCommissionRate(json.settings.commission_rate);
+              try { localStorage.setItem("kamzo_commission_rate", json.settings.commission_rate.toString()); } catch (_) {}
+            }
+            if (json.settings.payment_accounts) {
+              setPaymentAccounts((prev) => ({ ...prev, ...json.settings.payment_accounts }));
+              try { localStorage.setItem("kamzo_payment_accounts", JSON.stringify(json.settings.payment_accounts)); } catch (_) {}
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("API settings sync skipped:", err);
+      }
+
       try {
         const { data, error } = await supabase.from("admin_settings").select("key, value");
         if (!error && data && data.length > 0) {
@@ -148,6 +171,11 @@ export default function SettingsPage() {
     setIsSavingVisitFee(true);
     try {
       localStorage.setItem("kamzo_visit_fee", visitFee.toString());
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visit_fee: visitFee }),
+      });
       await supabase
         .from("admin_settings")
         .upsert(
@@ -170,6 +198,12 @@ export default function SettingsPage() {
     e.preventDefault();
     setIsSavingCommission(true);
     try {
+      localStorage.setItem("kamzo_commission_rate", commissionRate.toString());
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commission_rate: commissionRate }),
+      });
       await supabase
         .from("admin_settings")
         .upsert(
@@ -188,6 +222,12 @@ export default function SettingsPage() {
     e.preventDefault();
     setIsSavingAccounts(true);
     try {
+      localStorage.setItem("kamzo_payment_accounts", JSON.stringify(paymentAccounts));
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payment_accounts: paymentAccounts }),
+      });
       await supabase
         .from("admin_settings")
         .upsert(

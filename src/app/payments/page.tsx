@@ -82,6 +82,36 @@ function PaymentsContent() {
     return true;
   });
 
+  // Fetch live payments from server store and Supabase
+  const loadPayments = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/bookings", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.payments)) {
+          setPayments(data.payments);
+        }
+      }
+    } catch (_) {}
+  }, []);
+
+  React.useEffect(() => {
+    loadPayments();
+
+    // Listen to real-time feed updates from AdminRealtimeListener
+    const handleFeedUpdate = (e: any) => {
+      const liveData = e.detail;
+      if (liveData && Array.isArray(liveData.payments)) {
+        setPayments(liveData.payments);
+      }
+    };
+
+    window.addEventListener("kamzo:feedUpdate", handleFeedUpdate);
+    return () => {
+      window.removeEventListener("kamzo:feedUpdate", handleFeedUpdate);
+    };
+  }, [loadPayments]);
+
   const handleVerify = async (item: PaymentItem) => {
     if (!confirm(`Confirm verification of ${formatPKR(item.amount)} for ${item.booking_number}?`)) {
       return;
@@ -89,26 +119,26 @@ function PaymentsContent() {
 
     try {
       setIsSubmitting(true);
-      // Attempt Supabase update
-      if (item.type === "visit_fee") {
-        await supabase
-          .from("payments")
-          .update({
-            status: "verified",
-            verified_at: new Date().toISOString(),
-          } as any)
-          .eq("id", item.id);
-      } else {
-        await supabase
-          .from("commission_payments")
-          .update({
-            status: "verified",
-            verified_at: new Date().toISOString(),
-          } as any)
-          .eq("id", item.id);
-      }
+      await fetch("/api/payments/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentId: item.id, action: "verify" }),
+      });
+
+      // Also attempt direct Supabase update
+      try {
+        if (item.type === "visit_fee") {
+          await supabase
+            .from("payments")
+            .update({
+              status: "verified",
+              verified_at: new Date().toISOString(),
+            } as any)
+            .eq("id", item.id);
+        }
+      } catch (_) {}
     } catch (e) {
-      console.warn("Supabase update skipped or errored; updating local state.");
+      console.warn("API verify error:", e);
     } finally {
       setPayments((prev) =>
         prev.map((p) => (p.id === item.id ? { ...p, status: "verified" as PaymentStatus } : p))
@@ -128,25 +158,30 @@ function PaymentsContent() {
 
     try {
       setIsSubmitting(true);
-      if (rejectItem.type === "visit_fee") {
-        await supabase
-          .from("payments")
-          .update({
-            status: "rejected",
-            rejection_reason: rejectionReason,
-          } as any)
-          .eq("id", rejectItem.id);
-      } else {
-        await supabase
-          .from("commission_payments")
-          .update({
-            status: "rejected",
-            rejection_reason: rejectionReason,
-          } as any)
-          .eq("id", rejectItem.id);
-      }
+      await fetch("/api/payments/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentId: rejectItem.id,
+          action: "reject",
+          rejectionReason,
+        }),
+      });
+
+      // Also attempt direct Supabase update
+      try {
+        if (rejectItem.type === "visit_fee") {
+          await supabase
+            .from("payments")
+            .update({
+              status: "rejected",
+              rejection_reason: rejectionReason,
+            } as any)
+            .eq("id", rejectItem.id);
+        }
+      } catch (_) {}
     } catch (e) {
-      console.warn("Supabase update skipped or errored; updating local state.");
+      console.warn("API reject error:", e);
     } finally {
       setPayments((prev) =>
         prev.map((p) =>
