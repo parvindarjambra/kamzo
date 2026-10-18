@@ -1864,28 +1864,28 @@ export default function STCStyleMarketplacePage() {
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{m.bookingStep1Badge}</span>
                   </div>
-                  <h3 className="text-xl font-black">
+                  <h3 className="text-xl sm:text-2xl font-black">
                     {m.bookTitle} {getServiceName(selectedService)}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs sm:text-sm text-slate-500">
                     {m.initialInspectionFee} <strong className="text-[#16A34A]">{getServiceFee(selectedService)}</strong>
                   </p>
                 </div>
 
                 {/* Service Picker */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {m.chooseServiceLabel}
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {services.map((srv) => (
                       <button
                         type="button"
                         key={srv.id}
                         onClick={() => setSelectedService(srv)}
-                        className={`p-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                        className={`p-2.5 rounded-xl border text-sm font-bold transition-all flex items-center gap-2.5 cursor-pointer ${
                           selectedService.id === srv.id
-                            ? "bg-[#16A34A] text-white border-[#16A34A]"
+                            ? "bg-[#16A34A] text-white border-[#16A34A] shadow-md shadow-emerald-600/20"
                             : isDarkMode
                             ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
                             : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -1894,7 +1894,7 @@ export default function STCStyleMarketplacePage() {
                         <img
                           src={srv.image}
                           alt={srv.name}
-                          className="w-7 h-7 rounded-lg object-cover border border-white/40 shadow-xs shrink-0"
+                          className="w-8 h-8 rounded-lg object-cover border border-white/40 shadow-xs shrink-0"
                         />
                         <span className="truncate">{getServiceName(srv)}</span>
                       </button>
@@ -1904,15 +1904,15 @@ export default function STCStyleMarketplacePage() {
 
                 {/* City Picker */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {m.selectCityLabel}
                   </label>
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
-                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    className={`w-full px-4 py-3 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-200 text-slate-800"
-                    } text-xs font-semibold focus:outline-none focus:border-[#16A34A]`}
+                    } text-sm font-semibold focus:outline-none focus:border-[#16A34A]`}
                   >
                     {pakistaniCities[lang].map((city) => (
                       <option key={city} value={city}>
@@ -1930,17 +1930,17 @@ export default function STCStyleMarketplacePage() {
                         value={customCityName}
                         onChange={(e) => setCustomCityName(e.target.value)}
                         placeholder={m.customCityPlaceholder}
-                        className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                        className={`w-full px-4 py-3 rounded-xl border ${
                           isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200 bg-emerald-50/40"
-                        } text-xs font-semibold focus:outline-none focus:border-[#16A34A] placeholder:text-slate-400`}
+                        } text-sm font-semibold focus:outline-none focus:border-[#16A34A] placeholder:text-slate-400`}
                       />
                     </div>
                   )}
                 </div>
 
                 {/* Customer Name */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {m.fullNameLabel}
                   </label>
                   <input
@@ -1949,22 +1949,22 @@ export default function STCStyleMarketplacePage() {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder={m.fullNamePlaceholder}
-                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    className={`w-full px-4 py-3 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs focus:outline-none focus:border-[#16A34A]`}
+                    } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
                   />
                 </div>
 
                 {/* Mobile */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {m.mobileLabel}
                   </label>
                   <div className="flex" dir="ltr">
                     <span
-                      className={`inline-flex items-center px-3 rounded-l-xl border border-r-0 ${
+                      className={`inline-flex items-center px-3.5 rounded-l-xl border border-r-0 ${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-100 border-slate-200 text-slate-600"
-                      } text-xs font-bold`}
+                      } text-sm font-bold`}
                     >
                       +92
                     </span>
@@ -1974,16 +1974,16 @@ export default function STCStyleMarketplacePage() {
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       placeholder="319 7318425"
-                      className={`w-full px-3.5 py-2.5 rounded-r-xl border ${
+                      className={`w-full px-4 py-3 rounded-r-xl border ${
                         isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                      } text-xs focus:outline-none focus:border-[#16A34A]`}
+                      } text-sm font-medium focus:outline-none focus:border-[#16A34A]`}
                     />
                   </div>
                 </div>
 
                 {/* Problem Description */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {m.problemLabel}
                   </label>
                   <textarea
@@ -1992,15 +1992,15 @@ export default function STCStyleMarketplacePage() {
                     value={problemDetail}
                     onChange={(e) => setProblemDetail(e.target.value)}
                     placeholder={m.problemPlaceholder}
-                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    className={`w-full px-4 py-3 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs focus:outline-none focus:border-[#16A34A] resize-none`}
+                    } text-sm font-medium focus:outline-none focus:border-[#16A34A] resize-none`}
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                 >
                   <span>{m.nextPaymentBtn}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -2016,21 +2016,21 @@ export default function STCStyleMarketplacePage() {
                     <CreditCard className="w-3.5 h-3.5" />
                     <span>{m.bookingStep2Badge}</span>
                   </div>
-                  <h3 className="text-xl font-black">{m.attachProofTitle}</h3>
-                  <p className="text-xs text-slate-400">{m.attachProofSub}</p>
+                  <h3 className="text-xl sm:text-2xl font-black">{m.attachProofTitle}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400">{m.attachProofSub}</p>
                 </div>
 
                 {/* Payment Method Tabs */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2.5">
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("jazzcash")}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                    className={`py-2.5 px-3 rounded-xl border text-sm font-bold transition-all text-center ${
                       paymentMethod === "jazzcash"
-                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-md shadow-emerald-600/20"
                         : isDarkMode
-                        ? "bg-slate-800 text-slate-300 border-slate-700"
-                        : "bg-slate-50 text-slate-700 border-slate-200"
+                        ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
                     JazzCash
@@ -2038,12 +2038,12 @@ export default function STCStyleMarketplacePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("easypaisa")}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                    className={`py-2.5 px-3 rounded-xl border text-sm font-bold transition-all text-center ${
                       paymentMethod === "easypaisa"
-                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-md shadow-emerald-600/20"
                         : isDarkMode
-                        ? "bg-slate-800 text-slate-300 border-slate-700"
-                        : "bg-slate-50 text-slate-700 border-slate-200"
+                        ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
                     Easypaisa
@@ -2051,12 +2051,12 @@ export default function STCStyleMarketplacePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("bank_transfer")}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                    className={`py-2.5 px-3 rounded-xl border text-sm font-bold transition-all text-center ${
                       paymentMethod === "bank_transfer"
-                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-sm"
+                        ? "bg-[#16A34A] text-white border-[#16A34A] shadow-md shadow-emerald-600/20"
                         : isDarkMode
-                        ? "bg-slate-800 text-slate-300 border-slate-700"
-                        : "bg-slate-50 text-slate-700 border-slate-200"
+                        ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
                     Bank
@@ -2064,67 +2064,67 @@ export default function STCStyleMarketplacePage() {
                 </div>
 
                 {/* Official Account Box */}
-                <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/50 space-y-2 text-xs">
+                <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/50 space-y-2.5 text-sm">
                   <div className="flex items-center justify-between text-emerald-900 dark:text-emerald-200 font-bold">
                     <span>{m.depositDetails}</span>
-                    <span className="text-xs bg-[#16A34A] text-white px-2 py-0.5 rounded-full font-mono">
+                    <span className="text-xs bg-[#16A34A] text-white px-2.5 py-0.5 rounded-full font-mono font-bold">
                       Rs. 200
                     </span>
                   </div>
 
                   {paymentMethod === "jazzcash" && (
-                    <div className="space-y-1 text-slate-800 dark:text-slate-200">
+                    <div className="space-y-1.5 text-slate-800 dark:text-slate-200 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">JazzCash Mobile:</span>
-                        <span className="font-mono font-black text-sm text-[#16A34A]" dir="ltr">0319 7318425</span>
+                        <span className="text-slate-500 font-medium">JazzCash Mobile:</span>
+                        <span className="font-mono font-black text-base text-[#16A34A]" dir="ltr">0319 7318425</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Account Title:</span>
+                        <span className="text-slate-500 font-medium">Account Title:</span>
                         <span className="font-bold">KAMZO Services / Parvindar</span>
                       </div>
                     </div>
                   )}
 
                   {paymentMethod === "easypaisa" && (
-                    <div className="space-y-1 text-slate-800 dark:text-slate-200">
+                    <div className="space-y-1.5 text-slate-800 dark:text-slate-200 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Easypaisa Mobile:</span>
-                        <span className="font-mono font-black text-sm text-[#16A34A]" dir="ltr">0319 7318425</span>
+                        <span className="text-slate-500 font-medium">Easypaisa Mobile:</span>
+                        <span className="font-mono font-black text-base text-[#16A34A]" dir="ltr">0319 7318425</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Account Title:</span>
+                        <span className="text-slate-500 font-medium">Account Title:</span>
                         <span className="font-bold">KAMZO Services / Parvindar</span>
                       </div>
                     </div>
                   )}
 
                   {paymentMethod === "bank_transfer" && (
-                    <div className="space-y-1 text-slate-800 dark:text-slate-200">
+                    <div className="space-y-1.5 text-slate-800 dark:text-slate-200 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Bank Name:</span>
+                        <span className="text-slate-500 font-medium">Bank Name:</span>
                         <span className="font-bold">Allied Bank / Meezan Bank</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Account / IBAN:</span>
-                        <span className="font-mono font-bold text-xs" dir="ltr">03197318425 / PK36MEZN</span>
+                        <span className="text-slate-500 font-medium">Account / IBAN:</span>
+                        <span className="font-mono font-bold text-xs sm:text-sm" dir="ltr">03197318425 / PK36MEZN</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Account Title:</span>
+                        <span className="text-slate-500 font-medium">Account Title:</span>
                         <span className="font-bold">KAMZO Marketplace</span>
                       </div>
                     </div>
                   )}
 
-                  <p className="text-[11px] text-emerald-700 dark:text-emerald-300 pt-1 border-t border-emerald-200/60 dark:border-emerald-900/50">
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 pt-1.5 border-t border-emerald-200/60 dark:border-emerald-900/50">
                     {m.transferInstruction(paymentMethod === "jazzcash" ? "JazzCash" : paymentMethod === "easypaisa" ? "Easypaisa" : "Bank")}
                   </p>
                 </div>
 
                 {/* Transaction Reference / TID */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between">
                     <span>{m.tidLabel}</span>
-                    <span className="text-[10px] text-slate-400">{m.tidRequired}</span>
+                    <span className="text-xs text-slate-400 font-normal">{m.tidRequired}</span>
                   </label>
                   <input
                     type="text"
@@ -2133,21 +2133,21 @@ export default function STCStyleMarketplacePage() {
                     onChange={(e) => setTransactionRef(e.target.value)}
                     placeholder={m.tidPlaceholder}
                     dir="ltr"
-                    className={`w-full px-3.5 py-2.5 rounded-xl border ${
+                    className={`w-full px-4 py-3 rounded-xl border ${
                       isDarkMode ? "bg-slate-800 border-slate-700 text-white" : "border-slate-200"
-                    } text-xs font-mono focus:outline-none focus:border-[#16A34A]`}
+                    } text-sm font-mono focus:outline-none focus:border-[#16A34A]`}
                   />
                 </div>
 
                 {/* Screenshot Upload with Preview */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between">
                     <span>{m.receiptProofLabel}</span>
-                    <span className="text-[10px] text-emerald-600 font-bold">{m.fastApproval}</span>
+                    <span className="text-xs text-emerald-600 font-bold">{m.fastApproval}</span>
                   </label>
 
                   <div
-                    className={`border-2 border-dashed rounded-2xl p-3 text-center transition-colors ${
+                    className={`border-2 border-dashed rounded-2xl p-4 text-center transition-colors ${
                       receiptPreview
                         ? "border-emerald-400 bg-emerald-50/50"
                         : isDarkMode
@@ -2171,21 +2171,21 @@ export default function STCStyleMarketplacePage() {
                             className="w-14 h-14 object-cover rounded-xl border border-emerald-300 shrink-0"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-bold text-emerald-700 flex items-center gap-1">
-                              <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            <div className="text-sm font-bold text-emerald-700 flex items-center gap-1">
+                              <FileCheck className="w-4 h-4 text-emerald-600" />
                               <span>{m.receiptAttached}</span>
                             </div>
-                            <p className="text-[11px] text-slate-500 truncate">{receiptFileName || "screenshot.png"}</p>
-                            <span className="text-[10px] text-[#16A34A] underline font-semibold">{m.changeScreenshot}</span>
+                            <p className="text-xs text-slate-500 truncate">{receiptFileName || "screenshot.png"}</p>
+                            <span className="text-xs text-[#16A34A] underline font-semibold">{m.changeScreenshot}</span>
                           </div>
                         </div>
                       ) : (
-                        <div className="py-2.5 space-y-1">
-                          <Upload className="w-6 h-6 text-[#16A34A] mx-auto" />
-                          <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        <div className="py-3 space-y-1.5">
+                          <Upload className="w-7 h-7 text-[#16A34A] mx-auto" />
+                          <div className="text-sm font-bold text-slate-700 dark:text-slate-300">
                             {m.tapUploadReceipt}
                           </div>
-                          <p className="text-[10px] text-slate-400">{m.uploadFormats}</p>
+                          <p className="text-xs text-slate-400">{m.uploadFormats}</p>
                         </div>
                       )}
                     </label>
@@ -2193,13 +2193,13 @@ export default function STCStyleMarketplacePage() {
                 </div>
 
                 {/* Modal Navigation Buttons */}
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center gap-2 pt-2">
                   <button
                     type="button"
                     onClick={() => setBookingStep("details")}
-                    className={`py-3 px-4 rounded-xl border text-xs font-bold transition-all ${
+                    className={`py-3.5 px-4 rounded-xl border text-sm font-bold transition-all ${
                       isDarkMode
-                        ? "bg-slate-800 text-slate-300 border-slate-700"
+                        ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
                         : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
                     }`}
                   >
@@ -2208,7 +2208,7 @@ export default function STCStyleMarketplacePage() {
 
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-base rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                   >
                     <FileCheck className="w-4 h-4" />
                     <span>{m.submitProofBtn}</span>
