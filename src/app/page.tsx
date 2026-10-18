@@ -1464,13 +1464,13 @@ export default function STCStyleMarketplacePage() {
                   key={srv.id}
                   className={`${
                     isDarkMode
-                      ? "bg-slate-900 border-slate-800 hover:border-[#16A34A]/50"
-                      : "bg-white border-slate-200/80 hover:border-[#16A34A]/40"
-                  } rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group`}
+                      ? "bg-slate-900 border-slate-800 hover:border-[#16A34A]/60 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.7)]"
+                      : "bg-white border-slate-200/80 hover:border-[#16A34A]/50 shadow-[0_18px_42px_-10px_rgba(0,0,0,0.14),0_6px_22px_-4px_rgba(22,163,74,0.14)]"
+                  } rounded-3xl p-6 border ring-1 ring-slate-900/[0.04] dark:ring-white/[0.06] hover:shadow-[0_26px_55px_-10px_rgba(0,0,0,0.22),0_12px_30px_-4px_rgba(22,163,74,0.28)] hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between group`}
                 >
                   <div className="space-y-4">
                     {/* Real Worker Image Header */}
-                    <div className="relative rounded-2xl overflow-hidden h-44 bg-slate-100 group-hover:shadow-md transition-all border border-slate-200/60">
+                    <div className="relative rounded-2xl overflow-hidden h-44 bg-slate-100 shadow-md group-hover:shadow-lg transition-all border border-slate-200/60">
                       <img
                         src={srv.image}
                         alt={srv.name}
@@ -1507,7 +1507,7 @@ export default function STCStyleMarketplacePage() {
                   <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800">
                     <button
                       onClick={() => handleOpenBooking(srv)}
-                      className="w-full py-3 px-4 bg-emerald-50 group-hover:bg-[#16A34A] text-[#16A34A] group-hover:text-white font-bold text-xs sm:text-sm rounded-xl border border-emerald-200 group-hover:border-[#16A34A] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="w-full py-3.5 px-4 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-[#16A34A] text-[#16A34A] hover:text-white font-bold text-xs sm:text-sm rounded-2xl border border-emerald-300/90 dark:border-emerald-800 hover:border-[#16A34A] shadow-[0_4px_14px_rgba(22,163,74,0.16)] hover:shadow-[0_8px_24px_rgba(22,163,74,0.35)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>
                         {t.bookNowPrefix}{displayName}{t.bookNowSuffix}
@@ -1545,10 +1545,10 @@ export default function STCStyleMarketplacePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div
               className={`${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
-              } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
+                isDarkMode ? "bg-slate-800 border-slate-700 shadow-slate-950/50" : "bg-white border-slate-200/80 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.08),0_4px_12px_rgba(22,163,74,0.05)]"
+              } p-8 rounded-3xl border hover:shadow-[0_20px_45px_-8px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100 shadow-sm">
                 <ShieldCheck className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1561,10 +1561,10 @@ export default function STCStyleMarketplacePage() {
 
             <div
               className={`${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
-              } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
+                isDarkMode ? "bg-slate-800 border-slate-700 shadow-slate-950/50" : "bg-white border-slate-200/80 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.08),0_4px_12px_rgba(22,163,74,0.05)]"
+              } p-8 rounded-3xl border hover:shadow-[0_20px_45px_-8px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100 shadow-sm">
                 <Wallet className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
@@ -1577,10 +1577,10 @@ export default function STCStyleMarketplacePage() {
 
             <div
               className={`${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200/80"
-              } p-8 rounded-3xl border shadow-sm text-center space-y-4`}
+                isDarkMode ? "bg-slate-800 border-slate-700 shadow-slate-950/50" : "bg-white border-slate-200/80 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.08),0_4px_12px_rgba(22,163,74,0.05)]"
+              } p-8 rounded-3xl border hover:shadow-[0_20px_45px_-8px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 text-center space-y-4`}
             >
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto border border-emerald-100 shadow-sm">
                 <Clock className="w-7 h-7" />
               </div>
               <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-[#0A1128]"}`}>
