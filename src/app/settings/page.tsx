@@ -22,7 +22,7 @@ import { supabase } from "@/lib/supabase/client";
 
 export default function SettingsPage() {
   // 1. Visit Fee Settings
-  const [visitFee, setVisitFee] = React.useState<number>(200);
+  const [visitFee, setVisitFee] = React.useState<number>(0);
   const [isSavingVisitFee, setIsSavingVisitFee] = React.useState(false);
 
   // 2. Commission Settings
@@ -31,13 +31,13 @@ export default function SettingsPage() {
 
   // 3. Payment Accounts Settings
   const [paymentAccounts, setPaymentAccounts] = React.useState({
-    jazzcashNumber: "0300-7654321",
-    jazzcashTitle: "KAMZO SERVICES SMC PVT LTD",
-    easypaisaNumber: "0345-9876543",
-    easypaisaTitle: "KAMZO SERVICES SMC PVT LTD",
-    bankName: "Meezan Bank Limited",
-    bankTitle: "KAMZO SERVICES PAKISTAN PRIVATE LIMITED",
-    bankIban: "PK92MEZN0001234567890123",
+    jazzcashNumber: "0319 7318425",
+    jazzcashTitle: "KAMZO Services / Parvindar",
+    easypaisaNumber: "0319 7318425",
+    easypaisaTitle: "KAMZO Services / Parvindar",
+    bankName: "Allied Bank / Meezan Bank",
+    bankTitle: "KAMZO Marketplace",
+    bankIban: "PK36MEZN0001234567890123",
   });
   const [isSavingAccounts, setIsSavingAccounts] = React.useState(false);
 

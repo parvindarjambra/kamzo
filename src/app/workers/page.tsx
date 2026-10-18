@@ -64,9 +64,22 @@ interface WorkerRecord {
 const mockWorkers: WorkerRecord[] = [];
 
 export default function WorkersPage() {
-  const [workers, setWorkers] = React.useState<WorkerRecord[]>(mockWorkers);
+  const [workers, setWorkers] = React.useState<WorkerRecord[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [filterType, setFilterType] = React.useState<"all" | "verified" | "unverified" | "suspended">("all");
+
+  // Hydrate workers from localStorage on client mount
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kamzo_admin_workers");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setWorkers(parsed);
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   // Modals state
   const [selectedWorker, setSelectedWorker] = React.useState<WorkerRecord | null>(null);
@@ -93,8 +106,8 @@ export default function WorkersPage() {
             cnic_number: w.cnic || "Pending CNIC",
             cnic_front_url: "",
             cnic_back_url: "",
-            is_verified: w.status === "approved",
-            is_suspended: false,
+            is_verified: w.status === "approved" || w.status === "verified",
+            is_suspended: w.status === "suspended",
             suspension_reason: null,
             level_name: "Level 1 (New)",
             completed_jobs_count: 0,
@@ -106,6 +119,9 @@ export default function WorkersPage() {
             city: w.city || "Pakistan",
           }));
           setWorkers(mapped);
+          try {
+            localStorage.setItem("kamzo_admin_workers", JSON.stringify(mapped));
+          } catch (_) {}
         }
       }
     } catch (e) {
@@ -155,9 +171,11 @@ export default function WorkersPage() {
     } catch (e) {
       console.warn("Supabase worker verification update skipped or offline.");
     } finally {
-      setWorkers((prev) =>
-        prev.map((w) => (w.id === workerId ? { ...w, is_verified: newVerifiedState } : w))
-      );
+      setWorkers((prev) => {
+        const next = prev.map((w) => (w.id === workerId ? { ...w, is_verified: newVerifiedState } : w));
+        try { localStorage.setItem("kamzo_admin_workers", JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
       if (selectedWorker?.id === workerId) {
         setSelectedWorker((prev) => (prev ? { ...prev, is_verified: newVerifiedState } : null));
       }
@@ -188,13 +206,15 @@ export default function WorkersPage() {
     } catch (e) {
       console.warn("Supabase worker suspend skipped or offline.");
     } finally {
-      setWorkers((prev) =>
-        prev.map((w) =>
+      setWorkers((prev) => {
+        const next = prev.map((w) =>
           w.id === suspendModalWorker.id
             ? { ...w, is_suspended: true, suspension_reason: suspendReason }
             : w
-        )
-      );
+        );
+        try { localStorage.setItem("kamzo_admin_workers", JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
       showToast(`Worker ${suspendModalWorker.name} has been suspended.`);
       setSuspendModalWorker(null);
       setSuspendReason("");
@@ -215,11 +235,13 @@ export default function WorkersPage() {
     } catch (e) {
       console.warn("Supabase worker unsuspend skipped or offline.");
     } finally {
-      setWorkers((prev) =>
-        prev.map((w) =>
+      setWorkers((prev) => {
+        const next = prev.map((w) =>
           w.id === worker.id ? { ...w, is_suspended: false, suspension_reason: null } : w
-        )
-      );
+        );
+        try { localStorage.setItem("kamzo_admin_workers", JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
       showToast(`Account for ${worker.name} is now restored.`);
     }
   };

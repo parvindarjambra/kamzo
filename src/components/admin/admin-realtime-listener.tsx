@@ -79,6 +79,41 @@ export function AdminRealtimeListener() {
         // Broadcast raw data so active pages can instantly re-render without reload
         window.dispatchEvent(new CustomEvent("kamzo:feedUpdate", { detail: data }));
 
+        // Resilient Live Data Anchor: Cache on Admin Device & auto-restore if server restarted
+        try {
+          const hasServerData =
+            (Array.isArray(data.bookings) && data.bookings.length > 0) ||
+            (Array.isArray(data.payments) && data.payments.length > 0) ||
+            (Array.isArray(data.workers) && data.workers.length > 0);
+
+          const rawBackup = localStorage.getItem("kamzo_admin_live_backup");
+          if (hasServerData) {
+            localStorage.setItem(
+              "kamzo_admin_live_backup",
+              JSON.stringify({
+                bookings: data.bookings,
+                payments: data.payments,
+                workers: data.workers,
+                settings: data.settings,
+                timestamp: Date.now(),
+              })
+            );
+          } else if (rawBackup) {
+            const parsed = JSON.parse(rawBackup);
+            if (
+              (parsed.bookings && parsed.bookings.length > 0) ||
+              (parsed.payments && parsed.payments.length > 0) ||
+              (parsed.workers && parsed.workers.length > 0)
+            ) {
+              fetch("/api/admin/sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(parsed),
+              }).catch(() => {});
+            }
+          }
+        } catch (_) {}
+
         const notifications = data.notifications || [];
         if (notifications.length === 0) return;
 

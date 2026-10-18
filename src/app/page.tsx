@@ -1032,7 +1032,7 @@ export default function STCStyleMarketplacePage() {
   const [receiptFileName, setReceiptFileName] = useState("");
 
   // Dynamic Visit Fee & Submission State (Synchronized with Admin Settings)
-  const [platformVisitFee, setPlatformVisitFee] = useState<number>(200);
+  const [platformVisitFee, setPlatformVisitFee] = useState<number>(0);
   const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
   const [isSubmittingWorker, setIsSubmittingWorker] = useState(false);
 
@@ -1122,21 +1122,23 @@ export default function STCStyleMarketplacePage() {
 
   // Synchronize dynamic visit fee set by admin
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kamzo_visit_fee");
+      if (saved !== null) setPlatformVisitFee(Number(saved));
+    } catch (_) {}
+
     async function loadPlatformSettings() {
       try {
         const res = await fetch("/api/settings", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.settings && data.settings.visit_fee !== undefined) {
-            setPlatformVisitFee(Number(data.settings.visit_fee));
+            const fee = Number(data.settings.visit_fee);
+            setPlatformVisitFee(fee);
+            try { localStorage.setItem("kamzo_visit_fee", fee.toString()); } catch (_) {}
           }
         }
-      } catch (_) {
-        try {
-          const saved = localStorage.getItem("kamzo_visit_fee");
-          if (saved !== null) setPlatformVisitFee(Number(saved));
-        } catch (_) {}
-      }
+      } catch (_) {}
     }
     loadPlatformSettings();
   }, []);
@@ -1281,11 +1283,35 @@ export default function STCStyleMarketplacePage() {
     setIsLoadingBookings(true);
     setIsMyBookingsOpen(true);
     setIsUserMenuOpen(false);
+
+    // 1. Immediately hydrate from localStorage for instant, offline-safe display
+    let localList: any[] = [];
+    try {
+      const saved = localStorage.getItem("kamzo_customer_bookings");
+      if (saved) {
+        localList = JSON.parse(saved);
+        if (Array.isArray(localList)) {
+          setCustomerBookingsList(localList);
+        }
+      }
+    } catch (_) {}
+
+    setIsLoadingBookings(true);
     try {
       const res = await fetch(`/api/customer/bookings?phone=${encodeURIComponent(customerUser.phone)}`);
       const data = await res.json();
       if (data.success && Array.isArray(data.bookings)) {
-        setCustomerBookingsList(data.bookings);
+        // Merge without losing any locally preserved bookings
+        const merged = [...data.bookings];
+        localList.forEach((lb) => {
+          if (!merged.some((b) => b.booking_number === lb.booking_number)) {
+            merged.push(lb);
+          }
+        });
+        setCustomerBookingsList(merged);
+        try {
+          localStorage.setItem("kamzo_customer_bookings", JSON.stringify(merged));
+        } catch (_) {}
       }
     } catch (_) {
     } finally {
@@ -1324,6 +1350,7 @@ export default function STCStyleMarketplacePage() {
     if (platformVisitFee === 0) {
       // Free Visit Fee -> Directly submit booking to API without asking for payment step!
       setIsSubmittingBooking(true);
+      const effectiveCity = isOtherCity ? customCityName.trim() : selectedCity;
       try {
         const res = await fetch("/api/bookings", {
           method: "POST",
@@ -1333,7 +1360,7 @@ export default function STCStyleMarketplacePage() {
             customerPhone: customerPhone.trim(),
             serviceId: selectedService.id,
             serviceName: getServiceName(selectedService),
-            city: isOtherCity ? customCityName.trim() : selectedCity,
+            city: effectiveCity,
             problem: problemDetail.trim() || "Free diagnostic inspection requested",
             visitFee: 0,
             paymentMethod: "free",
@@ -1341,14 +1368,31 @@ export default function STCStyleMarketplacePage() {
           }),
         });
         const data = await res.json();
-        if (data.success && data.bookingNumber) {
-          setConfirmedBookingId(data.bookingNumber);
-          setBookingStep("confirmed");
-        } else {
-          const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
-          setConfirmedBookingId(randomId);
-          setBookingStep("confirmed");
-        }
+        const bkgNumber = data.bookingNumber || "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+        setConfirmedBookingId(bkgNumber);
+        setBookingStep("confirmed");
+
+        // Immediately persist to customer's localStorage
+        const localRecord = {
+          id: "bkg_" + Date.now(),
+          booking_number: bkgNumber,
+          customer_name: customerName.trim(),
+          customer_phone: customerPhone.trim(),
+          service_name: getServiceName(selectedService),
+          city: effectiveCity,
+          problem: problemDetail.trim() || "Free diagnostic inspection requested",
+          visit_fee: 0,
+          payment_method: "free",
+          transaction_reference: "FREE-INSPECTION",
+          status: "accepted",
+          created_at: new Date().toISOString(),
+        };
+        try {
+          const prev = JSON.parse(localStorage.getItem("kamzo_customer_bookings") || "[]");
+          const filtered = prev.filter((b: any) => b.booking_number !== bkgNumber);
+          filtered.unshift(localRecord);
+          localStorage.setItem("kamzo_customer_bookings", JSON.stringify(filtered));
+        } catch (_) {}
       } catch (err) {
         const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
         setConfirmedBookingId(randomId);
@@ -1369,6 +1413,7 @@ export default function STCStyleMarketplacePage() {
       return;
     }
     setIsSubmittingBooking(true);
+    const effectiveCity = isOtherCity ? customCityName.trim() : selectedCity;
     try {
       const res = await fetch("/api/bookings", {
         method: "POST",
@@ -1378,7 +1423,7 @@ export default function STCStyleMarketplacePage() {
           customerPhone: customerPhone.trim(),
           serviceId: selectedService.id,
           serviceName: getServiceName(selectedService),
-          city: isOtherCity ? customCityName.trim() : selectedCity,
+          city: effectiveCity,
           problem: problemDetail.trim() || "Service visit requested",
           visitFee: platformVisitFee,
           paymentMethod,
@@ -1387,14 +1432,31 @@ export default function STCStyleMarketplacePage() {
         }),
       });
       const data = await res.json();
-      if (data.success && data.bookingNumber) {
-        setConfirmedBookingId(data.bookingNumber);
-        setBookingStep("confirmed");
-      } else {
-        const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
-        setConfirmedBookingId(randomId);
-        setBookingStep("confirmed");
-      }
+      const bkgNumber = data.bookingNumber || "KMZ-" + Math.floor(100000 + Math.random() * 900000);
+      setConfirmedBookingId(bkgNumber);
+      setBookingStep("confirmed");
+
+      // Immediately persist to customer's localStorage
+      const localRecord = {
+        id: "bkg_" + Date.now(),
+        booking_number: bkgNumber,
+        customer_name: customerName.trim(),
+        customer_phone: customerPhone.trim(),
+        service_name: getServiceName(selectedService),
+        city: effectiveCity,
+        problem: problemDetail.trim() || "Service visit requested",
+        visit_fee: platformVisitFee,
+        payment_method: paymentMethod,
+        transaction_reference: transactionRef.trim(),
+        status: "payment_pending",
+        created_at: new Date().toISOString(),
+      };
+      try {
+        const prev = JSON.parse(localStorage.getItem("kamzo_customer_bookings") || "[]");
+        const filtered = prev.filter((b: any) => b.booking_number !== bkgNumber);
+        filtered.unshift(localRecord);
+        localStorage.setItem("kamzo_customer_bookings", JSON.stringify(filtered));
+      } catch (_) {}
     } catch (err) {
       const randomId = "KMZ-" + Math.floor(100000 + Math.random() * 900000);
       setConfirmedBookingId(randomId);

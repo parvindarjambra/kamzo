@@ -36,7 +36,7 @@ interface CustomerWithStats extends Profile {
 const mockCustomers: CustomerWithStats[] = [];
 
 export default function UsersPage() {
-  const [users, setUsers] = React.useState<CustomerWithStats[]>(mockCustomers);
+  const [users, setUsers] = React.useState<CustomerWithStats[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "active" | "suspended">("all");
 
@@ -50,6 +50,65 @@ export default function UsersPage() {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
   };
+
+  const loadUsers = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/live-feed");
+      if (res.ok) {
+        const json = await res.json();
+        const bookings = Array.isArray(json.bookings) ? json.bookings : [];
+        const customerMap = new Map<string, CustomerWithStats>();
+
+        bookings.forEach((b: any) => {
+          const phone = b.customer_phone || "";
+          if (!phone) return;
+          if (!customerMap.has(phone)) {
+            customerMap.set(phone, {
+              id: "cust_" + phone,
+              full_name: b.customer_name || "Customer",
+              phone: b.customer_phone,
+              email: "",
+              role: "customer",
+              is_active: true,
+              is_suspended: false,
+              created_at: b.created_at || new Date().toISOString(),
+              total_bookings: 1,
+              total_spent: b.visit_fee || 0,
+              last_booking_date: b.created_at,
+              city: b.city || "Pakistan",
+            });
+          } else {
+            const existing = customerMap.get(phone)!;
+            existing.total_bookings += 1;
+            existing.total_spent += b.visit_fee || 0;
+          }
+        });
+
+        const list = Array.from(customerMap.values());
+        if (list.length > 0) {
+          setUsers(list);
+          try {
+            localStorage.setItem("kamzo_admin_users", JSON.stringify(list));
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kamzo_admin_users");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) setUsers(parsed);
+      }
+    } catch (_) {}
+    loadUsers();
+
+    const handleFeed = () => loadUsers();
+    window.addEventListener("kamzo:feedUpdate", handleFeed);
+    return () => window.removeEventListener("kamzo:feedUpdate", handleFeed);
+  }, [loadUsers]);
 
   const filteredUsers = users.filter((u) => {
     if (statusFilter === "active" && u.is_suspended) return false;

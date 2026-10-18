@@ -155,7 +155,7 @@ async function getDashboardData(): Promise<DashboardStats> {
             mergedBookings.unshift({
               id: sb.id,
               booking_number: sb.booking_number,
-              address: sb.address,
+              address: (sb as any).address || sb.city,
               visit_fee: sb.visit_fee,
               final_amount: sb.visit_fee,
               status: sb.status,
@@ -196,7 +196,7 @@ async function getDashboardData(): Promise<DashboardStats> {
         recentBookings: storeBookings.slice(0, 6).map((sb) => ({
           id: sb.id,
           booking_number: sb.booking_number,
-          address: sb.address,
+          address: (sb as any).address || sb.city,
           visit_fee: sb.visit_fee,
           final_amount: sb.visit_fee,
           status: sb.status,

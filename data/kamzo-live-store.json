@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "visit_fee": 0,
+    "commission_rate": 10,
+    "payment_accounts": {
+      "jazzcashNumber": "0319 7318425",
+      "jazzcashTitle": "KAMZO Services / Parvindar",
+      "easypaisaNumber": "0319 7318425",
+      "easypaisaTitle": "KAMZO Services / Parvindar",
+      "bankName": "Allied Bank / Meezan Bank",
+      "bankTitle": "KAMZO Marketplace",
+      "bankIban": "PK36MEZN0001234567890123"
+    }
+  },
+  "bookings": [],
+  "payments": [],
+  "workers": [],
+  "notifications": [],
+  "customers": []
+}

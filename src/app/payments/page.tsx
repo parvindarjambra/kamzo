@@ -60,12 +60,22 @@ function PaymentsContent() {
   const initialTab = searchParams.get("tab") === "commissions" ? "commission" : "visit_fee";
 
   const [activeTab, setActiveTab] = React.useState<"visit_fee" | "commission">(initialTab);
-  const [payments, setPayments] = React.useState<PaymentItem[]>([
-    ...mockVisitFeePayments,
-    ...mockCommissionPayments,
-  ]);
+  const [payments, setPayments] = React.useState<PaymentItem[]>([]);
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [searchQuery, setSearchQuery] = React.useState<string>("");
+
+  // Hydrate payments from localStorage on client mount
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem("kamzo_admin_payments");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setPayments(parsed);
+        }
+      }
+    } catch (_) {}
+  }, []);
 
   // Modals state
   const [previewImage, setPreviewImage] = React.useState<{ url: string; title: string; ref: string } | null>(null);
@@ -101,6 +111,9 @@ function PaymentsContent() {
         const data = await res.json();
         if (data.success && Array.isArray(data.payments)) {
           setPayments(data.payments);
+          try {
+            localStorage.setItem("kamzo_admin_payments", JSON.stringify(data.payments));
+          } catch (_) {}
         }
       }
     } catch (_) {}
@@ -114,6 +127,9 @@ function PaymentsContent() {
       const liveData = e.detail;
       if (liveData && Array.isArray(liveData.payments)) {
         setPayments(liveData.payments);
+        try {
+          localStorage.setItem("kamzo_admin_payments", JSON.stringify(liveData.payments));
+        } catch (_) {}
       }
     };
 
@@ -151,9 +167,11 @@ function PaymentsContent() {
     } catch (e) {
       console.warn("API verify error:", e);
     } finally {
-      setPayments((prev) =>
-        prev.map((p) => (p.id === item.id ? { ...p, status: "verified" as PaymentStatus } : p))
-      );
+      setPayments((prev) => {
+        const next = prev.map((p) => (p.id === item.id ? { ...p, status: "verified" as PaymentStatus } : p));
+        try { localStorage.setItem("kamzo_admin_payments", JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
       setIsSubmitting(false);
       showToast(`Payment for ${item.booking_number} marked as Verified!`);
     }
@@ -194,13 +212,15 @@ function PaymentsContent() {
     } catch (e) {
       console.warn("API reject error:", e);
     } finally {
-      setPayments((prev) =>
-        prev.map((p) =>
+      setPayments((prev) => {
+        const next = prev.map((p) =>
           p.id === rejectItem.id
             ? { ...p, status: "rejected" as PaymentStatus, rejection_reason: rejectionReason }
             : p
-        )
-      );
+        );
+        try { localStorage.setItem("kamzo_admin_payments", JSON.stringify(next)); } catch (_) {}
+        return next;
+      });
       setIsSubmitting(false);
       setRejectItem(null);
       setRejectionReason("");
