@@ -86,11 +86,68 @@ export default function SettingsPage() {
     setTimeout(() => setToast(null), 3500);
   };
 
+  // Load existing settings from Supabase / localStorage on mount
+  React.useEffect(() => {
+    // 1. Check localStorage first for instant hydration
+    try {
+      const savedFee = localStorage.getItem("kamzo_visit_fee");
+      if (savedFee !== null) setVisitFee(Number(savedFee));
+      const savedComm = localStorage.getItem("kamzo_commission_rate");
+      if (savedComm !== null) setCommissionRate(Number(savedComm));
+      const savedAccs = localStorage.getItem("kamzo_payment_accounts");
+      if (savedAccs !== null) setPaymentAccounts(JSON.parse(savedAccs));
+      const savedLevels = localStorage.getItem("kamzo_worker_levels");
+      if (savedLevels !== null) setWorkerLevels(JSON.parse(savedLevels));
+    } catch (_) {}
+
+    // 2. Sync from Supabase admin_settings table
+    async function loadRemoteSettings() {
+      try {
+        const { data, error } = await supabase.from("admin_settings").select("key, value");
+        if (!error && data && data.length > 0) {
+          data.forEach((row: { key: string; value: string }) => {
+            if (row.key === "visit_fee") {
+              const parsed = Number(row.value);
+              if (!isNaN(parsed)) {
+                setVisitFee(parsed);
+                try { localStorage.setItem("kamzo_visit_fee", parsed.toString()); } catch (_) {}
+              }
+            } else if (row.key === "commission_rate") {
+              const parsed = Number(row.value);
+              if (!isNaN(parsed)) {
+                setCommissionRate(parsed);
+                try { localStorage.setItem("kamzo_commission_rate", parsed.toString()); } catch (_) {}
+              }
+            } else if (row.key === "payment_accounts") {
+              try {
+                setPaymentAccounts(JSON.parse(row.value));
+                localStorage.setItem("kamzo_payment_accounts", row.value);
+              } catch (_) {}
+            } else if (row.key === "worker_levels") {
+              try {
+                setWorkerLevels(JSON.parse(row.value));
+                localStorage.setItem("kamzo_worker_levels", row.value);
+              } catch (_) {}
+            }
+          });
+        }
+      } catch (err) {
+        console.warn("Supabase admin_settings sync skipped:", err);
+      }
+    }
+    loadRemoteSettings();
+  }, []);
+
   // Handlers
   const handleSaveVisitFee = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (visitFee < 0) {
+      showToast("Visit fee cannot be negative.", "error");
+      return;
+    }
     setIsSavingVisitFee(true);
     try {
+      localStorage.setItem("kamzo_visit_fee", visitFee.toString());
       await supabase
         .from("admin_settings")
         .upsert(
@@ -101,7 +158,11 @@ export default function SettingsPage() {
       console.warn("Supabase settings write skipped or offline.");
     } finally {
       setIsSavingVisitFee(false);
-      showToast(`Default visit fee updated to ${formatPKR(visitFee)}!`);
+      showToast(
+        visitFee === 0
+          ? "Visit fee set to Rs. 0 (Free Visit / Diagnostic)!"
+          : `Default visit fee updated to ${formatPKR(visitFee)}!`
+      );
     }
   };
 
@@ -204,15 +265,15 @@ export default function SettingsPage() {
                   </span>
                   <input
                     type="number"
-                    min={50}
-                    step={10}
+                    min={0}
+                    step={1}
                     value={visitFee}
                     onChange={(e) => setVisitFee(Number(e.target.value))}
                     className="w-full pl-10 pr-4 py-2.5 text-sm font-bold text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1B5E20]/20 focus:border-[#1B5E20]"
                   />
                 </div>
                 <p className="text-[11px] text-gray-500 mt-1.5">
-                  Default across Pakistan: <strong>Rs. 200</strong>. Automatically deducted or verified upon worker arrival.
+                  Minimum allowed: <strong>Rs. 0</strong> (Free visit/diagnostic). Default: <strong>Rs. 200</strong>.
                 </p>
               </div>
 
