@@ -1998,17 +1998,6 @@ export default function STCStyleMarketplacePage() {
                   />
                 </div>
 
-                {/* Visit fee breakdown */}
-                <div className="bg-emerald-50 dark:bg-emerald-950/40 rounded-xl p-3 border border-emerald-100 dark:border-emerald-900/50 text-xs space-y-1">
-                  <div className="flex justify-between font-bold text-emerald-950 dark:text-emerald-200">
-                    <span>{m.feeBreakdownTitle}</span>
-                    <span className="text-[#16A34A]">{getServiceFee(selectedService)}</span>
-                  </div>
-                  <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                    {m.feeBreakdownSub}
-                  </p>
-                </div>
-
                 <button
                   type="submit"
                   className="w-full py-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
