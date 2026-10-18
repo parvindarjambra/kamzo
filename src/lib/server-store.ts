@@ -82,6 +82,16 @@ export interface PlatformSettings {
   worker_levels?: any[];
 }
 
+export interface StoredCustomer {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  password?: string;
+  city?: string;
+  created_at: string;
+}
+
 // Global in-memory cache to persist across requests in the Node.js runtime
 declare global {
   var __KAMZO_SETTINGS: PlatformSettings | undefined;
@@ -89,6 +99,7 @@ declare global {
   var __KAMZO_PAYMENTS: StoredPayment[] | undefined;
   var __KAMZO_WORKERS: StoredWorker[] | undefined;
   var __KAMZO_NOTIFICATIONS: StoredNotification[] | undefined;
+  var __KAMZO_CUSTOMERS: StoredCustomer[] | undefined;
 }
 
 if (!global.__KAMZO_SETTINGS) {
@@ -121,6 +132,20 @@ if (!global.__KAMZO_WORKERS) {
 
 if (!global.__KAMZO_NOTIFICATIONS) {
   global.__KAMZO_NOTIFICATIONS = [];
+}
+
+if (!global.__KAMZO_CUSTOMERS) {
+  global.__KAMZO_CUSTOMERS = [
+    {
+      id: "cust_demo_01",
+      name: "Parvindar Kumar",
+      phone: "03197318425",
+      email: "parvindar@kamzo.pk",
+      password: "password123",
+      city: "Umerkot",
+      created_at: new Date().toISOString(),
+    },
+  ];
 }
 
 export const serverStore = {
@@ -233,5 +258,66 @@ export const serverStore = {
     if (global.__KAMZO_NOTIFICATIONS) {
       global.__KAMZO_NOTIFICATIONS.forEach((n) => (n.is_read = true));
     }
+  },
+
+  // Customers & Authentication
+  getCustomers(): StoredCustomer[] {
+    return global.__KAMZO_CUSTOMERS || [];
+  },
+
+  findCustomer(phoneOrEmail: string): StoredCustomer | undefined {
+    const clean = phoneOrEmail.trim().toLowerCase().replace(/[\s-]/g, "");
+    return (global.__KAMZO_CUSTOMERS || []).find((c) => {
+      const cleanPhone = c.phone.replace(/[\s-]/g, "");
+      const cleanEmail = (c.email || "").toLowerCase();
+      return (
+        cleanPhone === clean ||
+        cleanPhone.endsWith(clean) ||
+        clean.endsWith(cleanPhone) ||
+        (cleanEmail && cleanEmail === clean)
+      );
+    });
+  },
+
+  registerCustomer(data: { name: string; phone: string; email?: string; password?: string; city?: string }): { success: boolean; customer?: StoredCustomer; error?: string } {
+    const existing = this.findCustomer(data.phone);
+    if (existing) {
+      return { success: false, error: "An account with this mobile number already exists. Please sign in." };
+    }
+
+    const cleanPhone = data.phone.trim().replace(/[\s-]/g, "");
+    const newCustomer: StoredCustomer = {
+      id: "cust_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+      name: data.name.trim(),
+      phone: cleanPhone,
+      email: data.email?.trim().toLowerCase() || "",
+      password: data.password || "pass123",
+      city: data.city || "Umerkot",
+      created_at: new Date().toISOString(),
+    };
+
+    global.__KAMZO_CUSTOMERS!.unshift(newCustomer);
+    return { success: true, customer: newCustomer };
+  },
+
+  authenticateCustomer(phoneOrEmail: string, password?: string): { success: boolean; customer?: StoredCustomer; error?: string } {
+    const customer = this.findCustomer(phoneOrEmail);
+    if (!customer) {
+      return { success: false, error: "Account not found with this mobile number or email. Please register." };
+    }
+
+    if (password && customer.password && customer.password !== password) {
+      return { success: false, error: "Incorrect password. Please try again or create a new account." };
+    }
+
+    return { success: true, customer };
+  },
+
+  getCustomerBookings(phone: string): StoredBooking[] {
+    const clean = phone.trim().replace(/[\s-]/g, "");
+    return (global.__KAMZO_BOOKINGS || []).filter((b) => {
+      const bPhone = (b.customer_phone || "").replace(/[\s-]/g, "");
+      return bPhone === clean || bPhone.endsWith(clean) || clean.endsWith(bPhone);
+    });
   },
 };
